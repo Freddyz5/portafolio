@@ -1,0 +1,516 @@
+:root{
+    --oscuro: #001524;
+    --oscuro2: #00152465;
+    --crema: #FFECD1;
+    --crema2: #f5deb3;
+    --rojo: #A31621;
+    --rojo-claro: #DB222A;
+    --titulos: 'Orbitron', sans-serif;
+    --cuerpo: 'triakis', sans-serif;
+}
+/***********************************/
+@font-face {
+    font-family: 'triakis';
+    /*? Liver Server OFF */
+    src: url('file:///C:/Users/Freddy/work_space/freddy/portafolio/fonts/TriakisFont-Regular.otf');
+    /*! Liver Server ON */
+    /* src: url('/fonts/TriakisFont-Regular.otf'); */
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    vertical-align: baseline;
+    scroll-behavior: smooth;
+}
+img , figure{
+    max-width: 100%;
+    display: flex;
+    object-fit: cover;
+    object-position: center center;
+}
+h1, h2, h3, h4 {
+    font-family: var(--titulos);
+    color: var(--rojo-claro);
+}
+p{
+    color:var(--crema)
+}
+a{
+    text-decoration: none;
+}
+html{
+    overflow-x: hidden;
+}
+body {
+    background-color: black;
+    font-family: var(--cuerpo);
+}
+/**************Fondo*********************/
+.wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.star {
+    position: fixed;
+    z-index: -2;
+}
+/**************NAV*********************/
+.header .nav{
+    font-family: var(--titulos);
+    display:flex;
+    align-items: center;
+    justify-content: left;
+}
+.logoMenu {
+    background-color: #ffecd17e;
+    border-radius: 3.084vw;
+    position: fixed;
+    top: 3em;
+    left: 3em;
+    z-index: 10;
+    transform: scale(2);
+    transition: 0.35s ease;
+}
+.square, .square::after, .square::before {
+    display: block;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    border: 2px solid;
+    color: var(--oscuro);
+    transition: 0.35s ease;
+}
+.square {
+    margin: 1em;
+    position: relative;
+    transform: rotate(60deg);
+}
+.square::after, .square::before {
+    content: "";
+    position: absolute;
+    border-left: 0;
+    border-bottom: 0;
+    right: 3px;
+    top: 9px;
+}
+.square::before {
+    right: -7px;
+    top: -13px;
+    transform: rotate(180deg);
+}
+.logoMenu:hover .square{
+    color: var(--rojo-claro);
+    transform: rotate(180deg);
+    transform: scale(1.5);
+    transition: 0.35s ease;
+}
+.logoMenu:hover{
+    background-color: var(--crema);
+    box-shadow: 0 0 10px 5px var(--crema);
+    transition: 0.35s ease;
+}
+#menu{
+    padding: 0 75em 0 8em;
+    border-radius: 1em;
+    position: fixed;
+    top: 1%;
+    left: 1%;
+    bottom: 1%;
+    right: 2%;
+    display: grid;
+    justify-items: right;
+    align-content: center;
+    gap: 0.7em;
+    overflow: hidden;
+}
+#fondoMenu{
+    position:absolute;
+    left: 24em;
+    width: 73%;
+    height: 95%;
+    margin: 1em;
+    border-radius: 1em;
+}
+.draw{
+    stroke-width: 0;
+    stroke: var(--oscuro);
+}
+#menu::after{
+    content: "";
+    background-color: var(--oscuro);
+    position: fixed;
+    padding: 12em;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+.nav .a{
+    margin: 1.2em;
+    padding: 0.3em;
+    transform: scale(2);
+    text-decoration: none;
+    color: var(--rojo);
+    border: 1px solid var(--oscuro);
+    border-radius: 5px;
+    inline-size: max-content;
+    transition: 1s ease;
+}
+.nav .a:hover{
+    color: var(--rojo-claro);
+    border-color: var(--rojo-claro);
+    box-shadow: 0 0 10px 5px var(--rojo-claro);
+    transition: 1s ease;
+    text-shadow: 1px 1px 5px var(--rojo-claro), 1px 1px 5px var(--rojo-claro);
+}
+/***************HOME********************/
+.home{
+    text-align: center;
+    justify-content: center;
+    padding-bottom: 12em;
+    opacity: 0;
+    transition: 2s;
+}
+.home .figure{
+    margin-bottom: -12em;
+}
+@media (max-width:740px) {
+    .home .figure{
+        margin-bottom: -9em;
+    }
+}
+.home .logo{
+    margin: 4em auto 8em auto;
+    transform: scale(0.75);
+    stroke: var(--crema);
+}
+.home .h1{
+    font-family: var(--titulos);
+    color: var(--crema);
+    font-size: 3em;
+}
+.home .h2{
+    font-family: var(--cuerpo);
+    color: var(--crema);
+    font-size: 1.5em;
+    font-weight:100;
+    letter-spacing: 6px;
+}
+/*************MAIN**********************/
+.main{
+    text-align: center;
+}
+/*************ABOUT**********************/
+.about{
+    padding: 5em 0 5em 0;
+    min-height: 10vh;
+    width: 90%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax( min(544px, 100%), 1fr));
+    gap: 7em;
+}
+.about .figure{
+    display: flex;
+    margin: 0 auto;
+    max-width: 34em;
+}
+.about .figure .img{
+    border-radius: 15em;
+    animation-name: breath;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-duration: 7s;
+}
+.about .caption{
+    height: 4em;
+    position: relative;
+    top: 80%;
+    right: 90%;
+    font-size: 2em;
+    text-align: start;
+}
+.about .h1{
+    color: var(--crema);
+    text-shadow: 0 0 0.3em var(--oscuro);
+}
+.about .div{
+    max-width: 40em;
+    margin: auto;
+}
+.about .p{
+    text-align: start;
+    font-size: 2.5em;
+    letter-spacing: -1px;
+}
+.about .a {
+    background-color: var(--crema);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 2em;
+    height: 2em;
+    border-radius: 1em;
+    margin: 0.8em 10em 0.8em -8em;
+    font-size: 1.5em;
+    transition: 1s;
+    animation-name: littleShine;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-duration: 2s;
+    animation-delay: 2s;
+}
+.about .cv{
+    animation-name: littleShine;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-duration: 2.5s;
+    animation-delay: 2s;
+}
+.about .a .img{
+    width: 1.3em;
+}
+.about .a:hover{
+    animation-play-state: paused;
+    background-color: var(--crema2);
+    box-shadow: 0 0 7px 3px var(--crema2), 0 0 7px 3px var(--crema2);
+    transform: scale(1.4);
+    transition: 1s;
+}
+/***********WORKS************************/
+.works{
+    padding: 4em 0 10em 0;
+}
+.works .h1{
+    transform: scale(2);
+    text-shadow: 0 0 6px var(--rojo-claro);
+    margin: 3em;
+}
+.works .grid{
+    min-height: 55vh;
+    width: 90%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax( min(500px, 100%), 1fr));
+    gap: 1em;
+}
+.works .figure{
+    background-color: var(--oscuro);
+    border-radius: 1em;
+    position: relative;
+    overflow: hidden;
+}
+.works .figure::before{
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    bottom: 10%;
+    left: 10%;
+    border: 0.2em solid var(--crema);
+    border-radius: 0.5em;
+    box-shadow: 0 0 3.13em 3em var(--crema);
+    content: '';
+    z-index: 1;
+    transform: scale(1.6);
+    transition: 0.5s;
+}
+.works .figure:hover::before{
+    transform: scale(1);
+    transition: 0.5s;
+}
+.works .a {
+    position: relative;
+    top: 3.3em;
+    padding: 32% 50%;
+    z-index: 2;
+}
+.works .img{
+    transform: scale(1.1);
+    opacity: 0.9;
+    border-radius: 0.1em;
+    transition: 0.35s;
+}
+.works .figure:hover .img{
+    transform: scale(1);
+    opacity: 0.4;
+    transition: 0.35s;
+}
+.works .caption{
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+.works .caption .h2{
+    margin: 0;
+    font-size: 2em;
+    transition: 0.35s;
+    color: var(--rojo);
+    font-weight: bold;
+}
+.works .figure:hover .h2{
+    transform: scale(1.1);
+    color: var(--rojo-claro);
+    text-shadow: 0 0 0.3em var(--rojo);
+    transition: 0.35s;
+}
+.works .caption .p{
+    padding: 0 15% 0 15%;
+    font-size: 1.2em;
+    transform: scale(2);
+    opacity: 0;
+    transition: 0.35s;
+}
+.works .figure:hover .p{
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 0.1em var(--crema);
+    transition: 0.35s;
+}
+.works .caption .img{
+    margin: auto;
+    height: 9em;
+}
+@media (max-width:1140px) and (min-width:900px){
+    .works .caption .h2{
+        font-size: 3em;
+    }
+    .works .caption .p{
+        font-size: 1.7em;
+    }
+}
+/***********CONTACT************************/
+.contact{
+    padding: 9em 0;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax( min(550px, 100%), 1fr));
+    justify-content: center;
+    align-items: center;
+}
+.contact .div{
+    margin: 0 -13em 5em 0;
+}
+.contact .social{
+    margin: 0 0 0 -13em;
+}
+.contact .h1{
+    color: var(--crema);
+    transform: scale(2.5);
+}
+@media (max-width:1370px) {
+    .contact .div{
+        margin: 0 0 5em 0;
+    }
+    .contact .social{
+        margin: 0 0 0 0;
+    }
+}
+.contact .social{
+    display: grid;
+    grid-template-columns: repeat( 2, 200px);
+    gap: 3em;
+    align-items: center;
+    justify-content: center;
+}
+.contact a{
+    border-radius: 5em;
+    animation-name: shine;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+.contact .email{
+    animation-duration: 10s;
+    animation-delay: 5s;
+}
+.contact .instagram{
+    animation-duration: 9s;
+    animation-delay: 1s;
+}
+.contact .linkedin{
+    animation-duration: 8s;
+    animation-delay: 3s;
+}
+.contact .github{
+    animation-duration: 7s;
+    animation-delay: 7s;
+}
+.contact a:hover{
+    transition: 2s;
+    animation-play-state: paused;
+    filter: hue-rotate(440deg);
+}
+.contact .img{
+    width: 100%;
+    margin: auto;
+}
+/************FOOTER***********************/
+.footer{
+    padding: 1em;
+    background-color: var(--oscuro2);
+    text-align: center;
+    align-items: center;
+    color:var(--crema);
+    position: relative;
+}
+.footer .div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5em;
+}
+.footer .a {
+    width: 1.5em;
+    padding: 0.2em;
+    border-radius: 1em;
+    box-shadow: 0 0 5px 2.5px var(--crema);
+    background-color: var(--crema);
+    transition: 1s;
+}
+.footer .a:hover{
+    background-color: var(--crema2);
+    box-shadow: 0 0 10px 5px var(--crema);
+    transform: scale(1.2);
+    transition: 0.5s;
+}
+.footer .figure{
+    align-items: center;
+    justify-content: center;
+}
+.footer .logo{
+    height: 3.75em;
+}
+/************ANIMACIONES***********************/
+@keyframes breath {
+    50%{
+        box-shadow:2em 0.25em 2em 0.5em #008A91,
+                    -2em -0.25em 2em 1em #980A16,
+                    -2em -0.25em 4em 2em #980a1683,
+                    2em 0.25em 4em 1em #008a917c;
+        transform: scale(1.01);
+    }
+}
+@keyframes littleShine{
+    50%{
+        box-shadow: 0 0 5px 3px var(--crema), 0 0 5px 3px var(--crema);
+    }
+}
+@keyframes shine{
+    25%{
+        background-color: var(--crema);
+    }
+    50%{
+        box-shadow: 0 0 10px 15px var(--crema), 0 0 10px 15px var(--crema);
+        transform: scale(1.1);
+    }
+    65%{
+        background-color: var(--crema);
+    }
+}
