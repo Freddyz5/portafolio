@@ -143,10 +143,10 @@ logoMenu.addEventListener("click", (event) => {
 
 function showMenu (number){
     if (number%2 == 0) {
-        animationMenu(-25, 0, 0.5, 1, 1000, true);
+        animationMenu(-25, 0, 0.5, 1, 700, true);
         action = 2;
     }else{
-        animationMenu(0, -25, 1, 0.5, 1500, false);
+        animationMenu(0, -25, 1, 0.5, 500, false);
         action = 1;
     };
 };
@@ -157,7 +157,7 @@ function animationMenu (fromX, toX, opacityStart, opacityFinish, duration, visib
         translateX: [fromX, toX],
         opacity: [opacityStart, opacityFinish],
         duration: duration,
-        easing: 'easeOutSine',
+        easing: 'easeInOutQuart',
     });
     if(!visible){
         animation.finished.then(function(){

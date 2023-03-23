@@ -12,9 +12,7 @@
 @font-face {
     font-family: 'triakis';
     /*? Liver Server OFF */
-    src: url('file:///C:/Users/Freddy/work_space/freddy/portafolio/fonts/TriakisFont-Regular.otf');
-    /*! Liver Server ON */
-    /* src: url('/fonts/TriakisFont-Regular.otf'); */
+    src: url('fonts/TriakisFont-Regular.otf');
     font-weight: normal;
     font-style: normal;
 }
