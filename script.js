@@ -26,47 +26,95 @@ logoHover.addEventListener("mouseenter", (event) => {
     event.target.style.scale = '1.1';
 });
 
+//?Menu responsive
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+const about = document.getElementById("nav-about");
+const projects = document.getElementById("nav-projects");
+const contact = document.getElementById("nav-contact");
+let menuClicked = 0;
+
+function menuVisible() {
+    menu.style.opacity = '1';
+    menu.style.visibility = 'visible';
+    menuClicked = 1;
+}
+function menuHidden() {
+    menu.style.opacity = '0';
+    menu.style.visibility = 'hidden';
+    menuClicked = 0;
+}
+
+function menuResponsive() {
+    menuButton.addEventListener("click", (event) => {
+        menuButton.href = '#none';
+        if (menuClicked === 0) {
+            menuVisible();
+        } else {
+            menuHidden();
+            menuButton.href = '#home'; 
+        }
+    })
+    about.addEventListener("click", (event) => {
+        menuHidden();
+    });
+    projects.addEventListener("click", (event) => {
+        menuHidden();
+    });
+    contact.addEventListener("click", (event) => {
+        menuHidden();
+    });
+};
+
+window.addEventListener('resize', (event) => {
+    if (window.innerWidth <= 700) {
+        menuResponsive();
+    } else {
+        location.reload();
+    }
+});
+
 //? Fondo de estrellas moviéndose
-var numberOfStars = 100;
-var duration = 5000;
-var midScreenX = window.innerWidth / 2;
-var midScreenY = window.innerHeight / 2;
-var fragment = document.createDocumentFragment();
-var radius = 0;
+// var numberOfStars = 100;
+// var duration = 5000;
+// var midScreenX = window.innerWidth / 2;
+// var midScreenY = window.innerHeight / 2;
+// var fragment = document.createDocumentFragment();
+// var radius = 0;
 
-function createStar() {
-    radius = (Math.random() * (5000 - 100 + 1) + 100);
-    var star = document.createElement('div');
-    star.classList.add('star');
-    star.style.borderRadius = '5px';
-    star.style.backgroundColor = '#FFECD1';
-    star.style.boxShadow = '0 0 5px 5px #FFECD1';
-    star.style.width = '5px';
-    star.style.height = '5px';
-    return star;
-};
+// function createStar() {
+//     radius = (Math.random() * (5000 - 100 + 1) + 100);
+//     var star = document.createElement('div');
+//     star.classList.add('star');
+//     star.style.borderRadius = '5px';
+//     star.style.backgroundColor = '#FFECD1';
+//     star.style.boxShadow = '0 0 5px 5px #FFECD1';
+//     star.style.width = '5px';
+//     star.style.height = '5px';
+//     return star;
+// };
 
-for (var i = 0; i < numberOfStars; i++) {
-    var rangeBorn = 200;//!Max=200 Min=100 
-    var angle = Math.random() * Math.PI * 2;
-    var starsRight = [createStar(), rangeBorn, 1];
-    var starsLeft = [createStar(), -rangeBorn, -1];
-    function animation(target, rangeBorn, direction) {
-        anime({
-            targets: target,
-            opacity: [1, 0],
-            scale: [0, 5],
-            left: [(midScreenX+anime.random(0, rangeBorn)) + 'px', (Math.abs(Math.cos(angle))*direction) * radius + midScreenX + 'px'],
-            top: [(midScreenY+anime.random(-100, 100)) + 'px', Math.sin(angle) * radius + midScreenY + 'px'],
-            delay: (duration / numberOfStars) * i,
-            duration: duration,
-            easing: 'easeInExpo',
-            loop: true
-        });
-        fragment.appendChild(target);
-    };
-    animation(starsRight[0], starsRight[1], starsRight[2]);
-    animation(starsLeft[0], starsLeft[1], starsLeft[2]);
-};
+// for (var i = 0; i < numberOfStars; i++) {
+//     var rangeBorn = 200;//!Max=200 Min=100 
+//     var angle = Math.random() * Math.PI * 2;
+//     var starsRight = [createStar(), rangeBorn, 1];
+//     var starsLeft = [createStar(), -rangeBorn, -1];
+//     function animation(target, rangeBorn, direction) {
+//         anime({
+//             targets: target,
+//             opacity: [1, 0],
+//             scale: [0, 5],
+//             left: [(midScreenX+anime.random(0, rangeBorn)) + 'px', (Math.abs(Math.cos(angle))*direction) * radius + midScreenX + 'px'],
+//             top: [(midScreenY+anime.random(-100, 100)) + 'px', Math.sin(angle) * radius + midScreenY + 'px'],
+//             delay: (duration / numberOfStars) * i,
+//             duration: duration,
+//             easing: 'easeInExpo',
+//             loop: true
+//         });
+//         fragment.appendChild(target);
+//     };
+//     animation(starsRight[0], starsRight[1], starsRight[2]);
+//     animation(starsLeft[0], starsLeft[1], starsLeft[2]);
+// };
 
-document.body.appendChild(fragment);
+// document.body.appendChild(fragment);

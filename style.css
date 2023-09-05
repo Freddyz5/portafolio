@@ -65,7 +65,8 @@ header {
     background-color: rgba(75, 74, 74, 0.404);
     backdrop-filter: blur(10px);
     width: 97%;
-    height: 13vh;
+    height: 12vh;
+    max-height: 100px;
     position: fixed;
     display: flex;
     align-items: center;
@@ -73,26 +74,52 @@ header {
     border-radius: 0.5em;
     z-index: 3;
 }
+/* .home-link::before {
+    content: "";
+    background-color: rgba(75, 74, 74, 0.404);
+    position: absolute;
+    width: 6vw;
+    min-width: 75px;
+    height: 65%;
+    min-height: 75px;
+    left: 2.2vw;
+    margin: 0 2.2vw;
+    border-radius: 0.5em;
+} */
+.home-link::after {
+    content: "MENU";
+    color: rgba(75, 74, 74);
+    position: absolute;
+    top: 4vw;
+    left: 20vw;
+    font-size: 1.4em;
+    font-weight: bold;
+    visibility: hidden;
+}
 .header-logo {
-    width: 6em;
-    clip-path: circle(32%);
+    background-color: rgba(75, 74, 74, 0.404);
+    width: 13%;
+    min-width: 70px;
+    margin: 0 2.2vw;
+    border-radius: 0.5em;
     transition: 200ms;
 }
 .header-logo:hover {
+    clip-path: circle(49%);
     scale: 1.4;
     transform: rotate(-60deg);
     background: radial-gradient(
-        rgb(30, 30, 30) 30%,
-        var(--crema) 50%
+        rgb(30, 30, 30) 40%,
+        var(--crema) 80%
     );
     transition: 200ms;
 }
 #navbar ul {
     list-style: none;
     display: flex;
-    gap: 2.5em;
+    gap: 2.4em;
     margin-right: 2.5em;
-    font-size: 1.3em;
+    font-size: max(1.4em, 1.3vw);
 }
 #navbar li{
     transition: 100ms
@@ -121,23 +148,22 @@ header {
 }
 /***************HOME********************/
 .home{
-    text-align: center;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding-bottom: 12em;
+    text-align: center;
+    padding: 2em 0;
     opacity: 0;
     transition: 2s;
 }
-.home .figure{
-    margin-bottom: -12em;
-}
-@media (max-width:740px) {
-    .home .figure{
-        margin-bottom: -9em;
-    }
-}
 .home .logo{
-    margin: 4em auto 8em auto;
-    transform: scale(0.75);
+    width:  490px; 
+    height: 490px;
+    scale: 0.75;
+    margin: 3.5vh 0 -4vh 0;
     stroke: var(--crema);
 }
 .home .h1{
@@ -146,11 +172,10 @@ header {
     font-size: 3em;
 }
 .home .h2{
-    font-family: var(--cuerpo);
+    font-family: var(--titulos);
     color: var(--crema);
     font-size: 1.5em;
-    font-weight:100;
-    letter-spacing: 6px;
+    font-weight: 400;
 }
 /*************ABOUT**********************/
 #about {
@@ -336,8 +361,8 @@ header {
 }
 
 @media only screen and (max-width: 900px) {
-    .logo {
-        scale: 0.7;
+    .home .logo {
+        scale: 0.65;
     }
     #about h1 {
         font-size: 6vw;
@@ -349,12 +374,55 @@ header {
         font-size: 6vw;
     }
 }
+
 @media only screen and (max-width: 700px) {
-    .logo {
-        scale: 0.6;
+    header {
+        justify-content: start;
+        padding-left: 1.5%;
+    }
+    #navbar {
+        width: 15%;
+    }
+    .home-link {
+        background-color: transparent;
+        margin: 0;
+    }
+    .header-logo {
+        min-width: 10vw;
+        background-color: transparent;
+    }
+    .home-link::after {
+        visibility: visible;
+    }
+    #navbar ul{
+        background-color: rgba(75, 74, 74, 0.404);
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 15vw;
+        border-radius: 0.2em;
+        padding: 1em 0.5em;
+        visibility: hidden;
+        opacity: 0;
+        transition: 300ms;
+    }
+    .nav-link {
+        background-color: rgba(75, 74, 74, 0.8);
+        border-radius: 3px;
+        box-shadow: inset 0px 0px 2px var(--crema);
+    }
+    .home .logo {
+        scale: 0.5;
+        margin: 0 0 -11vh 0 ;
+    }
+    .home .h1 {
+        font-size: 8vw;
+    }
+    .home .h2 {
+        font-size: 4vw;
     }
     #about h1 {
-        font-size: 7vw;
+        font-size: 1vw;
     }
     #about p {
         font-size: 3vw;
@@ -367,5 +435,22 @@ header {
     }
     #contact h1 {
         font-size: 7vw;
+    }
+}
+@media only screen and (max-width: 500px) {
+    #navbar {
+        height: 8%;
+    }
+    .home .logo{
+        scale: 0.4;
+        margin: -18vw -50vw 0vw -50vw;
+    }
+    .home .h1{
+        font-size: 11vw;
+        margin: -22vh 0 0 0;
+    }
+    .home .h2{
+        font-size: 5.7vw;
+        padding: 0 1em;
     }
 }
