@@ -26,6 +26,54 @@ logoHover.addEventListener("mouseenter", (event) => {
     event.target.style.scale = '1.1';
 });
 
+//?Menu responsive
+const menuButton = document.getElementById("menuButton");
+const menu = document.getElementById("menu");
+const about = document.getElementById("nav-about");
+const projects = document.getElementById("nav-projects");
+const contact = document.getElementById("nav-contact");
+let menuClicked = 0;
+
+function menuVisible() {
+    menu.style.opacity = '1';
+    menu.style.visibility = 'visible';
+    menuClicked = 1;
+}
+function menuHidden() {
+    menu.style.opacity = '0';
+    menu.style.visibility = 'hidden';
+    menuClicked = 0;
+}
+
+function menuResponsive() {
+    menuButton.addEventListener("click", (event) => {
+        menuButton.href = '#none';
+        if (menuClicked === 0) {
+            menuVisible();
+        } else {
+            menuHidden();
+            menuButton.href = '#home'; 
+        }
+    })
+    about.addEventListener("click", (event) => {
+        menuHidden();
+    });
+    projects.addEventListener("click", (event) => {
+        menuHidden();
+    });
+    contact.addEventListener("click", (event) => {
+        menuHidden();
+    });
+};
+
+window.addEventListener('resize', (event) => {
+    if (window.innerWidth <= 700) {
+        menuResponsive();
+    } else {
+        location.reload();
+    }
+});
+
 //? Fondo de estrellas moviéndose
 var numberOfStars = 100;
 var duration = 5000;
