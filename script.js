@@ -1,31 +1,3 @@
-//? Animación del logo
-let animationExecuted = false;
-function animeLogo() {
-    anime({
-        targets: '.logo path',
-        opacity: 1,
-        strokeDashoffset: [anime.setDashoffset, 0],
-        easing: 'easeInQuart',
-        duration: 5000,
-        fill: {
-            value: '#FFECD1',
-            delay: 3300,
-            duration: 800,
-            easing: 'easeInOutSine'
-        },
-    });
-};
-
-const logoHover = document.getElementById("home");
-logoHover.addEventListener("mouseenter", (event) => {
-    if (!animationExecuted && window.innerWidth <= 700) {
-        animeLogo();
-        animationExecuted = true;
-    }
-    event.target.style.opacity = '1';
-    event.target.style.scale = '1.1';
-});
-
 //?Menu responsive
 const menuButton = document.getElementById("menuButton");
 const menu = document.getElementById("menu");
@@ -44,7 +16,6 @@ function menuHidden() {
     menu.style.visibility = 'hidden';
     menuClicked = 0;
 }
-
 function menuResponsive() {
     menuButton.addEventListener("click", (event) => {
         menuButton.href = '#none';
@@ -52,7 +23,7 @@ function menuResponsive() {
             menuVisible();
         } else {
             menuHidden();
-            menuButton.href = '#home'; 
+            menuButton.href = '#home';
         }
     })
     about.addEventListener("click", (event) => {
@@ -66,11 +37,42 @@ function menuResponsive() {
     });
 };
 
-window.addEventListener('resize', (event) => {
-    if (window.innerWidth <= 700) {
-        menuResponsive();
-    }
-});
+//? Animación del logo
+let animationExecuted = false;
+function animeLogo() {
+    anime({
+        targets: '.logo path',
+        opacity: 1,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        easing: 'easeInQuart',
+        duration: 5000,
+        fill: {
+            value: '#A31621',
+            delay: 3300,
+            duration: 800,
+            easing: 'easeInOutSine'
+        },
+    });
+};
+
+const logoHover = document.getElementById("home");
+const logoPath = document.getElementById("path");
+if (window.innerWidth > 700) {
+    logoHover.addEventListener("mouseenter", (event) => {
+        if (!animationExecuted) {
+            animeLogo();
+            animationExecuted = true;
+        }
+        event.target.style.opacity = '1';
+        event.target.style.scale = '1.1';
+    });
+} else {
+    menuResponsive();
+    animeLogo();
+    logoHover.style.opacity = '1';
+    logoHover.style.scale = '1.1';
+}
+
 
 //? Fondo de estrellas moviéndose
 // var numberOfStars = 100;
@@ -93,7 +95,7 @@ window.addEventListener('resize', (event) => {
 // };
 
 // for (var i = 0; i < numberOfStars; i++) {
-//     var rangeBorn = 200;//!Max=200 Min=100 
+//     var rangeBorn = 200;//!Max=200 Min=100
 //     var angle = Math.random() * Math.PI * 2;
 //     var starsRight = [createStar(), rangeBorn, 1];
 //     var starsLeft = [createStar(), -rangeBorn, -1];

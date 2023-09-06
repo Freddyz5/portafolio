@@ -141,7 +141,7 @@ header {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 5vw 0 25vw 0;
+    padding: 2vw 0 25vw 0;
     opacity: 0;
     transition: 2s;
 }
@@ -149,8 +149,8 @@ header {
     width:  490px; 
     height: 490px;
     scale: 0.75;
-    margin: 3.5vw 0 -4vw 0;
-    stroke: var(--crema);
+    margin: 3.5vw 0 -2vw 0;
+    stroke: var(--rojo-oscuro);
 }
 .home .h1{
     font-family: var(--titulos);
