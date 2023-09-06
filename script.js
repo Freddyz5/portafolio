@@ -18,7 +18,7 @@ function animeLogo() {
 
 const logoHover = document.getElementById("home");
 logoHover.addEventListener("mouseenter", (event) => {
-    if (!animationExecuted) {
+    if (!animationExecuted && window.innerWidth <= 700) {
         animeLogo();
         animationExecuted = true;
     }
@@ -69,8 +69,6 @@ function menuResponsive() {
 window.addEventListener('resize', (event) => {
     if (window.innerWidth <= 700) {
         menuResponsive();
-    } else {
-        location.reload();
     }
 });
 
