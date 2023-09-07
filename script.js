@@ -73,6 +73,46 @@ if (window.innerWidth > 700) {
     logoHover.style.scale = '1.1';
 }
 
+//?Translate
+const translateButton = document.getElementById("translateButton");
+const htmlElements = document.getElementsByClassName("translate");
+const text = [];
+const textTranslated = [ 
+    "Sobre mi",
+    "Proyectos",
+    "Contacto",
+    "Acerca de",
+    "Soy un desarrollador Frontend con conocimientos en HTML, CSS y JavaScript. He adquirido experiencia de forma autodidacta en estos lenguajes y me caracterizo por mi curiosidad y pasión por crear y mantener proyectos relacionados con estas tecnologías. Mi objetivo es contribuir y mejorar mis habilidades esenciales en este campo mediante la colaboración en proyectos reales.",
+    "Proyectos",
+    "Pagina de tributo",
+    "Creación en honor a la vida, logros e impacto de una figura notable.",
+    "Página de Aterrizaje de Producto",
+    "Creando una página de aterrizaje cautivadora para mostrar un producto destacado y aumentar las conversiones.",
+    "Máquina de Frases Aleatorias",
+    "Entregando inspiración y sabiduría con cada clic.",
+    "Página de Fans de Dark Souls",
+    "Diseñando una página de aterrizaje inmersiva para un videojuego dinámico, invitando a los jugadores a explorar su reino virtual.",
+    "Trabajemos juntos...",
+];
+let translateClicked = 1;
+
+for (let i = 0; i < htmlElements.length; i++) {
+    text[i] = htmlElements[i].textContent;
+}
+
+translateButton.addEventListener("click", (event) => {
+    if (translateClicked === 1) {
+        translateClicked = 0;
+        for (let j = 0; j < htmlElements.length; j++) {
+            htmlElements[j].innerText = textTranslated[j];
+        }
+    } else {
+        translateClicked = 1;
+        for (let k = 0; k < htmlElements.length; k++) {
+            htmlElements[k].innerText = text[k];
+        }
+    }
+})
 
 //? Fondo de estrellas moviéndose
 // var numberOfStars = 100;
