@@ -1,0 +1,60 @@
+<section id="about">
+    <h1 class="translate">About </h1>
+    <p class="translate">I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects.</p>
+    <div>
+        <a href="https://www.canva.com/design/DAFXTVHlYss/8zsPt95u0GHnPlelx8IVTg/view?website#1" target="_blank">                        
+            <img class="img" src="./img/cv.png" alt="CV" loading="lazy">
+        </a>
+        <a href="mailto:freddyltacuri@gmail.com" target="_blank">
+            <img src="./img/mail.png" alt="Gmail" loading="lazy">
+        </a>
+    </div>
+</section>
+
+<style>
+    #about {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 9vw 2em 11vw 2em;
+    }
+    #about h1 {
+        font-size: max(2em, 5vw);
+        padding: 1em 0 0 0;
+        color: var(--rojo-oscuro);
+        text-shadow: 0 0 4px var(--rojo-oscuro);
+    }
+    #about p {
+        font-size: max(1em, 2vw);
+        padding: 3vw;
+        color: var(--crema);
+    }
+    #about div {
+        display: flex;
+        gap: 5vw;
+        padding: 0.5em;
+        margin-top: -2vw;
+    }
+    #about a {
+        border-radius: 50%;
+        padding: 0.6em;
+        background: radial-gradient(
+            transparent 60%,
+            var(--crema-oscuro) 99%
+        );
+        scale: 0.8;
+        transition: 300ms;
+    }
+    #about img {
+        width: 6vw;
+        min-width: 2.5em;
+    }
+    @media (hover: hover) {    
+        #about a:hover {
+            box-shadow: 0 0 50px 5px var(--crema);
+            transform: scale(1.2);
+            transition: 300ms;
+        }
+    }
+</style>
