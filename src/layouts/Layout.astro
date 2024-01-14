@@ -1,54 +1,85 @@
 ---
-import Header from "../components/Header.astro";
+import '@fontsource-variable/orbitron';
 
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
+		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Freddy Tacuri</title>
+		<title>{title}</title>
 	</head>
-	<body>
+
+	<body id="body">
+		<div id="mouse"></div>
 		<Header />
 		<slot />
+		<Footer />
 	</body>
 </html>
+
+<script>
+	const body = document.getElementById("body");
+	const mouse = document.getElementById("mouse");
+
+	body?.addEventListener("mousemove", (event) => {
+		const followMouse = [event.clientX, event.clientY];
+
+		mouse!.style.left = (followMouse[0] - 25) + "px";
+		mouse!.style.top = (followMouse[1] - 25) + "px";
+	})
+
+</script>
+
 <style is:global>
 	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
+    color-scheme: light dark;
 	}
-	@font-face {
-		font-family: 'triakis';
-		src: url('fonts/TriakisFont-Regular.otf');
-		font-weight: normal;
-		font-style: normal;
-	}
+
 	html {
-		font-family: system-ui, sans-serif;
-		background: #141414;
+		font-family: 'Orbitron Variable', sans-serif;
+		scroll-behavior: smooth;
 	}
+
+	#mouse {
+		background-color: #25E5EB;
+		position: fixed;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		filter: blur(70px);
+		z-index: 10;
+		pointer-events: none;
+	}
+
+	body {
+		background-color: #141414;
+		/* background-image: radial-gradient(circle at center center,transparent 0%,rgba(255,255,255,0) 99%),repeating-linear-gradient(0deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 6px),repeating-linear-gradient(90deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 6px),linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0)); */
+		color: #FFF7ED;
+		cursor: ;
+  }
+
 	* {
 		margin: 0;
 		padding: 0;
 		border: 0;
 		box-sizing: border-box;
 		vertical-align: baseline;
-		scroll-behavior: smooth;
-		font-family: 'Orbitron', sans-serif;
 	}
+
 	img , figure{
 		max-width: 100%;
 		display: flex;
@@ -56,4 +87,10 @@ import Header from "../components/Header.astro";
 		object-position: center center;
 	}
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+	
 </style>
