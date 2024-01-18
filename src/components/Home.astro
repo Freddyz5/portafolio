@@ -7,7 +7,7 @@ import Logo from '../components/Logo.astro'
     <article>
         <h1 class="h1">FREDDY TACURI</h1>
         <h2 class="h2">FRONT-END DEVELOPER</h2>
-        <a class="button" href="#contact"><div>Let's learn together for free</div></a>
+        <a class="button" href="#contact"><p>Let's learn together for free</p></a>
     </article>
 </section>
 
@@ -23,6 +23,7 @@ import Logo from '../components/Logo.astro'
         padding: 5vw 0 25vw 0;
         opacity: 1;
         transition: 2s;
+        /* font-size: 20px; */
     }
     article {
         width: 500px;
@@ -33,11 +34,11 @@ import Logo from '../components/Logo.astro'
     }
     h1{
         width: 500px;
-        font-size: 2em;
-        margin-bottom: -10px;
+        font-size: 2.5em;
+        margin-bottom: -8px;
     }
     h2{
-        font-size: 1em;
+        font-size: 1.25em;
         font-weight: 400;
     }
     .button {
@@ -51,13 +52,14 @@ import Logo from '../components/Logo.astro'
         box-shadow: 5px 20px 40px 0px rgba(192, 21, 34, 0.50);
         transition: .3s;
     }
-    div {
+    p {
         background-color: #090909;
         border-radius: 8px;
         padding: 0.4em 0.8em;
         transition: .3s;
+        font-size: 1.25em;
     }
-    .button:hover div {
+    .button:hover p {
         background-color: #090909BF;
         transition: .3s;
     }
