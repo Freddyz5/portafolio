@@ -1,11 +1,17 @@
+---
+const onClick = () => {
+    
+}
+---
 <section id="about">
     <h1 class="translate">About me</h1>
     <article>
         <span>
             <p class="translate">I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects.</p>
             <div>
-                <a href="mailto:freddyltacuri@gmail.com" target="_blank">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail-forward" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" /><path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" /></svg>
+                <a id="copy" href="#" onclick="return false" >
+                    <svg xmlns="http://www.w3.org/2000/svg""""icon icon-tabler icon-tabler-mail-forward" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" /><path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" /></svg>
+                    <div id="tooltip" class="tooltip">Copy email</div>
                 </a>
                 <a href="https://www.canva.com/design/DAFXTVHlYss/8zsPt95u0GHnPlelx8IVTg/view?website#1" target="_blank">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-cv" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M11 12.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0" /><path d="M13 11l1.5 6l1.5 -6" /></svg>
@@ -18,13 +24,33 @@
     </article>
 </section>
 
+<script>
+    import anime from 'animejs/lib/anime.es.js';
+
+    const copy = document.getElementById('copy')
+    const tooltip = document.getElementById('tooltip') 
+    
+    copy?.addEventListener("click", () => {
+        navigator.clipboard.writeText("freddyltacuri@gmail.com")       
+        tooltip!.innerText = "Copied email";
+        tooltip!.style.translate = "-5px 0px";
+        anime({
+            targets: '.tooltip',
+            translateY: [-7, 0],
+            easing: 'easeOutBounce',
+            duration: 1000,
+        })
+    })
+
+</script>
+
 <style>
     #about {
+        height: 100vh;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 9vw 0 11vw 0;
     }
     h1 {
         color: #A31621;
@@ -51,8 +77,8 @@
     }
     .picture {
         width: 360px;
-        /* box-shadow: 0px 0px 200px 0px rgba(255, 241, 242, 0.25); */
-        /* filter: drop-shadow(0px 0px 100px white); */
+        filter: drop-shadow(0px 0px 100px #fff7ed5e);
+        z-index: 1;
     }
     div {
         display: flex;
@@ -68,7 +94,7 @@
         width: fit-content;
         background: #FFF7ED;
         text-decoration: none;
-        margin-top: 1.5em;
+        margin-top: 2em;
         padding: 1px;
         border-radius: 50%;
         background: #FFF7ED;
@@ -83,6 +109,32 @@
         border-radius: 50%;
         padding: 5px;
         transition: .3s;
+    }
+    .tooltip {
+        position: absolute;
+        top: 175%;
+        left: -25%;
+        padding: .2em .5em;
+        z-index: 1;
+        pointer-events: none;
+        user-select: none;        
+        text-decoration: none;
+        text-wrap: nowrap;  
+        font-size: 0.6em;
+        font-weight: 700;
+        color: #141414;
+        background-color: #fff7ed6e;
+        border-radius: 8px;
+        border: 1px solid #FFF7ED;
+        box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.50);        
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    :has(> .tooltip) {
+        position: relative;
+    }
+    :has(> .tooltip):hover .tooltip{
+        opacity: 1;
     }
     @media (hover: hover) {    
         #about a:hover {
