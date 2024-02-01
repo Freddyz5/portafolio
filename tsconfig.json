@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "strict": true, 
+    "allowJs": true,
+  },
+  "typeRoots": [
+      "../node_modules/@types/"
+  ],
+  "noImplicitAny": false,
+  "include": ["**/*.ts", "test"]
+}

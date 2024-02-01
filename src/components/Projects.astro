@@ -1,0 +1,196 @@
+---
+import Html5 from "./icons/Html5.astro";
+import Css3 from "./icons/Css3.astro";
+import JavaScript from "./icons/JavaScript.astro";
+import React from "./icons/React.astro";
+import AstroIcon from "./icons/AstroIcon.astro";
+import Next from "./icons/Next.astro";
+
+const TAGS = {
+    HTML: {
+        name: "HTML5",
+        icon: Html5,
+    },
+    CSS: {
+        name: "CSS3",
+        icon: Css3,
+    },
+    JAVASCRIPT: {
+        name: "JavaScript",
+        icon: JavaScript,
+    },
+    REACT: {
+        name: "React",
+        icon: React,
+    },
+    ASTRO: {
+        name: "Astro",
+        icon: AstroIcon,
+    },
+    NEXTJS: {
+        name: "Next.js",
+        icon: Next,
+    },
+}
+const PROJECTS = [
+    {
+        title: "Product Landing page",
+        image: "../../public/productLandingPage.jpg",
+        body: "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
+        link: "https://freddyz5.github.io/xboxControl/",
+        tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
+    },
+    {
+        title: "Dark Souls Fan Page",
+        image: "../../darksouls.jpg",
+        body: "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
+        link: "https://freddyz5.github.io/darkSouls/",
+        tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
+    },
+    {
+        title: "Random Quote Machine",
+        image: "../../public/randomQuoteMachine.jpg",
+        body: "Delivering inspiration and wisdom with each click.",
+        link: "https://codepen.io/Freddyz5/full/XWxgqVZ",
+        tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
+    },
+]
+---
+<>
+<section id="projects">
+    <h1>Projects</h1>
+    <article>
+        {
+            PROJECTS.map(({title, image, body, link, tags})=> (
+                <a class="card" href={link} target="_blank">
+                    <img src={image} alt={title}/>
+                    <span>
+                        <h2>{title}</h2>
+                        <p>{body}</p>
+                        <div>
+                            {tags.map(tag => (
+                                <li><tag.icon /></li>
+                            ))}
+                        </div>
+                    </span>
+                </a>
+            ))
+        }
+    </article>
+</section>
+</>
+
+<style>
+    #projects {
+        display: flex;
+        position: relative;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 8vw 0;
+        /*Modificar 10px si se desea cambiar el espacio */
+		background-image: radial-gradient(circle at center center,transparent 0%,rgba(255,255,255,0) 99%),repeating-linear-gradient(0deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(90deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 10px),linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0));
+    }
+    #projects::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to top, transparent 85%, #141414 100%), linear-gradient(to bottom, transparent 85%, #141414 100%);
+        z-index: 0; 
+    }
+    h1 {
+        font-size: max(2em, 5vw);
+        margin: 6vw 0 1em 0;
+        padding: 8px 15px;
+        color: #A31621;
+        text-shadow: 0px 0px 4px #A31621;
+        font-weight: 700;
+        border-radius: 12px;
+        background-color: #141414;
+        border: 1px solid #FFF7ED;
+    }
+    article {
+        width: 80vw;
+        display: grid;
+        place-items: center;
+        grid-template-columns: repeat( auto-fit, minmax( min(360px, 100%), 1fr));
+        gap: 50px;
+    }
+    .card {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+        align-items: center;
+        gap: 3px;
+		text-decoration: none;
+		color: #FFF7ED;
+		padding: 0.9em 0.8em;
+		border-radius: 15px;
+		border: 1px solid #FFF7ED;
+		background: #090909;
+		width: 360px;
+		height: 450px;
+		/* width: 300px; el tamaño de la card un poco mas pequeña
+		height: 390px; */
+		filter: grayscale(50%);
+		transition: .3s;
+	}
+	img {
+		width: 330px;
+		height: 250px;	
+		border-radius: 10px;
+	}
+    span{
+        width: 330px;
+		height: 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: ;
+        justify-content: flex-start;
+    }
+	h2 {
+		padding: 0.5em 0;
+        text-align: center;
+		font-size: 25px;
+		font-weight: 800;
+		line-height: 32px; /* 128% */
+		letter-spacing: -0.8px;
+	}
+	p {
+        height: 200px;
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 21px; /* 140% */
+		letter-spacing: -0.14px;
+	}
+	.card:hover {
+		border: 1px solid #40A8AF;
+		box-shadow: 0px 0px 20px 0px rgba(24, 65, 67, 0.75);
+		filter: grayscale(0);
+		scale: 1.01;
+		transition: .3s;
+	}
+	div {
+		margin: 8px 0;
+		display: flex;
+        align-items: center;
+		gap: 10px;
+	}
+	li {
+		display: flex;
+        align-items: center;
+        font-weight: 500;
+        padding: 0.2em 0.4em;
+        color: #141414;
+        background-color: #fff7ed6e;
+        border-radius: 8px;
+        border: 1px solid #FFF7ED;
+	}
+	svg {
+        width: 20px;
+        height: 20px;
+    }
+</style>

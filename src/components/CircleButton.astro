@@ -1,0 +1,101 @@
+---
+const { 
+  href,
+  isMail = false,
+} = Astro.props
+---
+<a 
+  href={href} 
+  class={isMail ? "copy" : ""}
+  target={isMail ? "" : "_blank"} 
+  onclick={isMail ? "return false" : ""}
+>
+  <span>
+    <slot />
+  </span>
+  {isMail 
+    ? <div class="tooltip">Copy email</div>
+    : <></>}
+</a>
+
+<script>
+  import anime from 'animejs/lib/anime.es.js';
+
+  const copy = document.querySelectorAll('.copy')
+  const tooltip = document.querySelectorAll('.tooltip') 
+
+  copy.forEach(copy => {
+    copy?.addEventListener("click", () => {
+      console.log("click")
+        navigator.clipboard.writeText("freddylyacuri@gmail.com")
+        tooltip.forEach(tooltip => {tooltip.innerHTML = "Email copied"})
+        anime({
+            targets: '.tooltip',
+            rotate: [-15, 20, 0],
+            translateY: [-20, 0],
+            easing: 'easeOutBounce',
+            duration: 800,
+        })
+    })
+  });
+  
+
+</script>
+
+<style>
+  a {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    background: #FFF7ED;
+    text-decoration: none;
+    margin-top: 2em;
+    padding: 1px;
+    border-radius: 50%;
+    background: #FFF7ED;
+    box-shadow: 0px 0px 20px 0px rgba(255, 247, 237, 0.30);
+    transition: .3s;
+  }
+  span {
+    color: #FFF7ED;
+    width: fit-content;
+    height: fit-content;
+    background-color: #141414;
+    border-radius: 50%;
+    padding: 5px;
+    transition: .3s;
+  }
+  @media (hover: hover) {    
+    a:hover {
+        transform: scale(1.1);
+        transition: 300ms;
+    }
+    a:hover span {
+        color: #141414;
+        background-color: #1414146c;
+        transition: 300ms;
+    }
+  }
+  .tooltip {
+    position: fixed;
+    top: 110%;
+    padding: .2em .5em;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;        
+    text-decoration: none;
+    text-wrap: nowrap;  
+    font-size: 10px;
+    font-weight: 700;
+    color: #141414;
+    background-color: #fff7ed6e;
+    border-radius: 8px;
+    border: 1px solid #FFF7ED;
+    box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.50);        
+    opacity: 0;
+    transition: 0.3s;
+  }
+  :has(> .tooltip):hover .tooltip{
+    opacity: 1;
+  }
+</style>

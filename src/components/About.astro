@@ -1,0 +1,72 @@
+---
+import CircleButton from "./CircleButton.astro";
+---
+<section id="about">
+    <h1 class="translate">About me</h1>
+    <article>
+        <span>
+            <p class="translate">I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects.</p>
+            <div>
+                <CircleButton href="#" isMail >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" /><path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" /></svg>
+                </CircleButton>
+                <CircleButton href="https://www.canva.com/design/DAFXTVHlYss/8zsPt95u0GHnPlelx8IVTg/view?website#1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M11 12.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0" /><path d="M13 11l1.5 6l1.5 -6" /></svg>
+                </CircleButton>
+            </div>
+        </span>
+        <figure>
+            <img class="picture" src="../../public/freddytacuri.png" alt="freddytacuri" loading="lazy"/>
+        </figure>
+    </article>
+</section>
+
+<style>
+    #about {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    h1 {
+        color: #A31621;
+        text-shadow: 0px 0px 4px #A31621;
+        font-size: max(2em, 5vw);
+        font-weight: 700;
+        padding: 0 0 1em 0;
+    }
+    article {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+    }
+    span {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: 500px;
+        font-size: 18px;
+    }
+    .picture {
+        width: 360px;
+        filter: drop-shadow(0px 0px 100px #fff7ed5e);
+        z-index: 1;
+    }
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2em;
+        padding: 0.5em;
+        margin-top: -2vw;
+    }
+    svg {
+        width: 50px;
+        height: 50px;
+    }
+</style>

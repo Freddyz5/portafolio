@@ -1,0 +1,149 @@
+---
+import '@fontsource-variable/orbitron';
+
+import Footer from "../components/Footer.astro";
+import NavBar from '../components/NavBar.astro';
+
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+
+	<body id="body">
+		<div id="mouse"></div>
+		<NavBar client />
+		<slot />
+		<Footer />
+	</body>
+</html>
+
+<script>
+  // import anime from 'animejs/lib/anime.es.js';
+
+	const body = document.getElementById("body");
+	const mouse = document.getElementById("mouse");
+
+	body?.addEventListener("mousemove", (event) => {
+		const followMouse = [event.clientX, event.clientY];
+
+		mouse!.style.left = (followMouse[0] - 25) + "px";
+		mouse!.style.top = (followMouse[1] - 25) + "px";
+	})
+	
+	// stars
+	// var numberOfStars = 100;
+	// var duration = 5000;
+	// var midScreenX = window.innerWidth / 2;
+	// var midScreenY = window.innerHeight / 2;
+	// var fragment = document.createDocumentFragment();
+	// var radius = 0;
+
+	// function createStar() {
+	// 		radius = (Math.random() * (5000 - 100 + 1) + 100);
+	// 		var star = document.createElement('div');
+	// 		star.classList.add('star');
+	// 		star.style.borderRadius = '5px';
+	// 		star.style.backgroundColor = '#FFECD1';
+	// 		star.style.boxShadow = '0 0 5px 5px #FFECD1';
+	// 		star.style.width = '5px';
+	// 		star.style.height = '5px';
+	// 		return star;
+	// };
+
+	// for (var i = 0; i < numberOfStars; i++) {
+	// 		var rangeBorn = 200;//!Max=200 Min=100
+	// 		var angle = Math.random() * Math.PI * 2;
+	// 		var starsRight = [createStar(), rangeBorn, 1];
+	// 		var starsLeft = [createStar(), -rangeBorn, -1];
+	// 		function animation(target, rangeBorn, direction) {
+	// 				anime({
+	// 						targets: target,
+	// 						opacity: [1, 0],
+	// 						scale: [0, 5],
+	// 						left: [(midScreenX+anime.random(0, rangeBorn)) + 'px', (Math.abs(Math.cos(angle))*direction) * radius + midScreenX + 'px'],
+	// 						top: [(midScreenY+anime.random(-100, 100)) + 'px', Math.sin(angle) * radius + midScreenY + 'px'],
+	// 						delay: (duration / numberOfStars) * i,
+	// 						duration: duration,
+	// 						easing: 'easeInExpo',
+	// 						loop: true
+	// 				});
+	// 				fragment.appendChild(target);
+	// 		};
+	// 		animation(starsRight[0], starsRight[1], starsRight[2]);
+	// 		animation(starsLeft[0], starsLeft[1], starsLeft[2]);
+	// };
+	// document.body.appendChild(fragment);
+
+</script>
+
+<style is:global>
+	:root {
+    color-scheme: light dark;
+		color: #FFF7ED;
+	}
+
+	html {
+		font-family: 'Orbitron Variable', sans-serif;
+		scroll-behavior: smooth;
+	}
+
+	/* .star {
+    z-index: -3;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+	} */
+
+	#mouse {
+		background-color: #25E5EB;
+		position: fixed;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		filter: blur(70px);
+		z-index: -1;
+		pointer-events: none;
+	}
+
+	body {
+		background-color: #141414;
+		/* background-image: radial-gradient(circle at center center,transparent 0%,rgba(255,255,255,0) 99%),repeating-linear-gradient(0deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 6px),repeating-linear-gradient(90deg,rgba(205,205,205,.2) 0px,rgba(205,205,205,.2) 1px,transparent 1px,transparent 6px),linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0)); */
+		color: #FFF7ED;
+		cursor: ;
+  }
+
+	* {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		box-sizing: border-box;
+		vertical-align: baseline;
+	}
+
+	img , figure{
+		display: flex;
+		object-fit: cover;
+		object-position: center center;
+	}
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+	
+</style>

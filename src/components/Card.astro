@@ -1,0 +1,120 @@
+---
+import HTML5 from "./icons/Html5.astro";
+
+interface Props {
+	title: string;
+	body: string;
+	href: string;
+	src: string;
+	tags: string[];
+}
+
+const TAGS = [
+    {
+			name: "HTML5",
+			icon: HTML5,
+    },
+    {
+			name: "CSS3",
+			icon: "",
+    },
+    {
+			name: "JavaScript",
+			icon: "",
+    },
+    {
+			name: "React",
+			icon: "",
+    },
+    {
+			name: "Astro",
+			icon: "",
+    },
+    {
+			name: "Next.js",
+			icon: "",
+    },
+]
+
+const { href, src, title, body, tags } = Astro.props;
+---
+<a class="card" href={href}>
+	<img src={src}/>
+	<h2>{title}</h2>
+	<p>{body}</p>
+	<div>
+		{tags.map(tag => (
+			// <li>{TAGS.find(tags => {tags.name.toLowerCase === tag.toLowerCase})} {tag}</li>
+			<li>{TAGS.map(tags => tags.name)} {tag}</li>
+		))}
+	</div>
+</a>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		justify-content: start;
+		align-items: flex-start;
+		text-decoration: none;
+		color: #FFF7ED;
+		padding: 1.2em 0.8em;
+		border-radius: 15px;
+		border: 1px solid #FFF7ED;
+		background: #090909;
+		width: 360px;
+		height: 485px;
+		/* width: 300px; el tamaño de la card un poco mas pequeña
+		height: 390px; */
+		filter: grayscale(50%);
+		transition: .3s;
+	}
+	img {
+		align-self: center;
+		width: 320px;
+		height: 250px;	
+		border-radius: 10px;
+	}
+	h2 {
+		padding: 0.8em 0;
+		font-size: 25px;
+		font-weight: 800;
+		line-height: 32px; /* 128% */
+		letter-spacing: -0.8px;
+	}
+	p {
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 21px; /* 140% */
+		letter-spacing: -0.14px;
+	}
+	.card:hover {
+		border: 1px solid #40A8AF;
+		box-shadow: 0px 0px 20px 0px rgba(24, 65, 67, 0.75);
+		filter: grayscale(0);
+		scale: 1.01;
+		transition: .3s;
+	}
+	div {
+		margin-top: 5px;
+		display: flex;
+    align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
+	li {
+		display: flex;
+    align-items: center;
+    font-weight: 500;
+    padding: 0.2em 0.4em;
+    color: #141414;
+    background-color: #fff7ed6e;
+    border-radius: 8px;
+    border: 1px solid #FFF7ED;
+    box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.50);        
+	}
+	svg {
+        width: 19px;
+        height: 19px;
+    }
+</style>
