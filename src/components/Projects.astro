@@ -63,7 +63,7 @@ const PROJECTS = [
         {
             PROJECTS.map(({title, image, body, link, tags})=> (
                 <a class="card" href={link} target="_blank">
-                    <img src={image}/>
+                    <img src={image} alt={title}/>
                     <span>
                         <h2>{title}</h2>
                         <p>{body}</p>
