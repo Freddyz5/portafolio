@@ -1,14 +1,10 @@
 ---
-import Tooltip from "./Tooltip.astro";
 import CircleButton from "./CircleButton.astro";
 ---
 
 <section id="contact">
     <h1 class="translate">Let's work together...</h1>
     <div class="grid-contact">
-        <!-- <a href="mailto:freddyltacuri@gmail.com" target="_blank">
-            <Tooltip axisX="175%" axisY="-25%" size="0.6em" />
-        </a> -->
         <CircleButton href="https://www.instagram.com/freddy_tacuri_/" >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M16.5 7.5l0 .01" /></svg>
         </CircleButton>
@@ -45,19 +41,6 @@ import CircleButton from "./CircleButton.astro";
         align-items: center;
         text-align: center;
         justify-content: center;
-    }
-    a {
-        display: flex;
-        justify-content: center;
-        width: fit-content;
-        background: #FFF7ED;
-        text-decoration: none;
-        margin-top: 1.5em;
-        padding: 1px;
-        border-radius: 70%;
-        background: #FFF7ED;
-        box-shadow: 0px 0px 20px 0px rgba(255, 247, 237, 0.30);
-        transition: .3s;
     }
     svg {
         width: 90px;
