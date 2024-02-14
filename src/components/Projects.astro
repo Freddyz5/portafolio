@@ -35,38 +35,38 @@ const TAGS = {
 const PROJECTS = [
     {
         title: "Product Landing page",
-        image: "../../public/productLandingPage.jpg",
+        image: "/portafolio/../../public/productLandingPage.jpg",
         body: "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
         link: "https://freddyz5.github.io/xboxControl/",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
     {
         title: "Dark Souls Fan Page",
-        image: "../../darksouls.jpg",
+        image: "/portafolio/../../public/darksouls.jpg",
         body: "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
         link: "https://freddyz5.github.io/darkSouls/",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
     {
         title: "Random Quote Machine",
-        image: "../../public/randomQuoteMachine.jpg",
+        image: "/portafolio/../../public/randomQuoteMachine.jpg",
         body: "Delivering inspiration and wisdom with each click.",
         link: "https://codepen.io/Freddyz5/full/XWxgqVZ",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
 ]
 ---
-<>
+
 <section id="projects">
-    <h1>Projects</h1>
+    <h1 class="" data-section="projects" data-value="title" >Projects</h1>
     <article>
         {
-            PROJECTS.map(({title, image, body, link, tags})=> (
+            PROJECTS.map(({title, image, body, link, tags}, index)=> (
                 <a class="card" href={link} target="_blank">
                     <img src={image} alt={title}/>
                     <span>
-                        <h2>{title}</h2>
-                        <p>{body}</p>
+                        <h2 data-section="projects" data-value={`cardTitle${index + 1}`}>{title}</h2>
+                        <p data-section="projects" data-value={`cardBody${index + 1}`}>{body}</p>
                         <div>
                             {tags.map(tag => (
                                 <li><tag.icon /></li>
@@ -78,7 +78,6 @@ const PROJECTS = [
         }
     </article>
 </section>
-</>
 
 <style>
     #projects {
@@ -145,7 +144,9 @@ const PROJECTS = [
 	}
     span{
         width: 330px;
-		height: 200px;
+        min-height: 200px; /* Mínima altura */
+        max-height: 250px; /* Máxima altura */
+        overflow: auto; 
         display: flex;
         flex-direction: column;
         align-items: ;

@@ -1,0 +1,30 @@
+{
+  "nav-bar":{
+    "about": "About",
+    "projects": "Projects",
+    "contact": "Contact"
+  },
+  "home": {
+    "subTitle": "FRONT-END DEVELOPER",
+    "button": "Contact me!"
+  },
+  "about": {
+    "title": "About",
+    "body": "I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects."
+  },
+  "projects":{
+    "title": "Projects",
+    "cardTitle1": "Product Landing Page",
+    "cardBody1": "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
+    "cardTitle2": "Dark Souls Fan Page",
+    "cardBody2": "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
+    "cardTitle3": "Random Quote Machine",
+    "cardBody3": "Delivering inspiration and wisdom with each click."
+  },
+  "contact":{
+    "title": "Let's work together..."
+  },
+  "footer":{
+    "title": "With help of and inspired by "
+  }
+}
