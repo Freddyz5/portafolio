@@ -10,7 +10,7 @@
   let translateClicked = userIdiom === "en" ? 1 : 0;
 
   const changeLenguage = async lenguage => {
-    const requestJson = await fetch(`../portafolio/src/languages/${lenguage}.json`)
+    const requestJson = await fetch(`./portafolio/src/languages/${lenguage}.json`)
     const texts = await requestJson.json()
 
     for (const textToChange of textsToChange){
