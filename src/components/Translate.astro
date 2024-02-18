@@ -3,6 +3,69 @@
 </a>
 
 <script>
+  const translations = {
+    "en": {
+      "nav-bar":{
+        "about": "About",
+        "projects": "Projects",
+        "contact": "Contact"
+      },
+      "home": {
+        "subTitle": "FRONT-END DEVELOPER",
+        "button": "Contact me!"
+      },
+      "about": {
+        "title": "About",
+        "body": "I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects."
+      },
+      "projects":{
+        "title": "Projects",
+        "cardTitle1": "Product Landing Page",
+        "cardBody1": "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
+        "cardTitle2": "Dark Souls Fan Page",
+        "cardBody2": "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
+        "cardTitle3": "Random Quote Machine",
+        "cardBody3": "Delivering inspiration and wisdom with each click."
+      },
+      "contact":{
+        "title": "Let's work together..."
+      },
+      "footer":{
+        "title": "With help of and inspired by "
+      }
+    },
+    "es": {
+      "nav-bar":{
+        "about": "Acerca de mi",
+        "projects": "Proyectos",
+        "contact": "Contacto"
+      },
+      "home": {
+        "subTitle": "DESARROLLADOR  FRONT-END",
+        "button": "Contáctame!"
+      },
+      "about": {
+        "title": "Acerca de mi",
+        "body": "Soy un desarrollador Frontend con conocimientos en HTML, CSS y JavaScript. Tengo experiencia autodidacta en estos lenguajes y me caracterizo por mi curiosidad y pasión por crear y mantener proyectos relacionados con estas tecnologías. Mi objetivo es contribuir y mejorar habilidades esenciales en este campo mediante la colaboración en proyectos reales."
+      },
+      "projects": {
+        "title": "Proyectos",
+        "cardTitle1": "Landing page de Producto",
+        "cardBody1": "Creación de una landing page cautivadora para mostrar un producto destacado y aumentar las interacciones.",
+        "cardTitle2": "Fan page de Dark Souls",
+        "cardBody2": "Diseño de una landing page inmersiva para un videojuego del cual soy mut fan, atrayendo a los jugadores a explorar su mundo virtual.",
+        "cardTitle3": "Máquina de Frases Aleatorias",
+        "cardBody3": "Entregando inspiración y sabiduría con cada clic."
+        },
+      "contact":{
+        "title": "Trabajemos juntos..."
+      },
+      "footer":{
+        "title": "Con la ayuda de, e inspirado por "
+      }
+    }
+  }
+
   const userIdiom = navigator.language.split('-')[0];
 
   const translateButton = document.getElementById("translate")
@@ -10,8 +73,10 @@
   let translateClicked = userIdiom === "en" ? 1 : 0;
 
   const changeLenguage = async lenguage => {
-    const requestJson = await fetch(`../src/languages/${lenguage}.json`)
-    const texts = await requestJson.json()
+    // const requestJson = await fetch(`../src/languages/${lenguage}.json`)
+    // const texts = await requestJson.json()
+
+    const texts = translations[lenguage];
 
     for (const textToChange of textsToChange){
       const textToChangeElement = textToChange as HTMLElement;
