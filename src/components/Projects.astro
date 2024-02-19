@@ -38,6 +38,7 @@ const PROJECTS = [
         image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F9d08e381-5e86-4f2c-8eb1-40957f60ec39%2FproductLandingPage.jpg?table=block&id=49753469-462b-478b-b16a-95c5e759ada9&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
         body: "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
         link: "https://freddyz5.github.io/xboxControl/",
+        code: "https://github.com/Freddyz5/xboxControl",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
     {
@@ -45,6 +46,7 @@ const PROJECTS = [
         image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F6b5fbe08-10d8-4429-bdea-5416094128eb%2Fdarksouls.jpg?table=block&id=3c34d788-c08e-4711-8f57-43ee9c37d518&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
         body: "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
         link: "https://freddyz5.github.io/darkSouls/",
+        code: "https://github.com/Freddyz5/darkSouls",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
     {
@@ -52,6 +54,7 @@ const PROJECTS = [
         image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F5c78a960-708b-4235-b11f-45ead4cc6601%2FrandomQuoteMachine.jpg?table=block&id=e564bca7-20e0-4421-862a-7197a8d0d668&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
         body: "Delivering inspiration and wisdom with each click.",
         link: "https://codepen.io/Freddyz5/full/XWxgqVZ",
+        code: "",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
 ]
@@ -59,24 +62,32 @@ const PROJECTS = [
 
 <section id="projects">
     <h1 class="" data-section="projects" data-value="title" >Projects</h1>
-    <article>
+    <div class="container-cards">
         {
-            PROJECTS.map(({title, image, body, link, tags}, index)=> (
-                <a class="card" href={link} target="_blank">
-                    <img src={image} alt={title}/>
-                    <span>
+            PROJECTS.map(({title, image, body, link, code, tags}, index)=> (
+                <article class="card" >
+                    <span class="card-img">
+                        <figure>
+                            <img src={image} alt={title}/>
+                        </figure>
+                    </span>
+                    <span class="card-content">
                         <h2 data-section="projects" data-value={`cardTitle${index + 1}`}>{title}</h2>
-                        <p data-section="projects" data-value={`cardBody${index + 1}`}>{body}</p>
-                        <div>
+                        <div class="tags">
                             {tags.map(tag => (
                                 <li><tag.icon /></li>
                             ))}
                         </div>
+                        <p class="body" data-section="projects" data-value={`cardBody${index + 1}`}>{body}</p>
+                        <div class="buttons">
+                            <a class="button-bw" href={code} target="_blank"><p class="button-text-bw">Code</p></a>
+                            <a class="button-color" href={link} target="_blank"><p class="button-text-color">Preview</p></a>
+                        </div>
                     </span>
-                </a>
+                </article>
             ))
         }
-    </article>
+    </div>
 </section>
 
 <style>
@@ -101,86 +112,72 @@ const PROJECTS = [
         z-index: 0; 
     }
     h1 {
-        font-size: max(2em, 4vw);
+        font-size: min(7vw, 3em);
         margin: 6vw 0 1em 0;
         padding: 8px 15px;
         color: #A31621;
         text-shadow: 0px 0px 4px #A31621;
         font-weight: 700;
         border-radius: 12px;
-        background-color: #141414;
-        border: 1px solid #FFF7ED;
+        backdrop-filter: blur(2px);
+		box-shadow: 0px 0px 20px 0px #fff7ed8e;
     }
-    article {
+    .container-cards {
         width: 80vw;
-        display: grid;
-        place-items: center;
-        grid-template-columns: repeat( auto-fit, minmax( min(360px, 100%), 1fr));
-        gap: 50px;
+        max-width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 4em;
     }
     .card {
 		display: flex;
-		flex-direction: column;
-		justify-content: center;
         align-items: center;
-        gap: 3px;
-		text-decoration: none;
+        gap: 1.5em;
 		color: #FFF7ED;
-		padding: 0.9em 0.8em;
+		padding: 1em; 
 		border-radius: 15px;
-		border: 1px solid #FFF7ED;
-		background: #090909;
-		width: 360px;
-		height: 450px;
-		/* width: 300px; el tamaño de la card un poco mas pequeña
-		height: 390px; */
+		/* border: 1px solid #FFF7ED; */
+		box-shadow: 0px 0px 20px 0px #fff7ed8e;
+		/* background: #090909; */
+        backdrop-filter: blur(2px);
 		filter: grayscale(50%);
 		transition: .3s;
 	}
-	img {
-		width: 330px;
-		height: 250px;	
+    .card-img{
+        width: 100%;
+        height: 250px;
+        position: relative;
+    }
+	figure {
+        width: 100%;
+        height: 250px;
+        position: absolute;
+        bottom: 0%;
+        transition: bottom .3s;
+    }
+    img {
+		width: 100%;
 		border-radius: 10px;
 	}
-    span{
-        width: 330px;
-        min-height: 200px; /* Mínima altura */
-        max-height: 250px; /* Máxima altura */
-        overflow: auto; 
+    .card-content{
+        width: 100%;
+        height: 250px;
         display: flex;
         flex-direction: column;
-        align-items: ;
-        justify-content: flex-start;
+        gap: 1em;
     }
 	h2 {
-		padding: 0.5em 0;
-        text-align: center;
-		font-size: 25px;
+		font-size: 2em;
 		font-weight: 800;
 		line-height: 32px; /* 128% */
 		letter-spacing: -0.8px;
 	}
-	p {
-        height: 200px;
-		font-size: 15px;
-		font-weight: 400;
-		line-height: 21px; /* 140% */
-		letter-spacing: -0.14px;
-	}
-	.card:hover {
-		border: 1px solid #40A8AF;
-		box-shadow: 0px 0px 20px 0px rgba(24, 65, 67, 0.75);
-		filter: grayscale(0);
-		scale: 1.01;
-		transition: .3s;
-	}
-	div {
-		margin: 8px 0;
+    .tags {
 		display: flex;
         align-items: center;
 		gap: 10px;
-	}
-	li {
+	}	
+    li {
 		display: flex;
         align-items: center;
         font-weight: 500;
@@ -190,8 +187,68 @@ const PROJECTS = [
         border-radius: 8px;
         border: 1px solid #FFF7ED;
 	}
+	.body {
+        height: 200px;
+		font-size: 15px;
+		font-weight: 400;
+		line-height: 21px; /* 140% */
+		letter-spacing: -0.14px;
+	}
+    .buttons{
+        display: flex;
+        gap: 1em;
+    }
+    .button-color, .button-bw {
+        width: fit-content;
+        color: #FFF7ED;
+        text-decoration: none;
+        padding: 1px;
+        border-radius: 8px;
+        transition: .3s;
+    }
+    .button-color{
+        background: linear-gradient(90deg, #25E5EB 0%, #C01522 100%);
+    }
+    .button-bw{
+        background: #FFF7ED;
+    }
+    .button-text-color, .button-text-bw {
+        background-color: #090909;
+        border-radius: 8px;
+        padding: 0.4em 0.8em;
+        transition: .3s;
+        font-size: 1.25em;
+    }
+    .button-color:hover .button-text-color, .button-bw:hover .button-text-bw {
+        background-color: #090909BF;
+        transition: .3s;
+    }
+    .button-bw:hover .button-text-bw{
+        color: #141414;
+        background-color: #1414146c;
+    }
+    .button-color:hover, .button-bw:hover {
+        scale: 1.05;
+        transition: .3s;
+    }
 	svg {
         width: 20px;
         height: 20px;
+    }
+    .card:hover{
+		/* border: 1px solid #40A8AF; */
+		box-shadow: 0px 0px 20px 0px rgba(24, 65, 67);
+		filter: grayscale(0);
+		scale: 1.1;
+		transition: .3s;
+	}
+    .card:hover figure{
+        bottom: 15%;
+        transition: .3s;
+    }
+    @media only screen and (max-width: 760px) {
+        .card{
+            background-color: aqua;
+        }
     }
 </style>
