@@ -14,12 +14,14 @@
   },
   "projects": {
     "title": "Proyectos",
-    "cardTitle1": "Landing page de Producto",
-    "cardBody1": "Creación de una landing page cautivadora para mostrar un producto destacado y aumentar las interacciones.",
-    "cardTitle2": "Fan page de Dark Souls",
-    "cardBody2": "Diseño de una landing page inmersiva para un videojuego del cual soy mut fan, atrayendo a los jugadores a explorar su mundo virtual.",
-    "cardTitle3": "Máquina de Frases Aleatorias",
-    "cardBody3": "Entregando inspiración y sabiduría con cada clic."
+    "cardTitle1": "Plataforma digital para farmacéuticos",
+    "cardBody1": "Estoy colaborando en una plataforma digital creada para la gestión diaria de las farmacias.",
+    "cardTitle2": "Landing page de Producto",
+    "cardBody2": "Creación de una landing page cautivadora para mostrar un producto destacado y aumentar las interacciones.",
+    "cardTitle3": "Fan page de Dark Souls",
+    "cardBody3": "Diseño de una landing page inmersiva para un videojuego del cual soy mut fan, atrayendo a los jugadores a explorar su mundo virtual.",
+    "cardTitle4": "Máquina de Frases Aleatorias",
+    "cardBody4": "Entregando inspiración y sabiduría con cada clic."
     },
   "contact":{
     "title": "Trabajemos juntos..."

@@ -34,6 +34,14 @@ const TAGS = {
 }
 const PROJECTS = [
     {
+        title: "Digital platform for pharmacists",
+        image: "https://mediaforvalue.com/wp-content/uploads/2023/05/funcionalidades.png",
+        body: "I am collaborating on a digital platform created for the daily management of pharmacies.",
+        link: "https://mediaforvalue.com",
+        // code: "",
+        tags: [TAGS.REACT, TAGS.NEXTJS]
+    },
+    {
         title: "Product Landing page",
         image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F9d08e381-5e86-4f2c-8eb1-40957f60ec39%2FproductLandingPage.jpg?table=block&id=49753469-462b-478b-b16a-95c5e759ada9&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
         body: "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
@@ -80,7 +88,7 @@ const PROJECTS = [
                         </div>
                         <p class="body" data-section="projects" data-value={`cardBody${index + 1}`}>{body}</p>
                         <div class="buttons">
-                            <a class="button-bw" href={code} target="_blank"><p class="button-text-bw">Code</p></a>
+                            { code ? <a class="button-bw" href={code} target="_blank"><p class="button-text-bw">Code</p></a> : <></>}
                             <a class="button-color" href={link} target="_blank"><p class="button-text-color">Preview</p></a>
                         </div>
                     </span>
