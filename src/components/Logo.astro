@@ -56,11 +56,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 500px;
+        width: 60vw;
+        max-width: 500px;
     }
     .logo{
-        width:  350px; 
-        height: 350px;
+        width: 50vw;
+        max-width:  350px; 
+        height: 50vw;
+        max-height: 350px;
         margin: 3.5vw 0 -2vw 3vw;
         stroke: #c01523; 
         color: transparent; 
@@ -73,13 +76,20 @@
         top: 35%;
         left: 25%;
         z-index: -2;
-        width: 200px;
-        height: 200px;
+        width: 50vw;
+        max-width: 200px;
+        height: 50vw;
+        max-height: 200px;
         background-color: #25e5eb;
         border-top: 35px outset #0a3d3f;
         border-left: 35px outset #0a3d3f;
         border-right: 35px inset #0a3d3f;
         border-bottom: 35px inset #0a3d3f;
         filter: blur(150px) drop-shadow(0px 0px 50px #0a3d3f);
+    }
+    @media (width <= 900px){
+      .shadow {
+        top: 15vw;
+        left: 15vw;
     }
 </style>
