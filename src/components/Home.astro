@@ -20,24 +20,21 @@ import Logo from '../components/Logo.astro'
         justify-content: center;
         text-align: center;
         gap: 1.5em;
-        padding: 9vw 0 25vw 0;
-        opacity: 1;
-        transition: 2s;
+        padding: 10vw 0 20vw 0;
     }
     article {
-        width: 500px;
+        width: 80vw;
+        max-width: 500px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin-top: 100px;
     }
     h1{
-        width: 500px;
-        font-size: 2.5em;
-        margin-bottom: -8px;
+        font-size: clamp(1.5em, 8vw, 2.5em);
+        margin-bottom: -5px;
     }
     h2{
-        font-size: 1.25em;
+        font-size: clamp(0.5em, 4vw, 1.25em);
         font-weight: 400;
     }
     .button {
@@ -56,7 +53,7 @@ import Logo from '../components/Logo.astro'
         border-radius: 8px;
         padding: 0.4em 0.8em;
         transition: .3s;
-        font-size: 1.25em;
+        font-size: clamp(1em, 4vw, 1.25em);
     }
     .button:hover p {
         background-color: #090909BF;
@@ -65,5 +62,10 @@ import Logo from '../components/Logo.astro'
     .button:hover {
         scale: 1.05;
         transition: .3s;
+    }
+    @media (width <= 900px){
+        .home{
+            flex-direction: column;
+        }
     }
 </style>
