@@ -25,25 +25,36 @@ import CircleButton from "./CircleButton.astro";
         display: flex;
         align-items: center;
         justify-content: center;
-        text-align: center;
+        gap: min(5vw, 100px);
         padding: 15vw 3vw;
     }
-    #contact h1 {
+    h1 {
         width: 100%;
-        font-size: max(2.4em, 5vw);
-        padding-left: 7vw;
+        text-align: right;
+        white-space: pre-line;
+        font-size: min(9vw, 70px);
     }
     .grid-contact {
-        padding-right: 11vw;
         width: 100%;
         display: grid;
-        grid-template-columns: repeat( 2, minmax(8em, 11vw));
         align-items: center;
-        text-align: center;
-        justify-content: center;
+        justify-content: left;
+        grid-template-columns: repeat( 2, min(26vw, 100px));
+        gap: min(2.5vw, 30px);
     }
     svg {
-        width: 90px;
-        height: 90px;
+        width: min(20vw, 90px);
+        height: min(20vw, 90px);
+    }
+    @media (width <= 900px){
+        #contact {
+            flex-direction: column-reverse;
+        }
+        .grid-contact {
+            justify-content: center;
+        }
+        h1 {
+            text-align: center;
+        }
     }
 </style>

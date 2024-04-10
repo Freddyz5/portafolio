@@ -32,12 +32,13 @@ import CircleButton from "./CircleButton.astro";
     h1 {
         color: #A31621;
         text-shadow: 0px 0px 4px #A31621;
-        font-size: max(2em, 4vw);
+        font-size: clamp(1.5em, 8vw, 2.5em);
         font-weight: 700;
         padding: 0 0 1em 0;
     }
     article {
         display: flex;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
         width: 100%;
@@ -49,13 +50,23 @@ import CircleButton from "./CircleButton.astro";
         justify-content: center;
         align-items: center;
         text-align: center;
-        width: 500px;
-        font-size: 18px;
+        width: min(80vw, 500px);
+        font-size: min(4vw, 18px);
     }
     .picture {
-        width: 360px;
-        filter: drop-shadow(0px 0px 100px #fff7ed5e);
+        width: min(70vw, 360px);
+        padding: 10px 10px 0 10px;
+        filter: drop-shadow(0px 0px 10px #fff7ed5e);
         z-index: 1;
+        mask-image: linear-gradient(
+            black 80%,
+            transparent
+        );
+    }
+    @media (width <= 900px){
+        article {
+            flex-direction: column-reverse;
+        }
     }
     div {
         display: flex;
@@ -66,7 +77,7 @@ import CircleButton from "./CircleButton.astro";
         margin-top: -2vw;
     }
     svg {
-        width: 50px;
-        height: 50px;
+        width: min(10vw, 50px);
+        height: min(10vw, 50px);
     }
 </style>
