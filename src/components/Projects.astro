@@ -38,7 +38,7 @@ const PROJECTS = [
         image: "https://mediaforvalue.com/wp-content/uploads/2023/05/funcionalidades.png",
         body: "I am collaborating on a digital platform created for the daily management of pharmacies.",
         link: "https://mediaforvalue.com",
-        // code: "",
+        code: "",
         tags: [TAGS.REACT, TAGS.NEXTJS]
     },
     {
@@ -118,11 +118,11 @@ const PROJECTS = [
         width: 100%;
         height: 100%;
         background: linear-gradient(to top, transparent 85%, #141414 100%), linear-gradient(to bottom, transparent 85%, #141414 100%);
-        z-index: 0; 
+        z-index: 0;
     }
     h1 {
         font-size: min(7vw, 3em);
-        margin: 6vw 0 1em 0;
+        margin: 6vw 0 1.5em 0;
         padding: 8px 15px;
         color: #A31621;
         text-shadow: 0px 0px 4px #A31621;
@@ -132,61 +132,62 @@ const PROJECTS = [
 		box-shadow: 0px 0px 20px 0px #fff7ed8e;
     }
     .container-cards {
-        width: 80vw;
-        max-width: 1000px;
+        width: min(80vw, 900px);
         display: flex;
         flex-direction: column;
         gap: 4em;
     }
     .card {
 		display: flex;
+        justify-content: center;
         align-items: center;
-        gap: 1.5em;
+        gap: 30px;
 		color: #FFF7ED;
-		padding: 1em; 
+		padding: 1em;
 		border-radius: 15px;
-		/* border: 1px solid #FFF7ED; */
 		box-shadow: 0px 0px 20px 0px #fff7ed8e;
-		/* background: #090909; */
         backdrop-filter: blur(2px);
 		filter: grayscale(50%);
-		transition: .3s;
+		transition: 2s;
 	}
-    .card-img{
-        width: 100%;
-        height: 250px;
+    .card-img {
+        width: min(55.33vw, 332px);
+        height: min(18vw, 200px);
         position: relative;
+        transition: bottom 2s;
     }
 	figure {
-        width: 100%;
-        height: 250px;
+        width: min(30vw, 332px);
+        height: min(18vw, 200px);
         position: absolute;
         bottom: 0%;
-        transition: bottom .3s;
+        transition: bottom 2s;
     }
     img {
 		width: 100%;
 		border-radius: 10px;
+        background-color: white;
 	}
     .card-content{
-        width: 100%;
-        height: 250px;
+        width: min(70vw, 515px);
+        height: fit-content;
         display: flex;
         flex-direction: column;
         gap: 1em;
     }
+    
 	h2 {
-		font-size: 2em;
+		font-size: min(5vw, 25px);
 		font-weight: 800;
-		line-height: 32px; /* 128% */
-		letter-spacing: -0.8px;
 	}
     .tags {
 		display: flex;
         align-items: center;
 		gap: 10px;
-	}	
+	}
     li {
+        width: min(10vw, 38px);
+        height: min(8.5vw, 32px);
 		display: flex;
         align-items: center;
         font-weight: 500;
@@ -197,11 +198,9 @@ const PROJECTS = [
         border: 1px solid #FFF7ED;
 	}
 	.body {
-        height: 200px;
-		font-size: 15px;
+        height: fit-content;
+		font-size: min(3vw, 15px);
 		font-weight: 400;
-		line-height: 21px; /* 140% */
-		letter-spacing: -0.14px;
 	}
     .buttons{
         display: flex;
@@ -216,9 +215,11 @@ const PROJECTS = [
         transition: .3s;
     }
     .button-color{
+        font-size: min(3.5vw, 15px);
         background: linear-gradient(90deg, #25E5EB 0%, #C01522 100%);
     }
     .button-bw{
+        font-size: min(3.5vw, 15px);
         background: #FFF7ED;
     }
     .button-text-color, .button-text-bw {
@@ -228,31 +229,42 @@ const PROJECTS = [
         transition: .3s;
         font-size: 1.25em;
     }
-    .button-color:hover .button-text-color, .button-bw:hover .button-text-bw {
-        background-color: #090909BF;
-        transition: .3s;
-    }
-    .button-bw:hover .button-text-bw{
-        color: #141414;
-        background-color: #1414146c;
-    }
-    .button-color:hover, .button-bw:hover {
-        scale: 1.05;
-        transition: .3s;
-    }
 	svg {
         width: 20px;
         height: 20px;
     }
-    .card:hover{
-		/* border: 1px solid #40A8AF; */
-		box-shadow: 0px 0px 20px 0px rgba(24, 65, 67);
-		filter: grayscale(0);
-		scale: 1.1;
-		transition: .3s;
-	}
-    .card:hover figure{
-        bottom: 15%;
+    .card:hover {
+        box-shadow: 0px 0px 20px 0px rgba(24, 65, 67);
+        filter: grayscale(0);
+        scale: 1.02;
         transition: .3s;
+    }
+    .card:hover figure {
+        bottom: 20%;
+        transition: .3s;
+    }
+    @media (hover: hover) {
+        .button-color:hover .button-text-color, .button-bw:hover .button-text-bw {
+            background-color: #090909BF;
+            transition: .3s;
+        }
+        .button-bw:hover .button-text-bw {
+            color: #141414;
+            background-color: #1414146c;
+        }
+        .button-color:hover, .button-bw:hover {
+            scale: 1.05;
+            transition: .3s;
+        }
+    }
+    @media (width <= 600px){
+        .card {
+            flex-direction: column;
+            gap: 20px;
+        }
+        .card-img, figure {
+            width: min(70vw, 420px);
+            height: min(42.168vw, 253.01px);
+        }
     }
 </style>
