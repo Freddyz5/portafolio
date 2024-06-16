@@ -2,9 +2,15 @@
 import Html5 from "./icons/Html5.astro";
 import Css3 from "./icons/Css3.astro";
 import JavaScript from "./icons/JavaScript.astro";
+import TypeScript from "./icons/TypeScript.astro";
 import React from "./icons/React.astro";
 import AstroIcon from "./icons/AstroIcon.astro";
 import Next from "./icons/Next.astro";
+import NextUi from "./icons/NextUi.astro";
+import MaterialUi from "./icons/MaterialUi.astro";
+import Git from "./icons/Git.astro";
+import Tailwind from "./icons/Tailwind.astro";
+import Technologies from "./Technologies.astro";
 
 const TAGS = {
     HTML: {
@@ -19,6 +25,10 @@ const TAGS = {
         name: "JavaScript",
         icon: JavaScript,
     },
+    TYPESCRIPT: {
+        name: "TypeScript",
+        icon: TypeScript,
+    },
     REACT: {
         name: "React",
         icon: React,
@@ -31,6 +41,22 @@ const TAGS = {
         name: "Next.js",
         icon: Next,
     },
+    GIT: {
+        name: "Git",
+        icon: Git,
+    },
+    TAILWIND: {
+        name: "Tailwind",
+        icon: Tailwind,
+    },
+    MATERIALUI: {
+        name: "MaterialUi",
+        icon: MaterialUi,
+    },
+    NEXTUI: {
+        name: "NextUi",
+        icon: NextUi,
+    },
 }
 const PROJECTS = [
     {
@@ -39,7 +65,7 @@ const PROJECTS = [
         body: "I am collaborating on a digital platform created for the daily management of pharmacies.",
         link: "https://mediaforvalue.com",
         code: "",
-        tags: [TAGS.REACT, TAGS.NEXTJS]
+        tags: [TAGS.TYPESCRIPT, TAGS.REACT, TAGS.NEXTJS, TAGS.MATERIALUI]
     },
     {
         title: "Product Landing page",
@@ -69,7 +95,7 @@ const PROJECTS = [
 ---
 
 <section id="projects">
-    <h1 class="" data-section="projects" data-value="title" >Projects</h1>
+    <h1 data-section="projects" data-value="title" >Projects</h1>
     <div class="container-cards">
         {
             PROJECTS.map(({title, image, body, link, code, tags}, index)=> (
@@ -96,6 +122,7 @@ const PROJECTS = [
             ))
         }
     </div>
+    <Technologies tags={TAGS} />
 </section>
 
 <style>
