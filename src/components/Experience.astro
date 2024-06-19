@@ -1,0 +1,116 @@
+---
+const JOBS = [
+  {
+    company: "Init Grammers",
+    time: "Octubre 2023 - Actualmente",
+    position: "Dev junior",
+    functions: [
+      "- Creación y mantenimiento de interfaces de usuario atractivas y funcionales, con un enfoque responsice asegurando así su compatibilidad con diferentes dispositivos y navegadores.",
+      "- Realización de pruebas funcionales y de usabilidad para identificar y corregir errores en el código.",
+      "- Consumo de APIs GraphQL para obtener y mostrar datos dinámicos en la aplicación web.",
+    ],
+  },
+]
+---
+<section id="experience" >
+  <h1 data-section="experience" data-value="title" >Loading...</h1>
+  {JOBS.map(({time, company, position, functions}, index) => (
+    <article>
+      <span class="time-company">
+        <h3 data-section="experience" data-value={`company${index + 1}`}>{company}</h3>
+        <p data-section="experience" data-value={`time${index + 1}`}>{time}</p>
+      </span>
+      <span class="position-functions">
+        <h3>
+          <div class="divisor"></div>
+          <div data-section="experience" data-value={`position${index + 1}`}>{position}</div>
+        </h3>
+        {functions.map((f, fIndex) => (
+          <p data-section="experience" data-value={`functions${index + 1}${fIndex + 1}`}>{f}</p>
+        ))}
+      </span>
+    </article>
+  ))}
+</section>
+
+<style>
+  #experience {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+    padding: 65px 0 100px 0;
+  }
+  h1 {
+    color: #A31621;
+    text-shadow: 0px 0px 4px #A31621;
+    font-size: clamp(1.5em, 8vw, 2.5em);
+    font-weight: 700;
+    padding: 0 0 1em 0;
+  }
+  article {
+    width: min(90vw, 900px);
+    height: max-content;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    gap: 10px;
+    padding: 20px;
+  }
+  .time-company, .position-functions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+  }
+  .time-company {
+    width: 280px;
+  }
+  .position-functions {
+    width: 580px;
+  }
+  h3 {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-size: min(5vw, 20px);
+    padding: 8px 0px;
+    color: #FFF7ED;
+    text-shadow: 0px 0px 4px #FFF7ED;
+    font-weight: 600;
+  }
+  .divisor {
+    background-color: #FFF7ED;
+    box-shadow: 0px 0px 4px #FFF7ED;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    position: relative;
+    left: -23px;
+  }
+  p {
+    font-size: min(4vw, 15px);
+  }
+  .position-functions h3 {
+    padding-left: 15px;
+  }
+  .position-functions p {
+    border-left: 1px solid #FFF7ED;
+    padding-left: 30px;
+  }
+  @media (width <= 600px){
+    article {
+      flex-direction: column;
+    }
+    .time-company {
+      width: 100%;
+      border-left: 1px solid #FFF7ED;
+      padding-left: 20px;
+    }
+    .position-functions {
+      width: 100%;
+    }
+  }
+</style>
