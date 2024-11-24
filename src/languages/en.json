@@ -1,6 +1,7 @@
 {
   "nav-bar":{
     "about": "About",
+    "experience": "Experience",
     "projects": "Projects",
     "contact": "Contact"
   },
@@ -10,7 +11,18 @@
   },
   "about": {
     "title": "About",
-    "body": "I am a Frontend developer with knowledge in HTML, CSS, and JavaScript. I have self-taught expertise in these languages and am characterized by my curiosity and passion for creating and maintaining projects related to these technologies. My goal is to contribute to and enhance essential skills in this field by collaborating on real projects."
+    "body": "I am passionate about creating and have a peculiar interest in knowing how things work, which led me to the world of web development. Since then, I have accepted the challenge and commitment to be a constantly evolving self-taught learner.",
+    "body1": "I have experience in front-end technologies such as HTML, CSS, JavaScript, TypeScript, and React, and I have collaborated on various projects using frameworks like NextJs and Astro.",
+    "body2": "When I'm not in the digital world, I consider myself a video game enthusiast, I enjoy extreme sports like skateboarding and mountain biking, and I express my creativity through drawing and music."
+  },
+  "experience": {
+    "title": "Experience",
+    "company1": "Init Grammers",
+    "time1": "Octubre 2023 - Actualmente",
+    "position1": "Junior Developer",
+    "functions11": "- Creation and maintenance of attractive and functional user interfaces, with a responsive approach, thus ensuring compatibility with different devices and browsers.",
+    "functions12": "- Performing functional and usability tests to identify and correct errors in the code.",
+    "functions13": "- Consumption of GraphQL APIs to obtain and display dynamic data in the web application."
   },
   "projects":{
     "title": "Projects",
@@ -21,7 +33,8 @@
     "cardTitle3": "Dark Souls Fan Page",
     "cardBody3": "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
     "cardTitle4": "Random Quote Machine",
-    "cardBody4": "Delivering inspiration and wisdom with each click."
+    "cardBody4": "Delivering inspiration and wisdom with each click.",
+    "technologies": "Technologies"
   },
   "contact":{
     "title": "Let's work together..."

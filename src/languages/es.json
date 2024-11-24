@@ -1,6 +1,7 @@
 {
   "nav-bar":{
     "about": "Acerca de mi",
+    "experience": "Experiencia",
     "projects": "Proyectos",
     "contact": "Contacto"
   },
@@ -10,7 +11,24 @@
   },
   "about": {
     "title": "Acerca de mi",
-    "body": "Soy un desarrollador Frontend con conocimientos en HTML, CSS y JavaScript. Tengo experiencia autodidacta en estos lenguajes y me caracterizo por mi curiosidad y pasión por crear y mantener proyectos relacionados con estas tecnologías. Mi objetivo es contribuir y mejorar habilidades esenciales en este campo mediante la colaboración en proyectos reales."
+    "body": "Soy apasionado por crear y tengo un peculiar interes por saber el funcionamiento de las cosas, lo cual me condujo al mundo del desarrollo web. Desde entonces, he aceptado el desafío y el compromiso de ser un aprendiz autodidacta en constante evolución.",
+    "body1": "Tengo experiencia en tecnologías front-end como HTML, CSS, JavaScript, TypeScript y React, y he colaborado en diversos proyectos utilizando frameworks como NextJs y Astro.",
+    "body2": "Cuando no estoy en el mundo digital, me considero un entusiasta de los videojuegos, disfruto de deportes extremos como el skateboarding y el mountain biking, y expreso mi creatividad a través del dibujo y la música."
+  },
+  "experience": {
+    "title": "Experiencia",
+    "company1": "Init Grammers",
+    "time1": "Octubre 2023 - Actualmente",
+    "position1": "Desarrollador junior",
+    "functions11": "- Creación y mantenimiento de interfaces de usuario atractivas y funcionales, con un enfoque responsive asegurando así su compatibilidad con diferentes dispositivos y navegadores.",
+    "functions12": "- Realización de pruebas funcionales y de usabilidad para identificar y corregir errores en el código.",
+    "functions13": "- Consumo de APIs GraphQL para obtener y mostrar datos dinámicos en la aplicación web.",
+    "company2": "Init Grammers",
+    "time2": "Octubre 2023 - Actualmente",
+    "position2": "Desarrollador junior",
+    "functions21": "- Creación y mantenimiento de interfaces de usuario atractivas y funcionales, con un enfoque responsive asegurando así su compatibilidad con diferentes dispositivos y navegadores.",
+    "functions22": "- Realización de pruebas funcionales y de usabilidad para identificar y corregir errores en el código.",
+    "functions23": "- Consumo de APIs GraphQL para obtener y mostrar datos dinámicos en la aplicación web."
   },
   "projects": {
     "title": "Proyectos",
@@ -21,8 +39,9 @@
     "cardTitle3": "Fan page de Dark Souls",
     "cardBody3": "Diseño de una landing page inmersiva para un videojuego del cual soy mut fan, atrayendo a los jugadores a explorar su mundo virtual.",
     "cardTitle4": "Máquina de Frases Aleatorias",
-    "cardBody4": "Entregando inspiración y sabiduría con cada clic."
-    },
+    "cardBody4": "Entregando inspiración y sabiduría con cada clic.",
+    "technologies": "Tecnologías"
+  },
   "contact":{
     "title": "Trabajemos juntos..."
   },
