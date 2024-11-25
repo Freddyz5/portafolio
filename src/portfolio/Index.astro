@@ -1,26 +1,18 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
-import Home from '../components/Home.astro';
-import About from '../components/About.astro';
-import Experience from '../components/Experience.astro';
-import Projects from '../components/Projects.astro';
-import Contact from '../components/Contact.astro';
+import Home from './sections/Home/Home.astro';
+import About from './sections/About/About.astro';
+import Experience from './sections/Experience/Experience.astro';
+import Projects from './sections/Projects/Projects.astro';
+import Contact from './sections/Contact/Contact.astro';
 ---
 
-<Layout 
-	title="Freddy Tacuri, Desarrollador y Programador Web"
-	description="Contrata a Freddy para que forme parte de tu equipo. Desarrollador Web Front-end."
->
-	<main>
-		<Home />
-		<Experience />
-		<Projects />
-		<About />
-		<Contact />
-	</main>
-
-</Layout>
+<main>
+  <Home />
+  <Experience />
+  <Projects />
+  <About />
+  <Contact />
+</main>
 
 <style>
 	.astro-a {
