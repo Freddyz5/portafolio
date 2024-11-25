@@ -4,12 +4,14 @@ import Css3 from "./components/icons/Css3.astro";
 import JavaScript from "./components/icons/JavaScript.astro";
 import TypeScript from "./components/icons/TypeScript.astro";
 import React from "./components/icons/React.astro";
+import ReactNative from "./components/icons/ReactNative.astro";
 import AstroIcon from "./components/icons/AstroIcon.astro";
 import Next from "./components/icons/Next.astro";
 import NextUi from "./components/icons/NextUi.astro";
 import MaterialUi from "./components/icons/MaterialUi.astro";
 import Git from "./components/icons/Git.astro";
 import Tailwind from "./components/icons/Tailwind.astro";
+import Express from "./components/icons/Express.astro";
 import Technologies from "./components/Technologies.astro";
 
 const TAGS = {
@@ -32,6 +34,10 @@ const TAGS = {
     REACT: {
         name: "React",
         icon: React,
+    },
+    REACTNATIVE: {
+        name: "ReactNative",
+        icon: ReactNative,
     },
     ASTRO: {
         name: "Astro",
@@ -57,8 +63,20 @@ const TAGS = {
         name: "NextUi",
         icon: NextUi,
     },
+    EXPRESS: {
+        name: "Express",
+        icon: Express,
+    },
 }
 const PROJECTS = [
+    {
+        title: "Loading...",
+        image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2Fe1724a47-3d64-476d-accc-dd925568f6a7%2FCaptura_de_pantalla_2024-11-24_a_las_8.11.11_p._m..png?table=block&id=14903c94-7420-801c-a37d-eb7b56b99cdc&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=1420&userId=&cache=v2",
+        body: "Loading...",
+        link: "https://mtc-ecuador.com/",
+        code: "",
+        tags: [TAGS.TYPESCRIPT, TAGS.REACT, TAGS.NEXTJS, TAGS.MATERIALUI, TAGS.REACTNATIVE, TAGS.EXPRESS]
+    },
     {
         title: "Digital platform for pharmacists",
         image: "https://mediaforvalue.com/wp-content/uploads/2023/05/funcionalidades.png",
@@ -83,14 +101,14 @@ const PROJECTS = [
         code: "https://github.com/Freddyz5/darkSouls",
         tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
     },
-    {
-        title: "Random Quote Machine",
-        image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F5c78a960-708b-4235-b11f-45ead4cc6601%2FrandomQuoteMachine.jpg?table=block&id=e564bca7-20e0-4421-862a-7197a8d0d668&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
-        body: "Delivering inspiration and wisdom with each click.",
-        link: "https://codepen.io/Freddyz5/full/XWxgqVZ",
-        code: "",
-        tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
-    },
+    // {
+    //     title: "Random Quote Machine",
+    //     image: "https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2F5c78a960-708b-4235-b11f-45ead4cc6601%2FrandomQuoteMachine.jpg?table=block&id=e564bca7-20e0-4421-862a-7197a8d0d668&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=2000&userId=&cache=v2",
+    //     body: "Delivering inspiration and wisdom with each click.",
+    //     link: "https://codepen.io/Freddyz5/full/XWxgqVZ",
+    //     code: "",
+    //     tags: [TAGS.HTML, TAGS.CSS, TAGS.JAVASCRIPT]
+    // },
 ]
 ---
 
