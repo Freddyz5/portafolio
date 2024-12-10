@@ -3,6 +3,106 @@
 </a>
 
 <script>
+
+  const translations = {
+    "en": {
+      "nav-bar":{
+        "about": "About",
+        "experience": "Experience",
+        "projects": "Projects",
+        "contact": "Contact"
+      },
+      "home": {
+        "subTitle": "FRONT-END DEVELOPER",
+        "button": "Contact me!"
+      },
+      "about": {
+        "title": "About",
+        "body": "I am passionate about creating and have a peculiar interest in knowing how things work, which led me to the world of web development. Since then, I have accepted the challenge and commitment to be a constantly evolving self-taught learner.",
+        "body1": "I have experience in front-end technologies such as HTML, CSS, JavaScript, TypeScript, and React, and I have collaborated on various projects using frameworks like NextJs and Astro.",
+        "body2": "When I'm not in the digital world, I consider myself a video game enthusiast, I enjoy extreme sports like skateboarding and mountain biking, and I express my creativity through drawing and music."
+      },
+      "experience": {
+        "title": "Experience",
+        "company1": "Init Grammers",
+        "time1": "Octubre 2023 - Actualmente",
+        "position1": "Junior Developer",
+        "functions11": "- Creation and maintenance of attractive and functional user interfaces, with a responsive approach, thus ensuring compatibility with different devices and browsers.",
+        "functions12": "- Performing functional and usability tests to identify and correct errors in the code.",
+        "functions13": "- Consumption of GraphQL APIs to obtain and display dynamic data in the web application."
+      },
+      "projects":{
+        "title": "Projects",
+        "cardTitle1": "Specialized logistics service in tempered containers",
+        "cardBody1": "I am collaborating on a digital platform for the transportation of products under temperature-controlled conditions in the healthcare industry.",
+        "cardTitle2": "Digital platform for pharmacists",
+        "cardBody2": "I am collaborating on a digital platform created for the daily management of pharmacies.",
+        "cardTitle3": "Product Landing Page",
+        "cardBody3": "Crafting a captivating landing page for showcasing a standout product and driving conversions.",
+        "cardTitle4": "Dark Souls Fan Page",
+        "cardBody4": "Designing an immersive landing page for a dynamic video game, enticing players to explore its virtual realm.",
+        "technologies": "Technologies"
+      },
+      "contact":{
+        "title": "Let's work together..."
+      },
+      "footer":{
+        "title": "With help of and inspired by "
+      }
+    },
+    "es": {
+      "nav-bar":{
+        "about": "Acerca de mi",
+        "experience": "Experiencia",
+        "projects": "Proyectos",
+        "contact": "Contacto"
+      },
+      "home": {
+        "subTitle": "DESARROLLADOR  FRONT-END",
+        "button": "Contáctame!"
+      },
+      "about": {
+        "title": "Acerca de mi",
+        "body": "Soy apasionado por crear y tengo un peculiar interes por saber el funcionamiento de las cosas, lo cual me condujo al mundo del desarrollo web. Desde entonces, he aceptado el desafío y el compromiso de ser un aprendiz autodidacta en constante evolución.",
+        "body1": "Tengo experiencia en tecnologías front-end como HTML, CSS, JavaScript, TypeScript y React, y he colaborado en diversos proyectos utilizando frameworks como NextJs y Astro.",
+        "body2": "Cuando no estoy en el mundo digital, me considero un entusiasta de los videojuegos, disfruto de deportes extremos como el skateboarding y el mountain biking, y expreso mi creatividad a través del dibujo y la música."
+      },
+      "experience": {
+        "title": "Experiencia",
+        "company1": "Init Grammers",
+        "time1": "Octubre 2023 - Actualmente",
+        "position1": "Desarrollador junior",
+        "functions11": "- Creación y mantenimiento de interfaces de usuario atractivas y funcionales, con un enfoque responsive asegurando así su compatibilidad con diferentes dispositivos y navegadores.",
+        "functions12": "- Realización de pruebas funcionales y de usabilidad para identificar y corregir errores en el código.",
+        "functions13": "- Consumo de APIs GraphQL para obtener y mostrar datos dinámicos en la aplicación web.",
+        "company2": "Init Grammers",
+        "time2": "Octubre 2023 - Actualmente",
+        "position2": "Desarrollador junior",
+        "functions21": "- Creación y mantenimiento de interfaces de usuario atractivas y funcionales, con un enfoque responsive asegurando así su compatibilidad con diferentes dispositivos y navegadores.",
+        "functions22": "- Realización de pruebas funcionales y de usabilidad para identificar y corregir errores en el código.",
+        "functions23": "- Consumo de APIs GraphQL para obtener y mostrar datos dinámicos en la aplicación web."
+      },
+      "projects": {
+        "title": "Proyectos",
+        "cardTitle1": "Servicio de logística especializada en contenedores temperados",
+        "cardBody1": "Estoy colaborando en una plataforma digital para el transporte de productos bajo condiciones de temperatura controlada en la industria de la salud.",
+        "cardTitle2": "Plataforma digital para farmacéuticos",
+        "cardBody2": "Forme parte del equipo en una plataforma digital creada para la gestión diaria de las farmacias.",
+        "cardTitle3": "Landing page de Producto",
+        "cardBody3": "Creación de una landing page cautivadora para mostrar un producto destacado y aumentar las interacciones.",
+        "cardTitle4": "Fan page de Dark Souls",
+        "cardBody4": "Diseño de una landing page inmersiva para un videojuego del cual soy mut fan, atrayendo a los jugadores a explorar su mundo virtual.",
+        "technologies": "Tecnologías"
+      },
+      "contact":{
+        "title": "Trabajemos juntos..."
+      },
+      "footer":{
+        "title": "Con la ayuda de, e inspirado por "
+      }
+    },
+  };
+
   const userIdiom = navigator.language.split('-')[0];
 
   const translateButton = document.getElementById("translate")
@@ -10,21 +110,23 @@
   let translateClicked = userIdiom === "en" ? 1 : 0;
 
   const changeLanguage = async ( language: string ) => {
-    const response = await fetch(`src/languages/${language}.json`, {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
+    // const response = await fetch(`src/languages/${language}.json`, {
+    //   method: "GET",
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   }
+    // })
 
-    const responseData = await response.json();
+    // const responseData = await response.json();
+
+    const texts = translations[language];
 
     for (const textToChange of textsToChange){
       const textToChangeElement = textToChange as HTMLElement;
       const section = textToChangeElement.dataset.section;
       const value = textToChangeElement.dataset.value;
 
-      textToChange.innerHTML = responseData[section!][value!]
+      textToChange.innerHTML = texts[section!][value!]
     }
   }
 
