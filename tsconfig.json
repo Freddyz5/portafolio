@@ -2,12 +2,19 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "moduleResolution": "node",
-    "strict": true, 
-    "allowJs": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@cv": [
+        "./src/cv/cv.json"
+      ],
+      "@es": [
+        "./src/languages/es.json"
+      ],
+      "@en": [
+        "./src/languages/en.json"
+      ]
+    }
   },
-  "typeRoots": [
-      "../node_modules/@types/"
-  ],
-  "noImplicitAny": false,
   "include": ["**/*.ts", "test"]
 }
