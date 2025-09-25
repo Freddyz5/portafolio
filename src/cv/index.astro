@@ -1,0 +1,29 @@
+---
+import Hero from './sections/Hero.astro';
+import About from './sections/About.astro';
+import Experience from './sections/Experience.astro';
+import Projects from './sections/Projects.astro';
+import Skills from './sections/Skills.astro';
+---
+
+<main>
+  <Hero />
+  <About />
+  <Experience />
+  <Projects />
+  <Skills />
+</main>
+
+<style>
+  main {
+    padding: 2rem;
+    margin: auto;
+    width: 100%;
+  }
+
+  @media (width <= 700px) {
+    main {
+      padding: 1rem;
+    }
+  }
+</style>

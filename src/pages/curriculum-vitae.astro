@@ -1,0 +1,11 @@
+---
+import LayoutCV from '../layouts/LayoutCV.astro';
+import CV from '../cv/index.astro';
+
+import { basics } from "../cv/cv.json"
+const { name, label } = basics
+---
+
+<LayoutCV title={`Curriculum de ${name} - ${label}`}>
+  <CV />
+</LayoutCV>
