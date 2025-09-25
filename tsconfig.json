@@ -3,18 +3,7 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@cv": [
-        "./src/cv/cv.json"
-      ],
-      "@es": [
-        "./src/languages/es.json"
-      ],
-      "@en": [
-        "./src/languages/en.json"
-      ]
-    }
+    "baseUrl": "."
   },
-  "include": ["**/*.ts", "test"]
+  "include": ["src", "test", "astro.config.mjs", "env.d.ts"]
 }
