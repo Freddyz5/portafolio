@@ -1,0 +1,56 @@
+---
+import Section from "../components/Section.astro";
+
+import { skills } from "../../../shared/languages/es.json"
+
+const { languages, frameworksLibraries, tegnologies } = skills;
+
+const languagesArray = languages.map(({ name }) => name).join(", ");
+const frameworksLibrariesArray = frameworksLibraries.map(({ name }) => name).join(", ");
+const tegnologiesArray = tegnologies.map(({ name }) => name).join(", ");
+---
+
+<Section title="Habilidades de programación">
+  <ul class="skills">
+    <li>
+      <h4>Lenguajes</h4>
+      <p>{languagesArray}</p>
+    </li>
+    <li>
+      <h4>Frameworks / Librerías</h4>
+      <p>{frameworksLibrariesArray}</p>
+    </li>
+    <li>
+      <h4>Tecnologías</h4>
+      <p>{tegnologiesArray}</p>
+    </li>
+  </ul>
+</Section>
+
+<style>
+  .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    list-style: square;
+  }
+  li {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 1rem;
+  }
+  h4 {
+    padding-bottom: 0.5rem;
+  }
+  p {
+    position: relative;
+    padding-left: 2rem;
+  }
+  p::before{
+    content: "•";
+    font-size: 1rem;
+    color: #000000;
+    position: absolute;
+    left: 17px;
+  }
+</style>

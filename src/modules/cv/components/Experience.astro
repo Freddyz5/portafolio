@@ -1,0 +1,127 @@
+---
+import Section from '../components/Section.astro';
+
+import { work } from "../../../shared/languages/es.json"
+---
+
+<Section title="Experiencia Profesional">
+  <ul class="works">
+    {
+      work.map(
+        ({ name, startDate, endDate, position, summary, url }) => {
+          const formattedDate = (date: string) => {
+            const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
+            const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
+            return result;
+          }
+
+          const startYear = formattedDate(startDate)
+          const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
+
+          return (
+            <li>
+              <article>
+                <header>
+                  <div>
+                    <h3>
+                      <a href={url} title={`Ver ${name}`} target="_blank">
+                        {name}
+                      </a>
+                    </h3>
+                    <h4>{position}</h4>
+                  </div>
+
+                  <time>{startYear} - {endYear}</time>
+                </header>
+
+                <footer>
+                  <ul class="summary">
+                    {summary.map(({ team, summary }) => (
+                      <li>
+                        <p class="team">{team}</p>
+                        {summary.map((summary) => (
+                          <p class="teamSummary">{summary}</p>
+                        ))}
+                      </li>
+                    ))}
+                  </ul>
+                </footer>
+              </article>
+            </li>
+          )
+        }
+      )
+    }
+  </ul>
+</Section>
+
+<style>
+  .works {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  article h3 {
+    font-weight: 500;
+    color: #111;
+  }
+
+  article a {
+    color: #111;
+  }
+
+  article a:hover {
+    text-decoration: underline;
+  }
+
+  article h4 {
+    color: #222;
+    font-weight: 400;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  header div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  time {
+    color: #555;
+    font-size: 0.85rem;
+    min-width: 102px;
+  }
+
+  .summary {
+    padding-left: 1.5rem;
+    list-style: square;
+  }
+
+  .team {
+    font-weight: 600;
+  }
+
+  .teamSummary {
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .teamSummary::before{
+    content: "•";
+    position: absolute;
+    left: 2px;
+  }
+
+  @media (width <= 700px) {
+    time {
+      text-align: right;
+    }
+  }
+</style>

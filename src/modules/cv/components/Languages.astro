@@ -1,0 +1,17 @@
+---
+import Section from "../components/Section.astro";
+
+import { languages } from "../../../shared/languages/es.json";
+
+---
+
+<Section title="Idiomas">
+  <ul>
+    {
+      languages.map(({ language, fluency }) => (
+        <li>{language} - {fluency}</li>
+      ))
+    }
+  </ul>
+</Section>
+

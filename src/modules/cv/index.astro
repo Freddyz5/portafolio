@@ -1,0 +1,33 @@
+---
+import Hero from './components/Hero.astro';
+import About from './components/About.astro';
+import Experience from './components/Experience.astro';
+import Projects from './components/Projects.astro';
+import Skills from './components/Skills.astro';
+import Education from './components/Education.astro';
+import Languages from './components/Languages.astro';
+---
+
+<main>
+  <Hero />
+  <About />
+  <Experience />
+  <Projects />
+  <Skills />
+  <Education />
+  <Languages />
+</main>
+
+<style>
+  main {
+    padding: 2rem;
+    margin: auto;
+    width: 100%;
+  }
+
+  @media (width <= 700px) {
+    main {
+      padding: 1rem;
+    }
+  }
+</style>
