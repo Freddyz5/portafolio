@@ -1,0 +1,86 @@
+---
+import CircleButton from "./CircleButton.astro";
+---
+<section id="about">
+    <h1 data-section="about" data-value="title" >About me</h1>
+    <article>
+        <span>
+            <p data-section="about" data-value="body">Loading... </p>
+            <p data-section="about" data-value="body1">Loading... </p>
+            <p data-section="about" data-value="body2">Loading... </p>
+            <div>
+                <CircleButton href="#" isMail >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" /><path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" /></svg>
+                </CircleButton>
+                <CircleButton href="https://www.canva.com/design/DAFXTVHlYss/NE1qKhG7cHSU6EvPHLJ0VA/view">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 3v4a1 1 0 0 0 1 1h4" /><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" /><path d="M11 12.5a1.5 1.5 0 0 0 -3 0v3a1.5 1.5 0 0 0 3 0" /><path d="M13 11l1.5 6l1.5 -6" /></svg>
+                </CircleButton>
+            </div>
+        </span>
+        <figure>
+            <img class="picture" src="https://freddy-tacuri.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F964513da-6865-48ee-a858-33d5750fb0f1%2Fc7676ee5-6842-4146-b672-50163c69c341%2Ffreddytacuri.png?table=block&id=d13c2264-d460-4c16-9f50-097d81860872&spaceId=964513da-6865-48ee-a858-33d5750fb0f1&width=1000&userId=&cache=v2" alt="freddytacuri" loading="lazy"/>
+        </figure>
+    </article>
+</section>
+
+<style>
+    #about {
+        height: fit-content;
+        padding: 80px 0 50px 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    h1 {
+        color: #A31621;
+        text-shadow: 0px 0px 4px #A31621;
+        font-size: clamp(1.5em, 8vw, 2.5em);
+        font-weight: 700;
+        padding: 0 0 1em 0;
+    }
+    article {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 20px;
+    }
+    span {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        width: min(80vw, 500px);
+        font-size: min(4vw, 15px);
+        gap: 10px
+    }
+    .picture {
+        width: min(70vw, 360px);
+        padding: 10px 10px 0 10px;
+        filter: drop-shadow(0px 0px 10px #fff7ed5e);
+        z-index: 1;
+        mask-image: linear-gradient(
+            black 80%,
+            transparent
+        );
+    }
+    @media (width <= 900px){
+        article {
+            flex-direction: column-reverse;
+        }
+    }
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2em;
+        padding: 0.5em;
+    }
+    svg {
+        width: min(10vw, 50px);
+        height: min(10vw, 50px);
+    }
+</style>
