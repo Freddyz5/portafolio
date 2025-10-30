@@ -1,0 +1,82 @@
+---
+import TextareaGlitch from "src/shared/compontens/TextareaGlitch.astro";
+import InputGlitch from "../../../shared/compontens/InputGlitch.astro";
+
+interface Props{
+  isSubSection?: boolean;
+  title: string;
+  data: {
+    values: string,
+    label: string,
+    tag?: 'textarea';
+  }[];
+}
+
+const { isSubSection = false, title, data } = Astro.props
+
+---
+
+<section class={`${isSubSection ? "subSection" : "section"} glitch-form-wrapper`}>
+  {!isSubSection
+    ? <h1>{title}</h1>
+    : <h2>{title}</h2>
+  }
+  <article>
+    {data.map(input => (
+      input.tag !== "textarea" ?
+        <InputGlitch
+          input={{
+            id: input.label,
+            type: "text",
+            placeholder: "",
+            value: input.values
+          }}
+          label={{
+            labelName: input.label,
+            labelFor: input.label,
+            dataText: input.label
+          }}
+        />
+        : <TextareaGlitch
+          input={{
+            id: input.label,
+            placeholder: "",
+            value: input.values
+          }}
+          label={{
+            labelName: input.label,
+            labelFor: input.label,
+            dataText: input.label
+          }}
+        />
+    ))}
+  </article>
+  <slot/>
+</section>
+
+<style>
+  .section {
+    background-color: #212121;
+    border: 1px solid wheat;
+    border-radius: 10px;
+    margin: 3em;
+    padding: 2em;
+  }
+  .subSection {
+    margin-top: 2em;
+  }
+  h1, h2 {
+    margin-bottom: 0.5em;
+  }
+  h1 {
+    border-bottom: 1px solid rgb(99, 99, 99);
+  }
+  article {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  div {
+    width: 50%;
+  }
+</style>

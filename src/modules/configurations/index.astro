@@ -1,0 +1,169 @@
+---
+import ButtonGlitch from 'src/shared/compontens/ButtonGlitch.astro';
+import JsonNode from './components/JsonNode.astro';
+import NavBarJson from './components/NavBarJson.astro';
+import { collectFirstLevelNodes } from './utils/collectFirstLevelNodes';
+// import data from '../../resume-edited.json';
+
+const data = {
+  "basics": {
+    "id": "basics-main",
+    "name": "Freddy Tacuri",
+    "label": "Desarrollador Full Stack",
+    "image": "/freddytacuri.png",
+    "email": "freddyltacuri@gmail.com",
+    "phone": "0995781302",
+    "url": "https://freddyz5.github.io/portafolio",
+    "summary": "Apasionado por la creación y el desarrollo web, con un fuerte interés en entender el funcionamiento de las tecnologías. Soy un profesional autodidacta en constante evolución, con experiencia en desarrollo front-end y conocimientos en backend. He trabajado con tecnologías como Next.js, React, TypeScript y frameworks modernos, colaborando en proyectos innovadores.",
+    "location": {
+      "city": "Quito",
+      "country": "Ecuador",
+      "address": null
+    },
+    "socialProfiles": [
+      {
+        "network": "LinkedIn",
+        "username": "freddy-tacuri",
+        "url": "https://www.linkedin.com/in/freddy-tacuri/"
+      },
+      {
+        "network": "GitHub",
+        "username": "Freddyz5",
+        "url": "https://github.com/Freddyz5"
+      },
+      {
+        "network": "Instagram",
+        "username": "freddy_tacuri_",
+        "url": "https://www.instagram.com/freddy_tacuri_/"
+      }
+    ]
+  },
+  "works": [
+    {
+      "id": "work-initGrammers",
+      "name": "Init Grammers",
+      "position": "Desarrollador full stack",
+      "url": "https://www.initgrammers.com",
+      "startDate": "2023-10-02",
+      "endDate": null,
+      "summary": "Desempeñé diferentes roles dentro de varios equipos en Init Grammers, colaborando en proyectos frontend, backend y mobile.",
+      "highlights": [
+        "Desarrollo con React y Next.js: Creación de aplicaciones web con componentes reutilizables, optimización de rendimiento y buenas prácticas de UX.",
+        "anejo de estado con Zustand: Experiencia en la gestión eficiente del estado en aplicaciones frontend. ",
+        "APIs — GraphQL y REST: Experiencia con GraphQL para modelado y consumo de datos; también integración con APIs REST cuando aplica.",
+        "Backend: Desarrollo de servicios en Node.js (Hono / Express) siguiendo principios de arquitectura hexagonal y separación de responsabilidades.",
+        "Bases de datos: PostgreSQL alojado en Neon; uso de Drizzle y Prisma para modelado, migraciones y acceso eficiente a datos. ",
+        "React Native: Desarrollo de aplicaciones móviles con React Native y Expo — uso práctico en funcionalidades productivas, implementación de pantallas y navegación.",
+        "Buenas prácticas de Git y colaboración en equipo: Uso de GitHub, trabajo con ramas, pull requests y colaboración en entornos ágiles."
+      ],
+      "teams": [
+        {
+          "teamId": "team-mediaValue",
+          "teamName": "Media Value",
+          "role": "Frontend",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo",
+          "highlights": [
+            "Cosas destacadas que hiciste"
+          ]
+        },
+        {
+          "teamId": "team-MTC",
+          "teamName": "MTC (Monitoreo Temperatura Controlada)",
+          "role": "Frontend - Mobile",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo",
+          "highlights": [
+            "Cosas destacadas que hiciste"
+          ]
+        },
+        {
+          "teamId": "team-marcaPatito",
+          "teamName": "Marca Patito",
+          "role": "Frontend",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo",
+          "highlights": [
+            "Cosas destacadas que hiciste"
+          ]
+        },
+        {
+          "teamId": "team-TCI",
+          "teamName": "TCI TCLAIRCARGO",
+          "role": "Full stack",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo",
+          "highlights": [
+            "Cosas destacadas que hiciste"
+          ]
+        }
+      ]
+    }
+  ],
+};
+
+
+const menuJson = collectFirstLevelNodes(data);
+---
+
+<section>
+  <NavBarJson links={menuJson}/>
+  <article class="json-viewer">
+    <JsonNode node={data} />
+  </article>
+  <ButtonGlitch
+    id="previewBtn"
+    className="btn primary"
+    text="Ver preview"
+  />
+</section>
+
+<script type="module">
+	function collectValues(container) {
+		const inputs = container.querySelectorAll("input[data-key], textarea[data-key]");
+		const result = {};
+		inputs.forEach((input) => {
+			const keys = input.dataset.key.split(".");
+			let current = result;
+			keys.forEach((k, i) => {
+				if (i === keys.length - 1) {
+					current[k] = input.value;
+				} else {
+					if (!current[k]) current[k] = isNaN(Number(keys[i + 1])) ? {} : [];
+					current = current[k];
+				}
+			});
+		});
+		return result;
+	}
+
+	document.getElementById("previewBtn").addEventListener("click", () => {
+		const container = document.querySelector(".json-viewer");
+		const updatedData = collectValues(container);
+		console.log("--- JSON preview ---");
+		console.log(JSON.stringify(updatedData, null, 2));
+	});
+</script>
+
+<style>
+  section {
+    width: 100%;
+    padding: 1em;
+  }
+</style>
