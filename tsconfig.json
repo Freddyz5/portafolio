@@ -3,7 +3,8 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "strict": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["node"]
   },
   "include": ["src", "test", "astro.config.mjs", "env.d.ts"]
 }

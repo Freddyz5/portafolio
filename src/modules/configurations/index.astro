@@ -3,121 +3,12 @@ import ButtonGlitch from 'src/shared/compontens/ButtonGlitch.astro';
 import JsonNode from './components/JsonNode.astro';
 import NavBarJson from './components/NavBarJson.astro';
 import { collectFirstLevelNodes } from './utils/collectFirstLevelNodes';
-// import data from '../../resume-edited.json';
+import { getData } from './services/getData';
+import Modal from './components/Modal.astro';
 
-const data = {
-  "basics": {
-    "id": "basics-main",
-    "name": "Freddy Tacuri",
-    "label": "Desarrollador Full Stack",
-    "image": "/freddytacuri.png",
-    "email": "freddyltacuri@gmail.com",
-    "phone": "0995781302",
-    "url": "https://freddyz5.github.io/portafolio",
-    "summary": "Apasionado por la creación y el desarrollo web, con un fuerte interés en entender el funcionamiento de las tecnologías. Soy un profesional autodidacta en constante evolución, con experiencia en desarrollo front-end y conocimientos en backend. He trabajado con tecnologías como Next.js, React, TypeScript y frameworks modernos, colaborando en proyectos innovadores.",
-    "location": {
-      "city": "Quito",
-      "country": "Ecuador",
-      "address": null
-    },
-    "socialProfiles": [
-      {
-        "network": "LinkedIn",
-        "username": "freddy-tacuri",
-        "url": "https://www.linkedin.com/in/freddy-tacuri/"
-      },
-      {
-        "network": "GitHub",
-        "username": "Freddyz5",
-        "url": "https://github.com/Freddyz5"
-      },
-      {
-        "network": "Instagram",
-        "username": "freddy_tacuri_",
-        "url": "https://www.instagram.com/freddy_tacuri_/"
-      }
-    ]
-  },
-  "works": [
-    {
-      "id": "work-initGrammers",
-      "name": "Init Grammers",
-      "position": "Desarrollador full stack",
-      "url": "https://www.initgrammers.com",
-      "startDate": "2023-10-02",
-      "endDate": null,
-      "summary": "Desempeñé diferentes roles dentro de varios equipos en Init Grammers, colaborando en proyectos frontend, backend y mobile.",
-      "highlights": [
-        "Desarrollo con React y Next.js: Creación de aplicaciones web con componentes reutilizables, optimización de rendimiento y buenas prácticas de UX.",
-        "anejo de estado con Zustand: Experiencia en la gestión eficiente del estado en aplicaciones frontend. ",
-        "APIs — GraphQL y REST: Experiencia con GraphQL para modelado y consumo de datos; también integración con APIs REST cuando aplica.",
-        "Backend: Desarrollo de servicios en Node.js (Hono / Express) siguiendo principios de arquitectura hexagonal y separación de responsabilidades.",
-        "Bases de datos: PostgreSQL alojado en Neon; uso de Drizzle y Prisma para modelado, migraciones y acceso eficiente a datos. ",
-        "React Native: Desarrollo de aplicaciones móviles con React Native y Expo — uso práctico en funcionalidades productivas, implementación de pantallas y navegación.",
-        "Buenas prácticas de Git y colaboración en equipo: Uso de GitHub, trabajo con ramas, pull requests y colaboración en entornos ágiles."
-      ],
-      "teams": [
-        {
-          "teamId": "team-mediaValue",
-          "teamName": "Media Value",
-          "role": "Frontend",
-          "stack": [
-            "React",
-            "TypeScript",
-            "Tailwind"
-          ],
-          "summary": "Descripción general del equipo",
-          "highlights": [
-            "Cosas destacadas que hiciste"
-          ]
-        },
-        {
-          "teamId": "team-MTC",
-          "teamName": "MTC (Monitoreo Temperatura Controlada)",
-          "role": "Frontend - Mobile",
-          "stack": [
-            "React",
-            "TypeScript",
-            "Tailwind"
-          ],
-          "summary": "Descripción general del equipo",
-          "highlights": [
-            "Cosas destacadas que hiciste"
-          ]
-        },
-        {
-          "teamId": "team-marcaPatito",
-          "teamName": "Marca Patito",
-          "role": "Frontend",
-          "stack": [
-            "React",
-            "TypeScript",
-            "Tailwind"
-          ],
-          "summary": "Descripción general del equipo",
-          "highlights": [
-            "Cosas destacadas que hiciste"
-          ]
-        },
-        {
-          "teamId": "team-TCI",
-          "teamName": "TCI TCLAIRCARGO",
-          "role": "Full stack",
-          "stack": [
-            "React",
-            "TypeScript",
-            "Tailwind"
-          ],
-          "summary": "Descripción general del equipo",
-          "highlights": [
-            "Cosas destacadas que hiciste"
-          ]
-        }
-      ]
-    }
-  ],
-};
+const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
 
+const data = await getData();
 
 const menuJson = collectFirstLevelNodes(data);
 ---
@@ -130,11 +21,13 @@ const menuJson = collectFirstLevelNodes(data);
   <ButtonGlitch
     id="previewBtn"
     className="btn primary"
-    text="Ver preview"
+    text="Guardar cambios"
   />
 </section>
 
-<script type="module">
+<Modal />
+
+<script type="module" define:vars={{ endpoint }}>
 	function collectValues(container) {
 		const inputs = container.querySelectorAll("input[data-key], textarea[data-key]");
 		const result = {};
@@ -153,11 +46,126 @@ const menuJson = collectFirstLevelNodes(data);
 		return result;
 	}
 
+	export const setData = async (
+		endpoint,
+		newData,
+		accessKey
+	) => {
+		if (!accessKey) {
+			throw new Error('Missing required parameter: accessKey');
+		}
+
+		if (!endpoint) {
+			throw new Error('Missing required environment variable: JSON_ENDPOINT');
+		}
+
+		if (newData === undefined) {
+			throw new Error('Invalid data: newData cannot be undefined');
+		}
+
+		try {
+			const headers = new Headers();
+			headers.append('Content-Type', 'application/json');
+			headers.append('X-Access-Key', accessKey);
+
+			const body = JSON.stringify(newData);
+
+			const response = await fetch(endpoint, {
+				method: 'PUT',
+				headers,
+				body,
+			});
+
+			if (!response.ok) {
+				throw new Error(
+					`Failed to update data: ${response.status} ${response.statusText}`
+				);
+			}
+
+			console.log("--- JSON preview ---");
+			console.log(JSON.stringify(newData, null, 2));
+			console.log("--------------------");
+			
+			const responseData = await response.json();
+
+			return responseData;
+		} catch (error) {
+			// Handle JSON serialization errors
+			if (error instanceof TypeError && error.message.includes('circular')) {
+				throw new Error('Cannot serialize data: circular reference detected');
+			}
+
+			// Re-throw with additional context if it's not already an Error
+			if (error instanceof Error) {
+				throw error;
+			}
+
+			throw new Error(`Unexpected error while updating data: ${String(error)}`);
+		}
+	};
+
 	document.getElementById("previewBtn").addEventListener("click", () => {
+		const modal = document.getElementById("accessKeyModal");
+		const accessKeyInput = document.getElementById("accessKeyInput");
+		
+		// Limpiar el input y mostrar el modal
+		accessKeyInput.value = "";
+		modal.style.display = "flex";
+		
+		// Enfocar el input
+		setTimeout(() => accessKeyInput.focus(), 100);
+	});
+
+	// Manejar el botón de cancelar
+	document.getElementById("cancelBtn").addEventListener("click", () => {
+		const modal = document.getElementById("accessKeyModal");
+		modal.style.display = "none";
+	});
+
+	// Manejar el botón de confirmar
+	document.getElementById("confirmBtn").addEventListener("click", async () => {
+		const modal = document.getElementById("accessKeyModal");
+		const accessKeyInput = document.getElementById("accessKeyInput");
+		const accessKey = accessKeyInput.value.trim();
+
+		if (!accessKey) {
+			alert("Por favor, ingrese una clave de acceso");
+			return;
+		}
+
 		const container = document.querySelector(".json-viewer");
 		const updatedData = collectValues(container);
-		console.log("--- JSON preview ---");
-		console.log(JSON.stringify(updatedData, null, 2));
+
+		try {
+			await setData(endpoint, updatedData, accessKey);
+			alert("Datos actualizados correctamente");
+			modal.style.display = "none";
+		} catch (error) {
+			console.error("Error al actualizar los datos:", error);
+			alert(`Error: ${error.message}`);
+		}
+	});
+
+	// Cerrar modal al presionar Escape
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			const modal = document.getElementById("accessKeyModal");
+			modal.style.display = "none";
+		}
+	});
+
+	// Cerrar modal al hacer clic fuera del contenido
+	document.getElementById("accessKeyModal").addEventListener("click", (e) => {
+		if (e.target.id === "accessKeyModal") {
+			e.target.style.display = "none";
+		}
+	});
+
+	// Permitir enviar con Enter
+	document.getElementById("accessKeyInput").addEventListener("keydown", (e) => {
+		if (e.key === "Enter") {
+			document.getElementById("confirmBtn").click();
+		}
 	});
 </script>
 

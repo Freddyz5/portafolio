@@ -1,0 +1,125 @@
+---
+import ButtonGlitch from "src/shared/compontens/ButtonGlitch.astro";
+import InputGlitch from "src/shared/compontens/InputGlitch.astro";
+---
+
+<div id="accessKeyModal" class="modal">
+  <div class="modal-content">
+    <h2>Ingrese la clave de acceso</h2>
+    <p>Para continuar con la actualización, ingrese su clave de acceso:</p>
+    <InputGlitch
+      input={{
+        id: "accessKeyInput",
+        type: "password",
+        placeholder: "Clave de acceso  🔑",
+        value: "",
+        dataKey: "",
+      }}
+      margin="0px"
+    />
+    <div class="modal-actions">
+      <button id="cancelBtn" class="btn-cancel">Cancelar</button>
+      <ButtonGlitch
+        id="confirmBtn"
+        className="btn primary"
+        text="Confirmar"
+      />
+      <!-- <button id="confirmBtn" class="btn-confirm">Confirmar</button> -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.136);
+    backdrop-filter: blur(15px);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .modal-content {
+    background-color: #141414c8;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 450px;
+    width: 90%;
+    animation: slideIn 0.3s ease;
+    border: 1px solid #fff7edc0;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateY(-50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .modal-content h2 {
+    margin: 0 0 0.5rem 0;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .modal-content p {
+    margin: 0 0 1.5rem 0;
+    color: #fff7edc0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  .btn-cancel {
+    background: rgba(255, 0, 0, 0.1);
+    color: #fff;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    border: 2px solid transparent;
+  }
+
+  .btn-cancel:hover {
+    background: transparent;
+    border: 2px solid rgb(255, 0, 0);
+    color: #ff0000;
+    transform: translateY(-1px);
+  }
+
+  .btn-cancel:active {
+    transform: translateY(0);
+  }
+</style>
