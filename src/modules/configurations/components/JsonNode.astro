@@ -1,6 +1,7 @@
 ---
 import InputGlitch from 'src/shared/compontens/InputGlitch.astro';
 import TextareaGlitch from 'src/shared/compontens/TextareaGlitch.astro';
+import PathButton from './PathButton.astro';
 
 interface Props {
 	node: any;
@@ -32,7 +33,12 @@ const isRootNode = keyPath.length === 0;
 ) : Array.isArray(node) ? (
 	<div id={labelText} class="group array" data-key-path={dataKey}>
 		<div class="header-with-button">
-			{labelText && <h2 class="array-title">{labelText}</h2>}
+			{labelText && (
+				<>
+					<h2 class="array-title">{labelText}</h2>
+					<PathButton dataKey={dataKey} type="array" />
+				</>
+			)}
 		</div>
 		<ul class="list" data-array-list={dataKey}>
 			{node.map((item, i) => (
@@ -45,7 +51,12 @@ const isRootNode = keyPath.length === 0;
 ) : typeof node === "object" ? (
 	<div id={labelText} class:list={["group", "object", { root: isRootNode }]} data-key-path={dataKey}>
 		<div class="header-with-button">
-			{labelText && <h2 class="object-title">{labelText}</h2>}
+			{labelText && (
+				<>
+					<h2 class="object-title">{labelText}</h2>
+					<PathButton dataKey={dataKey} type="object" />
+				</>
+			)}
 		</div>
 		<ul class="list" data-object-list={dataKey}>
 			{Object.keys(node).map((k) => (
@@ -143,5 +154,11 @@ const isRootNode = keyPath.length === 0;
 	/* Estilos específicos para títulos de objetos */
 	h2.object-title {
 		border-bottom-color: #00f2ea;
+	}
+
+	.header-with-button {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 </style>
