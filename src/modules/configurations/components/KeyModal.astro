@@ -3,6 +3,12 @@ import ButtonGlitch from "src/shared/compontens/ButtonGlitch.astro";
 import InputGlitch from "src/shared/compontens/InputGlitch.astro";
 ---
 
+<ButtonGlitch
+  id="previewBtn"
+  className="btn primary"
+  text="Guardar cambios"
+/>
+
 <div id="accessKeyModal" class="modal">
   <div class="modal-content">
     <h2>Ingrese la clave de acceso</h2>
@@ -29,6 +35,72 @@ import InputGlitch from "src/shared/compontens/InputGlitch.astro";
     </div>
   </div>
 </div>
+
+<script type="module">
+  document.getElementById("previewBtn").addEventListener("click", () => {
+		const modal = document.getElementById("accessKeyModal");
+		const accessKeyInput = document.getElementById("accessKeyInput");
+		
+		// Limpiar el input y mostrar el modal
+		accessKeyInput.value = "";
+		modal.style.display = "flex";
+		
+		// Enfocar el input
+		setTimeout(() => accessKeyInput.focus(), 100);
+	});
+
+	// Manejar el botón de cancelar
+	document.getElementById("cancelBtn").addEventListener("click", () => {
+		const modal = document.getElementById("accessKeyModal");
+		modal.style.display = "none";
+	});
+
+	// // Manejar el botón de confirmar
+	// document.getElementById("confirmBtn").addEventListener("click", async () => {
+	// 	const modal = document.getElementById("accessKeyModal");
+	// 	const accessKeyInput = document.getElementById("accessKeyInput");
+	// 	const accessKey = accessKeyInput.value.trim();
+
+	// 	if (!accessKey) {
+	// 		alert("Por favor, ingrese una clave de acceso");
+	// 		return;
+	// 	}
+
+	// 	const container = document.querySelector(".json-viewer");
+	// 	const updatedData = collectValues(container);
+
+	// 	try {
+	// 		await setData(endpoint, updatedData, accessKey);
+	// 		alert("Datos actualizados correctamente");
+	// 		modal.style.display = "none";
+	// 	} catch (error) {
+	// 		console.error("Error al actualizar los datos:", error);
+	// 		alert(`Error: ${error.message}`);
+	// 	}
+	// });
+
+	// Cerrar modal al presionar Escape
+	document.addEventListener("keydown", (e) => {
+		if (e.key === "Escape") {
+			const modal = document.getElementById("accessKeyModal");
+			modal.style.display = "none";
+		}
+	});
+
+	// Cerrar modal al hacer clic fuera del contenido
+	document.getElementById("accessKeyModal").addEventListener("click", (e) => {
+		if (e.target.id === "accessKeyModal") {
+			e.target.style.display = "none";
+		}
+	});
+
+	// Permitir enviar con Enter
+	document.getElementById("accessKeyInput").addEventListener("keydown", (e) => {
+		if (e.key === "Enter") {
+			document.getElementById("confirmBtn").click();
+		}
+	});
+</script>
 
 <style>
   .modal {

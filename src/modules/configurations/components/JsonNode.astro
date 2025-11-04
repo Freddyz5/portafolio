@@ -1,7 +1,7 @@
 ---
 import InputGlitch from 'src/shared/compontens/InputGlitch.astro';
 import TextareaGlitch from 'src/shared/compontens/TextareaGlitch.astro';
-import PathButton from './PathButton.astro';
+// import AddJsonModal from './AddJsonModal.astro';
 
 interface Props {
 	node: any;
@@ -36,7 +36,7 @@ const isRootNode = keyPath.length === 0;
 			{labelText && (
 				<>
 					<h2 class="array-title">{labelText}</h2>
-					<PathButton dataKey={dataKey} type="array" />
+					{/* <AddJsonModal data={node} dataKey={dataKey} type="array" /> */}
 				</>
 			)}
 		</div>
@@ -54,7 +54,7 @@ const isRootNode = keyPath.length === 0;
 			{labelText && (
 				<>
 					<h2 class="object-title">{labelText}</h2>
-					<PathButton dataKey={dataKey} type="object" />
+					{/* <AddJsonModal data={node} dataKey={dataKey} type="object" /> */}
 				</>
 			)}
 		</div>
