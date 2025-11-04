@@ -64,6 +64,8 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 			let sectionBottom = 0;
 
 			sections.map((section) => {
+				if (!section.element || !navbar) return;
+
 				sectionTop = section.element!.offsetTop - navbar!.offsetHeight;
 				sectionBottom = sectionTop + section.element!.offsetHeight;
 
@@ -80,7 +82,7 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 				if (link.getAttribute("href")!.substring(1) === currentSection) {
 					link.getAttribute("href")!.substring(1) === "home"
 						? link.children[1].classList.add("name-off")
-						: link.classList.add("active");
+						: link.classList.add("0");
 				}
 			});
 		});
