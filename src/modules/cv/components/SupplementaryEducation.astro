@@ -2,32 +2,32 @@
 import Section from "../components/Section.astro"
 
 interface Props {
-  education: any[];
+  certificates: any[];
 }
 
-const { education } = Astro.props;
+const { certificates } = Astro.props;
 ---
 
-<Section title="Educación">
+<Section title="Educación Suplementaria">
   <ul>
-    {education.map(({ institution, area, startDate, endDate }) => {
-      const startYear = new Date(startDate).getFullYear()
-      const endYear = endDate != null ? new Date(endDate).getFullYear() : "Actual"
-      const years = `${startYear} - ${endYear}`
+    {certificates.map(({ issuer, name, date, url }) => {
+      const year = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'short'});
 
       return (
         <li>
           <article>
             <header>
               <div>
-                <h3>{institution}</h3>
+                <h3>{issuer}</h3>
               </div>
 
-              <time>{years}</time>
+              <time>{year}</time>
             </header>
 
             <footer>
-              <p>{area}</p>
+              <a href={url} title={`Ver ${name}`} target="_blank">
+                {name}
+              </a>
             </footer>
           </article>
         </li>
@@ -59,6 +59,14 @@ const { education } = Astro.props;
     color: #555;
     font-size: 0.85rem;
     min-width: 102px;
+  }
+
+  footer a {
+    color: #111;
+  }
+
+  footer a:hover {
+    text-decoration: underline;
   }
 
   @media (width <= 700px) {

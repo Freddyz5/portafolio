@@ -3,72 +3,86 @@ import MapPin from '../../../shared/icons/MapPin.astro';
 import Mail from '../../../shared/icons/Mail.astro';
 import Phone from '../../../shared/icons/Phone.astro';
 import Link from '../../../shared/icons/Link.astro';
-import Linkedin from '../../../shared/icons/Linkedin.astro';
-import Github from '../../../shared/icons/Github.astro';
+import LinkedIn from '../../../shared/icons/Linkedin.astro';
+import GitHub from '../../../shared/icons/Github.astro';
 
-import { basics } from "../../../shared/languages/es.json"
+interface Props {
+  basics: any;
+}
 
-const { name, email, phone, url, location, profiles } = basics;
-const { city, region } = location;
+const { basics } = Astro.props;
+const { name, email, phone, url, location, socialProfiles } = basics;
+const { city, country } = location;
+
+const SOCIAL_ICONS: Record<string, string | any> = {
+  GitHub,
+  LinkedIn,
+}
+
+const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • ")
 ---
 <header>
   <h1>{name}</h1>
   <div class="container">
-    <span>
-      <MapPin />
-      {city}, {region}
-    </span>
-
-    <a 
-      href={`mailto:${email}`}
-      title={`Enviar un correo electrónico a ${name} al correo ${email}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Mail />
-      {email}
-    </a>
-
-    <a
-      href={`tel:${phone}`}
-      title={`Llamar por teléfono a ${name} al número ${phone}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Phone />
-      {phone}
-    </a>
-
-    <a
-      href={url}
-      title={`Visitar el portafolio de ${name} en ${url}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Link />
-      Portafolio
-    </a>
-
-    <a 
-      href={profiles[0].url}
-      title={`Visitar el perfil de ${name} en ${profiles[0].url}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Linkedin />
-      {profiles[0].username}
-    </a>
-
-    <a 
-      href={profiles[1].url}
-      title={`Visitar el perfil de ${name} en ${profiles[1].url}`}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <Github />
-      {profiles[1].username}
-    </a>
+    {location && city && country && (
+      <span>
+        <MapPin />
+        {city}, {country}
+      </span>
+    )}
+    {email && (
+      <a
+        href={`mailto:${email}`}
+        title={`Enviar un correo electrónico a ${name} al correo ${email}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Mail />
+        {email}
+      </a>
+    )}
+    {phone && (
+      <a
+        href={`tel:${phone}`}
+        title={`Llamar por teléfono a ${name} al número ${phone}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Phone />
+        {phone}
+      </a>
+    )}
+    {url && (
+      <a
+        href={url}
+        title={`Visitar el portafolio de ${name} en ${url}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Link />
+        Portafolio
+      </a>
+    )}
+    {socialProfiles && socialProfiles.map(({ network, url, username }: { network: string; url: string; username: string }) => {
+      if (network === 'Instagram') return null;
+      const Icon = SOCIAL_ICONS[network]
+      return (
+        <a
+          href={url}
+          title={`Visitar el perfil de ${name} en ${network}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon />
+          {username}
+        </a>
+      )
+    })}
   </div>
+  
+  <footer class="print">
+    {printInfo}
+  </footer>
 </header>
 
 <style>

@@ -1,13 +1,15 @@
 ---
 import Section from '../components/Section.astro';
 
-import { basics } from "../../../shared/languages/es.json"
-const { summary } = basics;
+interface Props {
+  summary: string;
+}
+
+const { summary } = Astro.props;
 ---
 
-<Section >
+<Section>
   <p>
     {summary}
   </p>
-  
 </Section>

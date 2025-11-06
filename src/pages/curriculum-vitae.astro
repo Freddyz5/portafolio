@@ -1,13 +1,18 @@
 ---
 import LayoutCV from '../modules/cv/layout/Layout.astro';
-import CV from '../modules//cv/index.astro';
+import CV from '../modules/cv/index.astro';
+import { getData } from '../shared/services/getData';
 
-const { name, label } = {
-  name: 'Freddy Tacuri',
-  label: 'Desarrollador Full Stack',
-};
+const data = await getData() as any;
+
+const basics = data.basics;
 ---
 
-<LayoutCV title={`Curriculum de ${name} - ${label}`}>
-  <CV />
+<LayoutCV
+  title={`Curriculum de ${basics.name} - ${basics.label.es}`}
+  image={basics.image}
+  summary={basics.summary.es}
+  url={basics.url}
+>
+  <CV data={data} />
 </LayoutCV>

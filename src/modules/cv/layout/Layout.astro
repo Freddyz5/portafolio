@@ -1,13 +1,12 @@
 ---
 interface Props {
-  title: string
+  title: string;
+  image: string;
+  summary: string;
+  url: string;
 }
 
-const { title } = Astro.props
-
-const image = "/freddytacuri.png"
-const summary = "Apasionado por la creación y el desarrollo web, con un fuerte interés en entender el funcionamiento de las tecnologías. Soy un profesional autodidacta en constante evolución, con experiencia en desarrollo front-end y conocimientos en backend. He trabajado con tecnologías como Next.js, React, TypeScript y frameworks modernos, colaborando en proyectos innovadores."
-const url = "https://freddyz5.github.io/portafolio/"
+const { title, image, summary, url } = Astro.props;
 ---
 
 <!doctype html>

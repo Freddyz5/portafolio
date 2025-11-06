@@ -1,57 +1,67 @@
 ---
 import Section from '../components/Section.astro';
 
-import { work } from "../../../shared/languages/es.json"
+interface Props {
+  works: any[];
+}
+
+const { works } = Astro.props;
 ---
 
 <Section title="Experiencia Profesional">
   <ul class="works">
-    {
-      work.map(
-        ({ name, startDate, endDate, position, summary, url }) => {
-          const formattedDate = (date: string) => {
-            const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
-            const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
-            return result;
-          }
+    {works.map(({ name, position, url, startDate, endDate, summary, highlights, teams }) => {
+      const formattedDate = (date: string) => {
+        const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
+        const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
+        return result;
+      }
 
-          const startYear = formattedDate(startDate)
-          const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
+      const startYear = formattedDate(startDate)
+      const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
 
-          return (
-            <li>
-              <article>
-                <header>
-                  <div>
-                    <h3>
-                      <a href={url} title={`Ver ${name}`} target="_blank">
-                        {name}
-                      </a>
-                    </h3>
-                    <h4>{position}</h4>
-                  </div>
+      return (
+        <li>
+          <article>
+            <header>
+              <div>
+                <h3>
+                  <a href={url} title={`Ver ${name}`} target="_blank">
+                    {name}
+                  </a>
+                </h3>
+                <h4>{position}</h4>
+              </div>
 
-                  <time>{startYear} - {endYear}</time>
-                </header>
+              <time>{startYear} - {endYear}</time>
+            </header>
 
-                <footer>
-                  <ul class="summary">
-                    {summary.map(({ team, summary }) => (
-                      <li>
-                        <p class="team">{team}</p>
-                        {summary.map((summary) => (
-                          <p class="teamSummary">{summary}</p>
-                        ))}
-                      </li>
-                    ))}
-                  </ul>
-                </footer>
-              </article>
-            </li>
-          )
-        }
+            <footer>
+              <p>{summary}</p>
+              {highlights && highlights.length > 0 &&
+                <ul class="highlights">
+                  {highlights.map((highlight: string) => (
+                    <li>
+                      <p>{highlight}</p>
+                    </li>
+                  ))}
+                </ul>
+              }
+              {teams && teams.length > 0 &&
+                <ul class="teams">
+                  {teams.map(({ teamName, summary }: { teamName: string; summary: string }) => (
+                    <li>
+                      <p class="teamName">{teamName}</p>
+                      <p>{summary}</p>
+                    </li>
+                  ))}
+                </ul>
+              }
+            </footer>
+          </article>
+        </li>
       )
-    }
+    })}
   </ul>
 </Section>
 
@@ -99,24 +109,30 @@ import { work } from "../../../shared/languages/es.json"
     min-width: 102px;
   }
 
-  .summary {
-    padding-left: 1.5rem;
-    list-style: square;
+  footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
   }
 
-  .team {
-    font-weight: 600;
-  }
-
-  .teamSummary {
-    position: relative;
+  footer .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: circle;
     padding-left: 1rem;
   }
 
-  .teamSummary::before{
-    content: "•";
-    position: absolute;
-    left: 2px;
+  footer .teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: square;
+    padding-left: 1rem;
+  }
+
+  .teamName {
+    color: black;
   }
 
   @media (width <= 700px) {
