@@ -26,7 +26,7 @@ const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • "
   <div class="container">
     {location && city && country && (
       <span>
-        <MapPin />
+        <MapPin width="18" height="18" />
         {city}, {country}
       </span>
     )}
@@ -37,7 +37,7 @@ const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • "
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Mail />
+        <Mail width="18" height="18" />
         {email}
       </a>
     )}
@@ -48,7 +48,7 @@ const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • "
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Phone />
+        <Phone width="18" height="18" />
         {phone}
       </a>
     )}
@@ -59,7 +59,7 @@ const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • "
         target="_blank"
         rel="noopener noreferrer"
       >
-        <Link />
+        <Link width="18" height="18" />
         Portafolio
       </a>
     )}
@@ -73,7 +73,7 @@ const printInfo = [email, phone, socialProfiles[0]].filter(Boolean).join(" • "
           target="_blank"
           rel="noopener noreferrer"
         >
-          <Icon />
+          <Icon width="18" height="18" />
           {username}
         </a>
       )
