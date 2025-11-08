@@ -51,7 +51,7 @@ const { works } = Astro.props;
                 <ul class="teams">
                   {teams.map(({ teamName, summary }: { teamName: string; summary: string }) => (
                     <li>
-                      <p class="teamName">{teamName}</p>
+                      <h5 class="teamName">{teamName}</h5>
                       <p>{summary}</p>
                     </li>
                   ))}
@@ -74,11 +74,11 @@ const { works } = Astro.props;
 
   article h3 {
     font-weight: 500;
-    color: #111;
   }
 
   article a {
-    color: #111;
+    font-weight: bold;
+    color: #444;
   }
 
   article a:hover {
@@ -86,8 +86,7 @@ const { works } = Astro.props;
   }
 
   article h4 {
-    color: #222;
-    font-weight: 400;
+    font-weight: lighter;
   }
 
   header {
@@ -104,7 +103,6 @@ const { works } = Astro.props;
   }
 
   time {
-    color: #555;
     font-size: 0.85rem;
     min-width: 102px;
   }
@@ -132,7 +130,9 @@ const { works } = Astro.props;
   }
 
   .teamName {
-    color: black;
+    line-height: 1.5;
+    margin: 0;
+    color: #555;
   }
 
   @media (width <= 700px) {

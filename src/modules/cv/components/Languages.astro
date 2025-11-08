@@ -12,7 +12,7 @@ const { languages } = Astro.props;
   <ul>
     {
       languages.map(({ language, fluency }) => (
-        <li><strong>{language}:</strong> {fluency}</li>
+        <li><span>{language}:</span> {fluency}</li>
       ))
     }
   </ul>
@@ -25,5 +25,13 @@ const { languages } = Astro.props;
     gap: 1rem;
   }
   li {
-    color: #667;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  li span {
+    color: #444;
+    font-weight: bold;
   }
