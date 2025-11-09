@@ -15,6 +15,7 @@
     "@fontsource-variable/orbitron": "5.0.18",
     "animejs": "3.2.2",
     "astro": "^4.16.19",
+    "hotkeypad": "^1.0.2",
     "typescript": "5.3.3"
   },
   "devDependencies": {
