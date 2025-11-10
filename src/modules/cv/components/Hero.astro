@@ -5,6 +5,7 @@ import Phone from '../../../shared/icons/Phone.astro';
 import Link from '../../../shared/icons/Link.astro';
 import LinkedIn from '../../../shared/icons/Linkedin.astro';
 import GitHub from '../../../shared/icons/Github.astro';
+import type { AstroComponentFactory } from 'astro/dist/runtime/server';
 
 interface Props {
   basics: any;
@@ -14,7 +15,7 @@ const { basics } = Astro.props;
 const { name, email, phone, url, location, socialProfiles } = basics;
 const { city, country } = location;
 
-const SOCIAL_ICONS: Record<string, string | any> = {
+const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   GitHub,
   LinkedIn,
 }
@@ -68,6 +69,7 @@ const SOCIAL_ICONS: Record<string, string | any> = {
     {socialProfiles && socialProfiles.map(({ network, url, username }: { network: string; url: string; username: string }) => {
       if (network === 'Instagram') return null;
       const Icon = SOCIAL_ICONS[network]
+      if (!Icon) return null;
       return (
         <a
           href={url}
