@@ -113,12 +113,17 @@ const { works } = Astro.props;
     gap: 0.8rem;
   }
 
+  footer p {
+    break-inside: avoid;
+  }
+
   footer .highlights {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
     list-style-type: circle;
     padding-left: 1rem;
+    break-inside: avoid;
   }
 
   footer .teams {
@@ -127,6 +132,7 @@ const { works } = Astro.props;
     gap: 0.3rem;
     list-style-type: square;
     padding-left: 1rem;
+    break-inside: avoid;
   }
 
   .teamName {
