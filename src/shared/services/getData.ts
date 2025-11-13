@@ -1,47 +1,51 @@
-import data from '../../resume.json';
+import { separateLanguages } from '../utils/languageSeparator';
 
-export const getData = async (): Promise<unknown> => {
-	return data;
-	// const accessKey = import.meta.env.PUBLIC_ACCESS_KEY;
-	// const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
+type LanguageType = 'es' | 'en';
 
-	// if (!accessKey || !endpoint) {
-	// 	throw new Error(
-	// 		'Missing required environment variables: PUBLIC_ACCESS_KEY and/or PUBLIC_JSON_ENDPOINT'
-	// 	);
-	// }
+export const getData = async (
+	language: LanguageType = 'es'
+): Promise<any> => {
+	const accessKey = import.meta.env.PUBLIC_ACCESS_KEY;
+	const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
 
-	// try {
-	// 	const headers = new Headers();
-	// 	headers.append('X-Access-Key', accessKey);
+	if (!accessKey || !endpoint) {
+		throw new Error(
+			'Missing required environment variables: PUBLIC_ACCESS_KEY and/or PUBLIC_JSON_ENDPOINT'
+		);
+	}
 
-	// 	const response = await fetch(endpoint, {
-	// 		method: 'GET',
-	// 		headers,
-	// 	});
+	try {
+		const headers = new Headers();
+		headers.append('X-Access-Key', accessKey);
 
-	// 	if (!response.ok) {
-	// 		throw new Error(
-	// 			`Failed to fetch data: ${response.status} ${response.statusText}`
-	// 		);
-	// 	}
+		const response = await fetch(endpoint, {
+			method: 'GET',
+			headers,
+		});
 
-	// 	const responseJson = await response.json();
+		if (!response.ok) {
+			throw new Error(
+				`Failed to fetch data: ${response.status} ${response.statusText}`
+			);
+		}
 
-	// 	// Validate response structure
-	// 	if (!responseJson || typeof responseJson !== 'object') {
-	// 		throw new Error('Invalid response format: expected an object');
-	// 	}
+		const responseJson = await response.json();
 
-	// 	if (!('record' in responseJson)) {
-	// 		throw new Error('Invalid response structure: missing "record" property');
-	// 	}
+		if (!responseJson || typeof responseJson !== 'object') {
+			throw new Error('Invalid response format: expected an object');
+		}
 
-	// 	return responseJson.record;
-	// } catch (error) {
-	// 	if (error instanceof Error) {
-	// 		throw error;
-	// 	}
-	// 	throw new Error(`Unexpected error while fetching data: ${String(error)}`);
-	// }
+		if (!('record' in responseJson)) {
+			throw new Error('Invalid response structure: missing "record" property');
+		}
+
+		const record = responseJson.record;
+
+		return separateLanguages(record, language);
+	} catch (error) {
+		if (error instanceof Error) {
+			throw error;
+		}
+		throw new Error(`Unexpected error while fetching data: ${String(error)}`);
+	}
 };
