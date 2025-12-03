@@ -5,27 +5,43 @@ import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
 
 interface Props {
-	title: string;
-	description: string;
+  title: string;
+  image: string;
+  summary: string;
+  url: string;
+	lang: string;
 }
 
-const { title, description } = Astro.props
+const { title, image, summary, url, lang } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content={description} />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="portafolio/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <meta name="description" content={summary} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href={image} />
+
+    <meta property="og:url" content={url} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={summary} />
+    <meta property="og:image" content="" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content={url.split("//")[1] ?? ''} />
+    <meta property="twitter:url" content={url} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={summary} />
+    <meta name="twitter:image" content="" />
+  </head>
 
 	<body id="body">
 		<div id="mouse" />
-		<NavBar client />
+		<NavBar lang={lang} />
 		<slot />
 		<Footer />
 	</body>
@@ -42,11 +58,24 @@ const { title, description } = Astro.props
 		mouse!.style.top = (followMouse[1] - 25) + "px";
 	})
 </script>
-
+	
 <style is:global>
 	:root {
-    color-scheme: light dark;
-		color: #FFF7ED;
+		color-scheme: light dark;
+		
+		--color-secondary-text: #E4FBFB;
+		--color-secondary-glow: #00F7FF;
+		--color-secondary-accent: #00B8BF;
+		--color-secondary-muted: #1F4345;
+
+		--color-text: #FBE4E4;
+		--color-glow: #FF0800;
+		--color-accent: #BF0600;
+		--color-muted: #45211F;
+
+		--color-bg-darker: #080404;
+		--color-bg: #151111;
+		--color-bg-lighter: #1F1616;
 	}
 
 	html {
@@ -55,7 +84,7 @@ const { title, description } = Astro.props
 	}
 
 	#mouse {
-		background-color: #25E5EB;
+		background-color: var(--color-secondary-glow);
 		position: fixed;
 		width: 50px;
 		height: 50px;
@@ -66,8 +95,8 @@ const { title, description } = Astro.props
 	}
 
 	body {
-		background-color: #141414;
-		color: #FFF7ED;
+		background-color: color-mix(in srgb, var(--color-bg) 100%, transparent);
+		color: var(--color-text);
 		cursor: ;
   }
 
