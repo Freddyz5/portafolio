@@ -1,0 +1,65 @@
+---
+interface Props {
+  id?: string | null | undefined;
+  title: string;
+  subTittle?: string
+  styles?: {
+    height?: string;
+    backgroundColor?: string;
+    boxShadow?: string;
+  };
+}
+
+const { id, title, subTittle, styles } = Astro.props;
+---
+
+<section id={id} style={`height: ${styles?.height}; background-color: ${styles?.backgroundColor}; box-shadow: ${styles?.boxShadow};`}>
+  <header>
+    {title && <div class="title-wrapper">
+      <div class="experience-title-line" />
+      <h1>{title}</h1>
+    </div>}
+    {subTittle && <p>{">"} {subTittle}</p>}
+  </header>
+  <slot />
+</section>
+
+<style>
+  section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    margin: 8rem 0;
+  }
+  header {
+    max-width: 1140px;
+    width: 100%;
+    text-align: start;
+    margin-bottom: 2rem;
+  }
+  .title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .experience-title-line {
+    height: 4px;
+    width: 3rem;
+    background-color: var(--color-glow);
+  }
+
+  h1 {
+    color: var(--color-glow);
+    text-shadow: 0 0 15px var(--color-glow);
+    text-transform: uppercase;
+  }
+  p {
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+</style>
