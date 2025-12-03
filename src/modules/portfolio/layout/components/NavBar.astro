@@ -3,6 +3,13 @@ import MenuIcon from "src/shared/icons/Menu.astro";
 import Logo from "../../../../shared/icons/Logo.astro";
 import Translate from "./Translate.astro";
 import { LINKS } from "../constants/links";
+import type { Link } from "../constants/links";
+
+interface Props {
+	lang: 'es' | 'en' | string;
+}
+
+const { lang } = Astro.props;
 
 const homeLink = LINKS.find((link) => link.id === "home");
 const menuLinks = LINKS.filter((link) => !link.isIcon);
@@ -24,19 +31,20 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 
 		<div id="menu-list" class="menu-list">
 			{
-				menuLinks.map((link) => (
+				menuLinks.map((link: Link) => (
 					<a
 						id={`nav-${link.id}`}
 						class="nav-link"
 						href={link.href}
 						data-section="nav-bar"
-						data-value={link.name}>
-						{link.name}
+						data-value={link.name}
+					>
+						{link.name instanceof Object ? (lang === 'es' ? link.name.es : link.name.en) : link.name}
 					</a>
 				))
 			}
 
-			<Translate />
+			<Translate currentLang={lang} />
 		</div>
 	</section>
 </nav>
@@ -92,7 +100,7 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 
 <style>
 	#navbar {
-		background-color: #141414;
+		background-color: var(--color-bg);
 		position: sticky;
 		top: 0px;
 		left: 0px;
@@ -108,7 +116,7 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 		text-transform: capitalize;
 		white-space: nowrap;
 		font-size: max(1.4em, 1.3vw);
-		border-bottom: 1px solid #fff7ed;
+		/* border-bottom: 1px solid #fff7ed; */
 		z-index: 3;
 
 		view-timeline-name: --navbar;
@@ -144,26 +152,27 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 	}
 	.nav-link {
 		padding: 0.2em 0.4em;
-		color: #fff7ed;
+		color: var(--color-text);
 		text-decoration: none;
 		font-weight: 500;
 		border-radius: 5px;
-		border: 1px solid #141414;
+		border: 1px solid var(--color-text);
 		transition: 300ms;
 	}
 	.navLogo {
 		width: 40px;
 		height: 40px;
-		stroke: #fff7ed;
-		color: #fff7ed;
+		stroke: var(--color-glow);
+		color: var(--color-glow);
+		filter: drop-shadow(0 0 0.5rem var(--color-accent));
 		stroke-width: 5px;
 		transition: 0.3s;
 	}
 	h1 {
-		color: #fff7ed;
+		color: var(--color-text);
 		padding: 0.2em 0.4em;
 		border-radius: 5px;
-		border: 1px solid #141414;
+		border: 1px solid var(--color-text);
 		text-align: center;
 		font-size: 25px;
 		font-weight: 400;
@@ -178,45 +187,50 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 		padding: 0.25em 0.25em;
 	}
 	.active {
-		border: 1px solid #fff7ed;
-		background: rgba(255, 247, 237, 0.1);
-		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		border: 1px solid var(--color-glow);
+		color: var(--color-glow);
+		box-shadow: 0px 0px 10px 0px var(--color-accent);
+		background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
 		scale: 1.05;
 		transition: 300ms;
 	}
 	.home-link:hover .navLogo {
+		stroke: var(--color-secondary-glow);
+		color: var(--color-secondary-glow);
+		filter: drop-shadow(0 0 0.5rem var(--color-secondary-accent));
 		transform: rotate(30deg);
 		scale: 1.1;
 		transition: 0.3s;
 	}
 	.home-link:hover h1 {
-		border: 1px solid #fff7ed;
-		background: rgba(255, 247, 237, 0.1);
-		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		border: 1px solid var(--color-secondary-glow);
+		color: var(--color-secondary-text);
+		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
+		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
 		scale: 1.05;
 		transition: 300ms;
 	}
 	.nav-link:hover {
-		border: 1px solid #fff7ed;
-		background: rgba(255, 247, 237, 0.1);
-		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		color: var(--color-secondary-text);
+		border: 1px solid var(--color-secondary-glow);
+		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
+		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
 		scale: 1.05;
 		transition: 300ms;
 	}
 	@keyframes show {
 		70% {
-			background-color: #141414;
 			top: 0px;
 			width: 100%;
-			border-bottom: 1px solid #fff7ed;
+			border-bottom: 1px solid var(--color-text);
 		}
 		100% {
-			background-color: #14141457;
+			background-color: color-mix(in srgb, var(--color-bg) 10%, transparent);
 			backdrop-filter: blur(10px);
 			top: 1px;
 			width: 99.5%;
 			border-radius: 0.1em;
-			border-bottom: 0px solid #141414;
+			border-bottom: 0px solid var(--color-text);
 		}
 	}
 	@media (700px >= width >= 0px) {
@@ -231,7 +245,7 @@ const menuLinks = LINKS.filter((link) => !link.isIcon);
 			display: flex;
 		}
 		.menu-list {
-			background-color: #141414dc;
+			background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
 			width: fit-content;
 			display: none;
 			flex-direction: column;
