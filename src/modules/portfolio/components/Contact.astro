@@ -1,60 +1,237 @@
 ---
-import CircleButton from "./CircleButton.astro";
+import InputGlitch from "./InputGlitch.astro";
+import ButtonGlitch from "./ButtonGlitch.astro";
+import Section from "./Section.astro";
+import TextareaGlitch from "./TextareaGlitch.astro";
+import Email from '../../../shared/icons/Mail.astro';
+import LinkedIn from '../../../shared/icons/Linkedin.astro';
+import GitHub from '../../../shared/icons/Github.astro';
+import type { AstroComponentFactory } from 'astro/dist/runtime/server';
+
+interface Props {
+  lang: "es" | "en";
+  basics: any;
+}
+
+const { lang, basics } = Astro.props;
+const { socialProfiles } = basics;
+
+socialProfiles.push({
+  network: "Email",
+  url: `mailto:${basics.email}`,
+  username: basics.email,
+});
+
+const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
+  Email,
+  GitHub,
+  LinkedIn,
+}
 ---
 
-<section id="contact">
-    <h1 data-section="contact" data-value="title">Let's work together...</h1>
-    <div class="grid-contact">
-        <CircleButton href="https://www.instagram.com/freddy_tacuri_/" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 4a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" /><path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M16.5 7.5l0 .01" /></svg>
-        </CircleButton>
-        <CircleButton href="https://www.linkedin.com/in/freddy-tacuri/" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M8 11l0 5" /><path d="M8 8l0 .01" /><path d="M12 16l0 -5" /><path d="M16 16v-3a2 2 0 0 0 -4 0" /></svg>
-        </CircleButton> 
-        <CircleButton href="#" isMail >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18h-7a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v7.5" /><path d="M3 6l9 6l9 -6" /><path d="M15 18h6" /><path d="M18 15l3 3l-3 3" /></svg>
-        </CircleButton>
-        <CircleButton href="https://github.com/Freddyz5" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg>
-        </CircleButton>
+<Section
+  id="contact"
+  title={lang === "es" ? "Iniciar Contacto" : "Initiate Contact"}
+  subTittle={lang === "es" ? "CANAL_DE_COMUNICACIONES_ABIERTO" : "OPEN_COMMUNICATION_CHANNEL"}
+  styles={{
+    backgroundColor: "var(--color-bg-darker)",
+    height: "800px",
+    boxShadow: "0 0 50px 20px var(--color-bg-darker)"
+  }}
+>
+  <header>Contact_interface</header>
+  <article>
+    <div class="contact-info">
+      {socialProfiles && socialProfiles.map(({ network, url, username }: { network: string; url: string; username: string }) => {
+        const Icon = SOCIAL_ICONS[network]
+        if (!Icon) return null;
+        return (
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <Icon width="50" height="50" />
+            <p class="network">{network}</p>
+            <p class="username">
+              { network === "LinkedIn" && "/in/" + username }
+              { network === "GitHub" && "@" + username }
+              { network === "Email" && username }
+            </p>
+          </a>
+        )
+      })}
     </div>
-</section>
+
+    <p>{">"} {lang === "es" ? "ENVIAR MENSAJE" : "SEND MESSAGE"}</p>
+
+    <form class="contact-form">
+    <!-- <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="f7108cef-5c2e-47ca-9f49-981de47c8bea"> -->
+      <div class="two-inputs">
+        <InputGlitch
+          input={{
+            id: "name",
+            name: "name",
+            type: "text",
+            placeholder: lang === "es" ? "Tu nombre" : "Your name",
+            required: true,
+          }}
+          margin="0"
+        />
+        <InputGlitch
+          input={{
+            id: "email",
+            name: "email",
+            type: "email",
+            placeholder: lang === "es" ? "Tu correo electrónico" : "Your email",
+            required: true,
+          }}
+          margin="0"
+        />
+      </div>
+
+      <InputGlitch
+        input={{
+          id: "subject",
+          name: "subject",
+          type: "text",
+          placeholder: lang === "es" ? "Tu asunto" : "Your subject",
+          required: true,
+        }}
+        margin="0"
+      />
+      
+      <TextareaGlitch
+        input={{
+          id: "message",
+          name: "message",
+          placeholder: lang === "es" ? "Tu mensaje" : "Your message",
+          required: true,
+        }}
+        label={{
+          labelFor: "message",
+          dataText: lang === "es" ? "Mensaje" : "Message",
+        }}
+      />
+      <ButtonGlitch
+        type="submit"
+        text={lang === "es" ? "Enviar" : "Send"}
+      />
+    </form>
+  </article>
+</Section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const accessKey = import.meta.env.PUBLIC_ACCESS_KEY_EMAIL;
+    const form = document.querySelector(".contact-form") as HTMLFormElement;
+    if (!form) return;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault(); // evita redirección
+
+      const formData = new FormData(form);
+      formData.append("access_key", accessKey);
+
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: json
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          alert("Mensaje enviado exitosamente!");
+          form.reset();
+        } else {
+          console.error("Error:", data);
+          alert("Hubo un problema al enviar el mensaje.");
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Error inesperado.");
+      }
+    });
+  });
+</script>
 
 <style>
-    #contact {
-        display: flex;
-        height: 100vh;
-        align-items: center;
-        justify-content: center;
-        gap: min(5vw, 100px);
-    }
-    h1 {
-        width: 100%;
-        text-align: right;
-        white-space: pre-line;
-        font-size: min(9vw, 70px);
-    }
-    .grid-contact {
-        width: 100%;
-        display: grid;
-        align-items: center;
-        justify-content: left;
-        grid-template-columns: repeat( 2, min(26vw, 100px));
-        gap: min(2.5vw, 30px);
-    }
-    svg {
-        width: min(20vw, 90px);
-        height: min(20vw, 90px);
-    }
-    @media (width <= 900px){
-        #contact {
-            flex-direction: column-reverse;
-        }
-        .grid-contact {
-            justify-content: center;
-        }
-        h1 {
-            text-align: center;
-        }
-    }
+  header {
+    background-color: var(--color-glow);
+    width: 60%;
+    color: var(--color-bg-darker);
+    padding: 0.6rem 1rem;
+    border-radius: 3px 3px 0 0;
+    z-index: 1;
+  }
+  article {
+    background-color: var(--color-bg);
+    border: 3px solid var(--color-glow);
+    padding: 2rem;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    border-radius: 0 0 3px 3px;
+    z-index: 1;
+  }
+  article p {
+    color: var(--color-accent);
+  }
+  .network {
+    text-transform: uppercase;
+  }
+  .username {
+    font-size: 0.85rem;
+  }
+  .contact-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .contact-info a {
+    width: 30%;
+    height: 150px;
+    border: 2px solid var(--color-glow);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--color-text);
+
+    background-color: var(--color-bg-lighter);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  .contact-info a:hover {
+    border: 2px solid var(--color-secondary-glow);
+    background-color: var(--color-secondary-muted);
+    color: var(--color-secondary-text);
+    box-shadow: 0 0 10px var(--color-secondary-glow);
+    scale: 1.05;
+    transition: all 0.3s ease;
+  }
+  .contact-info a p {
+    color: var(--color-text);
+  }
+  .contact-info a:hover p {
+    color: var(--color-secondary-text);
+  }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .two-inputs {
+    display: flex;
+    gap: 1rem;
+  }
 </style>
