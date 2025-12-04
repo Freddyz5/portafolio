@@ -1,11 +1,17 @@
 ---
 import Logo from "src/shared/icons/Logo.astro";
+
+interface Props {
+	lang: 'es' | 'en' | string;
+}
+
+const { lang } = Astro.props;
 ---
 
 <footer>
 	<figure>
 		<p>Freddy</p>
-		<Logo />
+		<Logo class="logo-footer"/>
 		<p>Tacuri</p>
 	</figure>
 	<p>
@@ -14,7 +20,7 @@ import Logo from "src/shared/icons/Logo.astro";
 			data-section="footer"
 			data-value="title"
 		>
-			Con la ayuda e inspirado por,
+			{lang === 'es' ? 'Con la ayuda e inspirado por,' : 'With the help and inspired by,'}
 		</p>
 		<a
 			href="https://www.youtube.com/c/midudev?sub_confirmation=1"
@@ -27,7 +33,7 @@ import Logo from "src/shared/icons/Logo.astro";
 
 <style>
 	footer {
-		margin-top: -100px;
+		/* margin-top: -100px; */
 		padding-top: 1.8em;
 		padding-bottom: 1em;
 		text-align: center;
@@ -42,15 +48,15 @@ import Logo from "src/shared/icons/Logo.astro";
 			),
 			repeating-linear-gradient(
 				0deg,
-				rgba(205, 205, 205, 0.2) 0px,
-				rgba(205, 205, 205, 0.2) 1px,
+				color-mix(in srgb, var(--color-muted) 25%, transparent) 0px,
+				color-mix(in srgb, var(--color-muted) 25%, transparent) 1px,
 				transparent 1px,
 				transparent 10px
 			),
 			repeating-linear-gradient(
 				90deg,
-				rgba(205, 205, 205, 0.2) 0px,
-				rgba(205, 205, 205, 0.2) 1px,
+				color-mix(in srgb, var(--color-muted) 25%, transparent) 0px,
+				color-mix(in srgb, var(--color-muted) 25%, transparent) 1px,
 				transparent 1px,
 				transparent 10px
 			),
@@ -63,7 +69,7 @@ import Logo from "src/shared/icons/Logo.astro";
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(to top, transparent 30%, #141414 100%);
+		background: linear-gradient(to top, transparent 30%, var(--color-bg-darker) 100%);
 	}
 	figure {
 		align-items: center;
@@ -74,16 +80,28 @@ import Logo from "src/shared/icons/Logo.astro";
 	svg {
 		width: 25px;
 		height: 25px;
-		stroke: #fff7ed;
-		color: #fff7ed;
+		stroke: var(--color-text);
+		color: var(--color-text);
 		stroke-width: 5px;
+	}
+	.logo-footer {
+		z-index: 2;
+		transition: 0.3s ease;
+	}
+	.logo-footer:hover {
+		stroke: var(--color-secondary-glow);
+		color: var(--color-secondary-glow);
+		filter: drop-shadow(0 0 0.5rem var(--color-secondary-accent));
+		transform: rotate(30deg);
+		scale: 1.1;
+		transition: 0.3s ease;
 	}
 	p {
 		display: inline;
 	}
 	a {
 		position: relative;
-		color: #fff7ed;
+		color: var(--color-text);
 		z-index: 5;
 	}
 </style>
