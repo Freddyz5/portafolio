@@ -1,20 +1,21 @@
 ---
 interface Props {
   text: string;
+  color?: string;
 }
 
-const { text } = Astro.props;
+const { text, color = 'var(--color-muted)' } = Astro.props;
 ---
 
 <span>
   {text}
 </span>
 
-<style>
+<style define:vars={{ color }}>
   span {
-    color: var(--color-muted);
+    color: var(--color);
     font-size: 0.75em;
-    border: 2px solid var(--color-muted);
+    border: 2px solid var(--color);
     border-radius: 3px;
     padding: 0.2em 0.6em;
     transition: all 0.3s ease;

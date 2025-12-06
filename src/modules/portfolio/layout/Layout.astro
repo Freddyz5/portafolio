@@ -3,6 +3,7 @@ import '@fontsource-variable/orbitron';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
+import type { Link } from './constants/links';
 
 interface Props {
   title: string;
@@ -10,9 +11,10 @@ interface Props {
   summary: string;
   url: string;
 	lang: string;
+	links?: Link[];
 }
 
-const { title, image, summary, url, lang } = Astro.props;
+const { title, image, summary, url, lang, links } = Astro.props;
 ---
 
 <!doctype html>
@@ -41,7 +43,7 @@ const { title, image, summary, url, lang } = Astro.props;
 
 	<body id="body">
 		<div id="mouse" />
-		<NavBar lang={lang} />
+		<NavBar lang={lang} links={links} />
 		<slot />
 		<Footer lang={lang} />
 	</body>

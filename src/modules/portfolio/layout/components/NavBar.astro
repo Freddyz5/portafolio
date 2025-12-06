@@ -7,12 +7,13 @@ import type { Link } from "../constants/links";
 
 interface Props {
 	lang: 'es' | 'en' | string;
+	links?: Link[];
 }
 
-const { lang } = Astro.props;
+const { lang, links } = Astro.props;
 
-const homeLink = LINKS.find((link) => link.id === "home");
-const menuLinks = LINKS.filter((link) => !link.isIcon);
+const homeLink = links ? links.find((link) => link.id === "home") : LINKS.find((link) => link.id === "home");
+const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((link) => !link.isIcon);
 ---
 
 <nav id="navbar">

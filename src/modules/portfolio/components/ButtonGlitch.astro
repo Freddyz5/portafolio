@@ -1,14 +1,18 @@
 ---
+import type { AstroComponentFactory } from 'astro/dist/runtime/server';
+
 interface Props {
   id?: string | null | undefined;
   className?: string | null | undefined;
   text?: string;
+  icon?: AstroComponentFactory;
+  url?: string;
   type?: "submit" | "button" | "reset";
   width?: string;
   color?: "primary" | "secondary";
 }
 
-const { id, className, text, type = "button", width = "100%", color = "primary" } = Astro.props;
+const { id, className, text, icon: Icon, url, type = "button", width = "100%", color = "primary" } = Astro.props;
 
 const buttonColors = color === "secondary"
   ? {
@@ -36,8 +40,18 @@ const buttonColors = color === "secondary"
   `}
   class={`glitch-btn ${className}`}
 >
+  {Icon && <Icon width={24} height={24} />}
   {text}
 </button>
+
+<script define:vars={{ id, url}}>
+  if (url) {
+    const urlLink = document.getElementById(id);
+    urlLink?.addEventListener('click', () => {
+      window.location.href = url;
+    });
+  }
+</script>
 
 <style>
   .glitch-btn {
@@ -45,6 +59,11 @@ const buttonColors = color === "secondary"
     
     --glitch-anim-duration: 0.5s;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    
     width: width;
     padding: 0.8em;
     background-color: transparent;
