@@ -6,7 +6,11 @@
       "es": "Desarrollador Full Stack",
       "en": "Full Stack Developer"
     },
-    "image": "/freddytacuri.png",
+    "image": {
+      "url1": "/freddytacuri.png",
+      "url2": "/freddytacuripixel.png",
+      "alt": "Foto de Freddy Tacuri"
+    },
     "email": "freddyltacuri@gmail.com",
     "phone": "0995781302",
     "url": "https://freddyz5.github.io/portafolio",
@@ -214,7 +218,8 @@
       "startDate": "fecha de inicio",
       "endDate": "fecha de finalización",
       "status": "Estado del proyecto (en curso, completado, etc.)",
-      "summary": "Descripción del proyecto",
+      "summary": "Resumen corto del proyecto",
+      "description": "Descripción detallada del proyecto",
       "highlights": [
         "Cosas destacadas del proyecto",
         "Otra cosa destacada",
