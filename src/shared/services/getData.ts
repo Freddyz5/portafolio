@@ -1,4 +1,5 @@
 import { separateLanguages } from '../utils/languageSeparator';
+// import data from '../../resume.json'
 
 type LanguageType = 'es' | 'en';
 
@@ -40,6 +41,7 @@ export const getData = async (
 		}
 
 		const record = responseJson.record;
+		// const record = data;
 
 		return separateLanguages(record, language);
 	} catch (error) {
