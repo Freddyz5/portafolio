@@ -3,6 +3,7 @@ import '@fontsource-variable/orbitron';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
+import MobileWarning from '../../../shared/compontens/MobileWarning.astro';
 import type { Link } from './constants/links';
 
 interface Props {
@@ -42,6 +43,7 @@ const { title, image, summary, url, lang, links } = Astro.props;
   </head>
 
 	<body id="body">
+		<MobileWarning lang={lang} />
 		<div id="mouse" />
 		<NavBar lang={lang} links={links} />
 		<slot />
