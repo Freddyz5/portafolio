@@ -47,8 +47,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Debug env
+        run: |
+          echo "PUBLIC_JSON_ENDPOINT = $PUBLIC_JSON_ENDPOINT"
+          echo "PUBLIC_ACCESS_KEY = $PUBLIC_ACCESS_KEY"
+          echo "PUBLIC_ACCESS_KEY_EMAIL = $PUBLIC_ACCESS_KEY_EMAIL"
+
       - name: Install, build, and upload site
         uses: withastro/action@v1
+        env:
+          PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
+          PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
+          PUBLIC_ACCESS_KEY_EMAIL: ${{ secrets.PUBLIC_ACCESS_KEY_EMAIL }}
         # Config opcional:
         # with:
         #   node-version: 20
