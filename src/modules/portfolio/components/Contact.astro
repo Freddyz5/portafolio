@@ -1,0 +1,237 @@
+---
+import InputGlitch from "./InputGlitch.astro";
+import ButtonGlitch from "./ButtonGlitch.astro";
+import Section from "./Section.astro";
+import TextareaGlitch from "./TextareaGlitch.astro";
+import Email from '../../../shared/icons/Mail.astro';
+import LinkedIn from '../../../shared/icons/Linkedin.astro';
+import GitHub from '../../../shared/icons/Github.astro';
+import type { AstroComponentFactory } from 'astro/dist/runtime/server';
+
+interface Props {
+  lang: "es" | "en";
+  basics: any;
+}
+
+const { lang, basics } = Astro.props;
+const { socialProfiles } = basics;
+
+socialProfiles.push({
+  network: "Email",
+  url: `mailto:${basics.email}`,
+  username: basics.email,
+});
+
+const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
+  Email,
+  GitHub,
+  LinkedIn,
+}
+---
+
+<Section
+  id="contact"
+  title={lang === "es" ? "Iniciar Contacto" : "Initiate Contact"}
+  subTittle={lang === "es" ? "CANAL_DE_COMUNICACIONES_ABIERTO" : "OPEN_COMMUNICATION_CHANNEL"}
+  styles={{
+    backgroundColor: "var(--color-bg-darker)",
+    height: "1000px",
+    boxShadow: "0 0 50px 20px var(--color-bg-darker)"
+  }}
+>
+  <header>Contact_interface</header>
+  <article>
+    <div class="contact-info">
+      {socialProfiles && socialProfiles.map(({ network, url, username }: { network: string; url: string; username: string }) => {
+        const Icon = SOCIAL_ICONS[network]
+        if (!Icon) return null;
+        return (
+          <a href={url} target="_blank" rel="noopener noreferrer">
+            <Icon width="50" height="50" />
+            <p class="network">{network}</p>
+            <p class="username">
+              { network === "LinkedIn" && "/in/" + username }
+              { network === "GitHub" && "@" + username }
+              { network === "Email" && username }
+            </p>
+          </a>
+        )
+      })}
+    </div>
+
+    <p>{">"} {lang === "es" ? "ENVIAR MENSAJE" : "SEND MESSAGE"}</p>
+
+    <form class="contact-form">
+    <!-- <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="f7108cef-5c2e-47ca-9f49-981de47c8bea"> -->
+      <div class="two-inputs">
+        <InputGlitch
+          input={{
+            id: "name",
+            name: "name",
+            type: "text",
+            placeholder: lang === "es" ? "Tu nombre" : "Your name",
+            required: true,
+          }}
+          margin="0"
+        />
+        <InputGlitch
+          input={{
+            id: "email",
+            name: "email",
+            type: "email",
+            placeholder: lang === "es" ? "Tu correo electrónico" : "Your email",
+            required: true,
+          }}
+          margin="0"
+        />
+      </div>
+
+      <InputGlitch
+        input={{
+          id: "subject",
+          name: "subject",
+          type: "text",
+          placeholder: lang === "es" ? "Tu asunto" : "Your subject",
+          required: true,
+        }}
+        margin="0"
+      />
+      
+      <TextareaGlitch
+        input={{
+          id: "message",
+          name: "message",
+          placeholder: lang === "es" ? "Tu mensaje" : "Your message",
+          required: true,
+        }}
+        label={{
+          labelFor: "message",
+          dataText: lang === "es" ? "Mensaje" : "Message",
+        }}
+      />
+      <ButtonGlitch
+        type="submit"
+        text={lang === "es" ? "Enviar" : "Send"}
+      />
+    </form>
+  </article>
+</Section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const accessKey = import.meta.env.PUBLIC_ACCESS_KEY_EMAIL;
+    const form = document.querySelector(".contact-form") as HTMLFormElement;
+    if (!form) return;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault(); // evita redirección
+
+      const formData = new FormData(form);
+      formData.append("access_key", accessKey);
+
+      const object = Object.fromEntries(formData);
+      const json = JSON.stringify(object);
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: json
+        });
+
+        const data = await res.json();
+        
+        if (data.success) {
+          alert("Mensaje enviado exitosamente!");
+          form.reset();
+        } else {
+          console.error("Error:", data);
+          alert("Hubo un problema al enviar el mensaje.");
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Error inesperado.");
+      }
+    });
+  });
+</script>
+
+<style>
+  header {
+    background-color: var(--color-glow);
+    width: 60%;
+    color: var(--color-bg-darker);
+    padding: 0.6rem 1rem;
+    border-radius: 6px 6px 0 0;
+    z-index: 1;
+  }
+  article {
+    background-color: var(--color-bg);
+    border: 3px solid var(--color-glow);
+    padding: 2rem;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    border-radius: 0 0 6px 6px;
+    z-index: 1;
+  }
+  article p {
+    color: var(--color-accent);
+  }
+  .network {
+    text-transform: uppercase;
+  }
+  .username {
+    font-size: 0.85rem;
+  }
+  .contact-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .contact-info a {
+    width: 30%;
+    height: 150px;
+    border: 2px solid var(--color-glow);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--color-text);
+
+    background-color: var(--color-bg-lighter);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  .contact-info a:hover {
+    border: 2px solid var(--color-secondary-glow);
+    background-color: var(--color-secondary-muted);
+    color: var(--color-secondary-text);
+    box-shadow: 0 0 10px var(--color-secondary-glow);
+    scale: 1.05;
+    transition: all 0.3s ease;
+  }
+  .contact-info a p {
+    color: var(--color-text);
+  }
+  .contact-info a:hover p {
+    color: var(--color-secondary-text);
+  }
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .two-inputs {
+    display: flex;
+    gap: 1rem;
+  }
+</style>

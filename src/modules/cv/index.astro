@@ -1,0 +1,47 @@
+---
+import Hero from './components/Hero.astro';
+import About from './components/About.astro';
+import Experience from './components/Experience.astro';
+import Projects from './components/Projects.astro';
+import Skills from './components/Skills.astro';
+import Education from './components/Education.astro';
+import SupplementaryEducation from './components/SupplementaryEducation.astro';
+import Languages from './components/Languages.astro';
+import KeyboardManager from './components/KeyboardManager.astro';
+
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+const { basics, works, projects, education, certificates, skills, languages } = data;
+---
+
+<>
+  <main>
+    <Hero basics={basics} />
+    <About summary={basics.summary} />
+    <Experience works={works} />
+    <Projects projects={projects} />
+    <Education education={education} />
+    <SupplementaryEducation certificates={certificates} />
+    <Skills skills={skills} />
+    <Languages languages={languages} />
+  </main>
+
+  <KeyboardManager />
+</>
+
+<style>
+  main {
+    padding: 2rem;
+    margin: auto;
+    width: 100%;
+  }
+
+  @media (width <= 700px) {
+    main {
+      padding: 1rem;
+    }
+  }
+</style>

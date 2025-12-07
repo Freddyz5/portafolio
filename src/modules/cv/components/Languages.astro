@@ -1,0 +1,37 @@
+---
+import Section from "../components/Section.astro";
+
+interface Props {
+  languages: any[];
+}
+
+const { languages } = Astro.props;
+---
+
+<Section title="Idiomas">
+  <ul>
+    {
+      languages.map(({ language, fluency }) => (
+        <li><span>{language}:</span> {fluency}</li>
+      ))
+    }
+  </ul>
+</Section>
+
+<style>
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  li span {
+    color: #444;
+    font-weight: bold;
+  }

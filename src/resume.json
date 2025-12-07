@@ -1,0 +1,239 @@
+{
+  "basics": {
+    "id": "basics-main",
+    "name": "Freddy Tacuri",
+    "label": {
+      "es": "Desarrollador Full Stack",
+      "en": "Full Stack Developer"
+    },
+    "image": {
+      "url1": "/freddytacuri.png",
+      "url2": "/freddytacuripixel.png",
+      "alt": "Foto de Freddy Tacuri"
+    },
+    "email": "freddyltacuri@gmail.com",
+    "phone": "0995781302",
+    "url": "https://freddyz5.github.io/portafolio",
+    "summary": {
+      "es": "Apasionado por la creación y el desarrollo web, con un fuerte interés en entender el funcionamiento de las tecnologías. Soy un profesional autodidacta en constante evolución, con experiencia en desarrollo front-end y conocimientos en backend. He trabajado con tecnologías como Next.js, React, TypeScript y frameworks modernos, colaborando en proyectos innovadores.",
+      "en": "Passionate about creation and web development, with a strong interest in understanding how technologies work. I am a self-taught professional in constant evolution, with experience in front-end development and knowledge in backend. I have worked with technologies such as Next.js, React, TypeScript, and modern frameworks, collaborating on innovative projects."
+    },
+    "location": {
+      "city": "Quito",
+      "country": "Ecuador"
+    },
+    "socialProfiles": [
+      {
+        "network": "LinkedIn",
+        "username": "freddy-tacuri",
+        "url": "https://www.linkedin.com/in/freddy-tacuri/"
+      },
+      {
+        "network": "GitHub",
+        "username": "Freddyz5",
+        "url": "https://github.com/Freddyz5"
+      },
+      {
+        "network": "Instagram",
+        "username": "freddy_tacuri_",
+        "url": "https://www.instagram.com/freddy_tacuri_/"
+      }
+    ]
+  },
+  "works": [
+    {
+      "id": "work-initGrammers",
+      "name": "Init Grammers",
+      "position": "Desarrollador full stack",
+      "url": "https://www.initgrammers.com",
+      "startDate": "2023-10-02",
+      "endDate": null,
+      "summary": "Desempeñé diferentes roles dentro de varios equipos en Init Grammers, colaborando en proyectos frontend, backend y mobile.",
+      "highlights": [
+        "Desarrollo con React y Next.js: Creación de aplicaciones web con componentes reutilizables, optimización de rendimiento y buenas prácticas de UX.",
+        "anejo de estado con Zustand: Experiencia en la gestión eficiente del estado en aplicaciones frontend. ",
+        "APIs — GraphQL y REST: Experiencia con GraphQL para modelado y consumo de datos; también integración con APIs REST cuando aplica.",
+        "Backend: Desarrollo de servicios en Node.js (Hono / Express) siguiendo principios de arquitectura hexagonal y separación de responsabilidades.",
+        "Bases de datos: PostgreSQL alojado en Neon; uso de Drizzle y Prisma para modelado, migraciones y acceso eficiente a datos. ",
+        "React Native: Desarrollo de aplicaciones móviles con React Native y Expo — uso práctico en funcionalidades productivas, implementación de pantallas y navegación.",
+        "Buenas prácticas de Git y colaboración en equipo: Uso de GitHub, trabajo con ramas, pull requests y colaboración en entornos ágiles."
+      ],
+      "teams": [
+        {
+          "teamId": "team-mediaValue",
+          "teamName": "Media Value",
+          "role": "Frontend",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo"
+        },
+        {
+          "teamId": "team-MTC",
+          "teamName": "MTC (Monitoreo Temperatura Controlada)",
+          "role": "Frontend - Mobile",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo"
+        },
+        {
+          "teamId": "team-marcaPatito",
+          "teamName": "Marca Patito",
+          "role": "Frontend",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo"
+        },
+        {
+          "teamId": "team-TCI",
+          "teamName": "TCI TCLAIRCARGO",
+          "role": "Full stack",
+          "stack": [
+            "React",
+            "TypeScript",
+            "Tailwind"
+          ],
+          "summary": "Descripción general del equipo"
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu-uni-xyz",
+      "institution": "Universidad donde estudiaste",
+      "area": "La especialidad que estudiaste",
+      "startDate": "fecha de inicio",
+      "endDate": "fecha de finalización"
+    },
+    {
+      "id": "edu-uni-xyz",
+      "institution": "Colegio donde estudiaste",
+      "area": "La especialidad que estudiaste",
+      "startDate": "fecha de inicio",
+      "endDate": "fecha de finalización"
+    }
+  ],
+  "awards": [
+    {
+      "id": "award-hack-quito",
+      "title": "Titulo del premio",
+      "date": "fecha en que se obtuvo",
+      "awarder": "Compañía o institution que lo otorga",
+      "summary": "Resumen del premio"
+    }
+  ],
+  "certificates": [
+    {
+      "id": "cert-react-advanced",
+      "name": "Nombre del certificado",
+      "issuer": "Lugar donde se obtuvo",
+      "date": "2023-01-15",
+      "url": "link al certificado"
+    },
+    {
+      "id": "cert-react-advanced",
+      "name": "Nombre del certificado",
+      "issuer": "Lugar donde se obtuvo",
+      "date": "2023-01-15",
+      "url": "link al certificado"
+    }
+  ],
+  "skills": [
+    {
+      "id": "skill-language",
+      "name": "Nombre de la habilidad",
+      "level": "nivel",
+      "keywords": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    },
+    {
+      "id": "skill-language",
+      "name": "Nombre de la habilidad 2",
+      "level": "nivel",
+      "keywords": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    },
+    {
+      "id": "skill-framework-library",
+      "name": "Nombre de la habilidad",
+      "level": "nivel",
+      "keywords": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    },
+    {
+      "id": "skill-technology",
+      "name": "Nombre de la habilidad",
+      "level": "nivel",
+      "keywords": [
+        "HTML",
+        "CSS",
+        "JavaScript"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "id": "lang-es",
+      "language": "English",
+      "fluency": "Native speaker"
+    },
+    {
+      "id": "lang-es",
+      "language": "Spanish",
+      "fluency": "Native speaker"
+    }
+  ],
+  "interests": [
+    {
+      "id": "interest-music",
+      "name": "Nombre de lo que te interesa hobbies",
+      "description": "Descripción sin hay algo que decir",
+      "keywords": [
+        "Palabras clave"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-smartwaste-hack2024",
+      "name": "Nombre del proyecto",
+      "startDate": "fecha de inicio",
+      "endDate": "fecha de finalización",
+      "status": "Estado del proyecto (en curso, completado, etc.)",
+      "summary": "Resumen corto del proyecto",
+      "description": "Descripción detallada del proyecto",
+      "highlights": [
+        "Cosas destacadas del proyecto",
+        "Otra cosa destacada",
+        "Más cosas destacadas"
+      ],
+      "technologies": [
+        "tecnologías",
+        "usadas",
+        "en",
+        "el",
+        "proyecto"
+      ],
+      "url": "Url del proyecto",
+      "repo": "Url del reposotorio si es publico"
+    }
+  ]
+}

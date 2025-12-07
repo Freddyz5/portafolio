@@ -1,0 +1,249 @@
+---
+import MenuIcon from "src/shared/icons/Menu.astro";
+import Logo from "../../../../shared/icons/Logo.astro";
+import { LINKS } from "../constants/links";
+
+const homeLink = LINKS.find((link) => link.id === "home");
+const menuLinks = LINKS.filter((link) => !link.isIcon);
+---
+
+<nav id="navbar">
+	<section class="home-container">
+		<a id=`nav-${homeLink?.id}` href={homeLink?.href} class="home-link">
+			<Logo class="navLogo" />
+			<h1>Configuraciones</h1>
+		</a>
+	</section>
+
+	<section class="link-container">
+		<a id="menu" href="#menu-list" class="menu nav-link">
+			<MenuIcon />
+			<h1>Freddy</h1>
+		</a>
+
+		<div id="menu-list" class="menu-list">
+			{
+				menuLinks.map((link) => (
+					<a
+						id={`nav-${link.id}`}
+						class="nav-link"
+						href={link.href}
+						data-section="nav-bar"
+						data-value={link.name}>
+						{link.name}
+					</a>
+				))
+			}
+		</div>
+	</section>
+</nav>
+
+<script>
+	import { LINKS } from "../constants/links";
+
+	document.addEventListener("DOMContentLoaded", () => {
+		const navlinks = document.querySelectorAll("nav a");
+		const navbar = document.getElementById("navbar");
+
+		const sections = LINKS.map((link) => {
+			return {
+				name: link.id,
+				element: document.getElementById(`${link.id}`),
+			};
+		});
+
+		// window.addEventListener("load", () => {
+		// 	navlinks.forEach((link) => {
+		// 		link.children[1].classList.add("name-off");
+		// 	});
+		// });
+
+		window.addEventListener("scroll", () => {
+			let currentSection = "";
+			let sectionTop = 0;
+			let sectionBottom = 0;
+
+			sections.map((section) => {
+				if (!section.element || !navbar) return;
+
+				sectionTop = section.element!.offsetTop - navbar!.offsetHeight;
+				sectionBottom = sectionTop + section.element!.offsetHeight;
+
+				if (window.scrollY >= sectionTop && window.scrollY < sectionBottom) {
+					currentSection = section.name;
+				}
+			});
+
+			navlinks.forEach((link) => {
+				link.classList.remove("active");
+
+				link.children[1] ? link.children[1].classList.remove("name-off") : "";
+
+				if (link.getAttribute("href")!.substring(1) === currentSection) {
+					link.getAttribute("href")!.substring(1) === "home"
+						? link.children[1].classList.add("name-off")
+						: link.classList.add("0");
+				}
+			});
+		});
+	});
+</script>
+
+<style>
+	#navbar {
+		background-color: #141414;
+		position: sticky;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		width: 100%;
+		height: 65px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0 0.5em;
+		gap: 0.5em;
+		text-transform: capitalize;
+		white-space: nowrap;
+		font-size: max(1.4em, 1.3vw);
+		border-bottom: 1px solid #fff7ed;
+		z-index: 3;
+
+		view-timeline-name: --navbar;
+		view-timeline-axis: block;
+
+		animation-timeline: --navbar;
+		animation-name: show;
+
+		animation-range: entry 0% cover 30%;
+		animation-fill-mode: both;
+	}
+	.home-container {
+		width: 100%;
+	}
+	.home-link {
+		width: fit-content;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		gap: 0.6em;
+	}
+	.menu {
+		display: none;
+	}
+	.menu-list {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+		gap: 15px;
+	}
+	.nav-link {
+		padding: 0.2em 0.4em;
+		color: #fff7ed;
+		text-decoration: none;
+		font-weight: 500;
+		border-radius: 5px;
+		border: 1px solid #141414;
+		transition: 300ms;
+	}
+	.navLogo {
+		width: 40px;
+		height: 40px;
+		stroke: #fff7ed;
+		color: #fff7ed;
+		stroke-width: 5px;
+		transition: 0.3s;
+	}
+	h1 {
+		color: #fff7ed;
+		padding: 0.2em 0.4em;
+		border-radius: 5px;
+		border: 1px solid #141414;
+		text-align: center;
+		font-size: 25px;
+		font-weight: 400;
+		transition: 0.3s;
+	}
+	.name-off {
+		opacity: 0;
+		transition: 0.3s;
+	}
+	.translate {
+		margin-left: -0.2em;
+		padding: 0.25em 0.25em;
+	}
+	.active {
+		border: 1px solid #fff7ed;
+		background: rgba(255, 247, 237, 0.1);
+		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		scale: 1.05;
+		transition: 300ms;
+	}
+	.home-link:hover .navLogo {
+		transform: rotate(30deg);
+		scale: 1.1;
+		transition: 0.3s;
+	}
+	.home-link:hover h1 {
+		border: 1px solid #fff7ed;
+		background: rgba(255, 247, 237, 0.1);
+		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		scale: 1.05;
+		transition: 300ms;
+	}
+	.nav-link:hover {
+		border: 1px solid #fff7ed;
+		background: rgba(255, 247, 237, 0.1);
+		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		scale: 1.05;
+		transition: 300ms;
+	}
+	@keyframes show {
+		70% {
+			background-color: #141414;
+			top: 0px;
+			width: 100%;
+			border-bottom: 1px solid #fff7ed;
+		}
+		100% {
+			background-color: #14141457;
+			backdrop-filter: blur(10px);
+			top: 1px;
+			width: 99.5%;
+			border-radius: 0.1em;
+			border-bottom: 0px solid #141414;
+		}
+	}
+	@media (700px >= width >= 0px) {
+		.link-container {
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: end;
+		}
+		.menu {
+			display: flex;
+		}
+		.menu-list {
+			background-color: #141414dc;
+			width: fit-content;
+			display: none;
+			flex-direction: column;
+			align-items: flex-end;
+			position: absolute;
+			top: 110%;
+			right: 1%;
+			padding: 0.5em;
+			border: 1px solid #fff7ed;
+			border-radius: 0.5em;
+		}
+		.menu-list:target {
+			display: flex;
+		}
+	}
+</style>

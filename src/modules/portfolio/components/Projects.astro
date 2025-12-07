@@ -1,0 +1,55 @@
+---
+import Section from "./Section.astro";
+import ProjectsCard from "./ProjectsCard.astro";
+
+interface Props {
+  lang: "es" | "en";
+  projects: any[];
+}
+
+const { lang, projects } = Astro.props;
+---
+
+<Section
+  id="projects"
+  title={lang === "es" ? "Proyectos destacados" : "Featured Projects"}
+  subTittle={lang === "es" ? "PRESENTACIÓN_DE_PORTAFOLIO • SISTEMAS_DE_MISIÓN_CRÍTICA" : "PORTFOLIO_SHOWCASE • MISSION_CRITICAL_SYSTEMS"}
+>
+  <div class="cards-wrapper">
+    {projects && projects.map(({ id, name, image, summary, description, technologies, url, repo }) =>
+      <ProjectsCard
+        id={id}
+        name={name}
+        image={image}
+        summary={summary}
+        description={description}
+        technologies={technologies}
+        url={url}
+        repo={repo}
+      />
+    )}
+  </div>
+</Section>
+
+<style>
+  .cards-wrapper {
+    max-width: 1140px;
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    cursor: pointer;
+  }
+  @media (max-width: 1000px) {
+    .cards-wrapper {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 700px) {
+    .cards-wrapper {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
+</style>

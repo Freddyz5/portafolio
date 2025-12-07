@@ -1,0 +1,79 @@
+---
+import type { Link } from "../layout/constants/links";
+
+interface Props {
+	links: Link[];
+}
+
+const { links } = Astro.props;
+---
+
+<nav id="navbar" class="navbar-menu">
+	<section id="menu-list" class="menu-list">
+		{links.map((link) => (
+			<a
+				id={`nav-${link.id}`}
+				class="nav-link"
+				href={link.href}
+				data-section="nav-bar"
+				data-value={link.name}>
+				{link.name}
+			</a>
+		))}
+	</section>
+</nav>
+
+<style>
+	#navbar {
+		background-color: #141414;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		padding: 0.5em;
+		gap: 0.5em;
+		text-transform: capitalize;
+		border: 1px solid #fff7ed;
+		border-radius: 10px;
+		overflow-y: scroll;
+	}
+	.menu-list {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-around;
+		align-items: center;
+		gap: 15px;
+	}
+	.nav-link {
+		padding: 0.2em 0.4em;
+		color: #fff7ed;
+		text-decoration: none;
+		font-weight: 500;
+		border-radius: 5px;
+		border: 1px solid #141414;
+		transition: 300ms;
+	}
+	.name-off {
+		opacity: 0;
+		transition: 0.3s;
+	}
+	.active {
+		border: 1px solid #fff7ed;
+		background: rgba(255, 247, 237, 0.1);
+		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		scale: 1.05;
+		transition: 300ms;
+	}
+	.nav-link:hover {
+		border: 1px solid #fff7ed;
+		background: rgba(255, 247, 237, 0.1);
+		box-shadow: 0px 0px 10px 0px rgba(255, 247, 237, 0.5);
+		scale: 1.05;
+		transition: 300ms;
+	}
+	@media (700px >= width >= 0px) {
+		.menu-list:target {
+			display: flex;
+		}
+	}
+</style>

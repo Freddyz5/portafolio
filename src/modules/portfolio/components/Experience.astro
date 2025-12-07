@@ -1,0 +1,41 @@
+---
+import ExperienceCard from './ExperienceCard.astro';
+import Section from './Section.astro';
+
+interface Props {
+  lang: "es" | "en";
+  works: any[];
+}
+
+const { lang, works } = Astro.props;
+---
+
+<Section
+  id="experience"
+  title={lang === "es" ? "Registro de Experiencia" : "Experience log"}
+  subTittle={lang === "es" ? "HISTORIAL_PROFESIONAL • REGISTROS_DE_MISIONES • ARCHIVOS_DE_EQUIPO" : "CAREER_HISTORY • MISSION_RECORDS • TEAM_ARCHIVES"}
+>
+  <div class="container">
+    {works && works.map(({ name, position, url, startDate, endDate, summary, highlights, teams }) =>
+      <ExperienceCard
+        lang={lang}
+        name={name}
+        position={position}
+        url={url}
+        startDate={startDate}
+        endDate={endDate}
+        summary={summary}
+        highlights={highlights}
+        teams={teams}
+      />
+    )}
+  </div>
+</Section>
+
+<style>
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+</style>

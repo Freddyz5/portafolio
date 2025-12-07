@@ -1,0 +1,127 @@
+---
+import '@fontsource-variable/orbitron';
+
+import NavBar from './components/NavBar.astro';
+import Footer from './components/Footer.astro';
+import MobileWarning from '../../../shared/compontens/MobileWarning.astro';
+import type { Link } from './constants/links';
+
+interface Props {
+  title: string;
+  image: string;
+  summary: string;
+  url: string;
+	lang: string;
+	links?: Link[];
+}
+
+const { title, image, summary, url, lang, links } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <meta name="description" content={summary} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href={image} />
+
+    <meta property="og:url" content={url} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={summary} />
+    <meta property="og:image" content="" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content={url.split("//")[1] ?? ''} />
+    <meta property="twitter:url" content={url} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={summary} />
+    <meta name="twitter:image" content="" />
+  </head>
+
+	<body id="body">
+		<MobileWarning lang={lang} />
+		<div id="mouse" />
+		<NavBar lang={lang} links={links} />
+		<slot />
+		<Footer lang={lang} />
+	</body>
+</html>
+
+<script>
+	const body = document.getElementById("body");
+	const mouse = document.getElementById("mouse");
+
+	body?.addEventListener("mousemove", (event) => {
+		const followMouse = [event.clientX, event.clientY];
+
+		mouse!.style.left = (followMouse[0] - 25) + "px";
+		mouse!.style.top = (followMouse[1] - 25) + "px";
+	})
+</script>
+	
+<style is:global>
+	:root {
+		color-scheme: light dark;
+		
+		--color-secondary-text: #E4FBFB;
+		--color-secondary-glow: #00F7FF;
+		--color-secondary-accent: #00B8BF;
+		--color-secondary-muted: #1F4345;
+
+		--color-text: #FBE4E4;
+		--color-glow: #FF0800;
+		--color-accent: #BF0600;
+		--color-muted: #893f3b;
+
+		--color-bg-darker: #080404;
+		--color-bg: #151111;
+		--color-bg-lighter: #1F1616;
+	}
+
+	html {
+		font-family: 'Orbitron Variable', sans-serif;
+		scroll-behavior: smooth;
+	}
+
+	#mouse {
+		background-color: var(--color-secondary-glow);
+		position: fixed;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
+		filter: blur(50px);
+		z-index: 0;
+		pointer-events: none;
+	}
+
+	body {
+		background-color: color-mix(in srgb, var(--color-bg) 100%, transparent);
+		color: var(--color-text);
+		cursor: ;
+  }
+
+	* {
+		margin: 0;
+		padding: 0;
+		border: 0;
+		box-sizing: border-box;
+		vertical-align: baseline;
+	}
+
+	img , figure{
+		display: flex;
+		object-fit: cover;
+		object-position: center center;
+	}
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+	
+</style>

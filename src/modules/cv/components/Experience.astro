@@ -1,0 +1,149 @@
+---
+import Section from '../components/Section.astro';
+
+interface Props {
+  works: any[];
+}
+
+const { works } = Astro.props;
+---
+
+<Section title="Experiencia Profesional">
+  <ul class="works">
+    {works.map(({ name, position, url, startDate, endDate, summary, highlights, teams }) => {
+      const formattedDate = (date: string) => {
+        const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
+        const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
+        return result;
+      }
+
+      const startYear = formattedDate(startDate)
+      const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
+
+      return (
+        <li>
+          <article>
+            <header>
+              <div>
+                <h3>
+                  <a href={url} title={`Ver ${name}`} target="_blank">
+                    {name}
+                  </a>
+                </h3>
+                <h4>{position}</h4>
+              </div>
+
+              <time>{startYear} - {endYear}</time>
+            </header>
+
+            <footer>
+              <p>{summary}</p>
+              {highlights && highlights.length > 0 &&
+                <ul class="highlights">
+                  {highlights.map((highlight: string) => (
+                    <li>
+                      <p>{highlight}</p>
+                    </li>
+                  ))}
+                </ul>
+              }
+              {teams && teams.length > 0 &&
+                <ul class="teams">
+                  {teams.map(({ teamName, summary }: { teamName: string; summary: string }) => (
+                    <li>
+                      <h5 class="teamName">{teamName}</h5>
+                      <p>{summary}</p>
+                    </li>
+                  ))}
+                </ul>
+              }
+            </footer>
+          </article>
+        </li>
+      )
+    })}
+  </ul>
+</Section>
+
+<style>
+  .works {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  article h3 {
+    font-weight: 500;
+  }
+
+  article a {
+    font-weight: bold;
+    color: #444;
+  }
+
+  article a:hover {
+    text-decoration: underline;
+  }
+
+  article h4 {
+    font-weight: lighter;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  header div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  time {
+    font-size: 0.85rem;
+    min-width: 102px;
+  }
+
+  footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  footer p {
+    break-inside: avoid;
+  }
+
+  footer .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: circle;
+    padding-left: 1rem;
+    break-inside: avoid;
+  }
+
+  footer .teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: square;
+    padding-left: 1rem;
+    break-inside: avoid;
+  }
+
+  .teamName {
+    line-height: 1.5;
+    margin: 0;
+    color: #555;
+  }
+
+  @media (width <= 700px) {
+    time {
+      text-align: right;
+    }
+  }
+</style>
