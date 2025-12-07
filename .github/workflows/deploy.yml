@@ -40,6 +40,7 @@ jobs:
     env:
       PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
       PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
+      PUBLIC_ACCESS_KEY_EMAIL: ${{ secrets.PUBLIC_ACCESS_KEY_EMAIL }}
     needs: release
 
     steps:
