@@ -37,6 +37,9 @@ jobs:
   build:
     name: Build Astro site
     runs-on: ubuntu-latest
+    env:
+      PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
+      PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
     needs: release
 
     steps:
@@ -45,9 +48,6 @@ jobs:
 
       - name: Install, build, and upload site
         uses: withastro/action@v1
-        env:
-          PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
-          PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
         # Config opcional:
         # with:
         #   node-version: 20
