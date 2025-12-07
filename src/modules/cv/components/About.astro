@@ -1,0 +1,21 @@
+---
+import Section from '../components/Section.astro';
+
+interface Props {
+  summary: string;
+}
+
+const { summary } = Astro.props;
+---
+
+<Section>
+  <p>
+    {summary}
+  </p>
+</Section>
+
+<style>
+  p {
+    color: black;
+  }
+</style>

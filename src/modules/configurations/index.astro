@@ -1,0 +1,130 @@
+---
+import JsonNode from './components/JsonNode.astro';
+import NavBarJson from './components/NavBarJson.astro';
+import KeyModal from './components/KeyModal.astro';
+import { collectFirstLevelNodes } from './utils/collectFirstLevelNodes';
+import { getData } from './services/getData';
+
+const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
+
+const data = await getData();
+
+const menuJson = collectFirstLevelNodes(data);
+---
+
+<section>
+  <NavBarJson links={menuJson}/>
+  <article class="json-viewer">
+    <JsonNode node={data} />
+  </article>
+	<KeyModal />
+</section>
+
+<script type="module" define:vars={{ endpoint }}>
+	function collectValues(container) {
+		const inputs = container.querySelectorAll("input[data-key], textarea[data-key]");
+		const result = {};
+		inputs.forEach((input) => {
+			const keys = input.dataset.key.split(".");
+			let current = result;
+			keys.forEach((k, i) => {
+				if (i === keys.length - 1) {
+					current[k] = input.value;
+				} else {
+					if (!current[k]) current[k] = isNaN(Number(keys[i + 1])) ? {} : [];
+					current = current[k];
+				}
+			});
+		});
+		return result;
+	}
+
+	export const setData = async (
+		endpoint,
+		newData,
+		accessKey
+	) => {
+		if (!accessKey) {
+			throw new Error('Missing required parameter: accessKey');
+		}
+
+		if (!endpoint) {
+			throw new Error('Missing required environment variable: JSON_ENDPOINT');
+		}
+
+		if (newData === undefined) {
+			throw new Error('Invalid data: newData cannot be undefined');
+		}
+
+		try {
+			const headers = new Headers();
+			headers.append('Content-Type', 'application/json');
+			headers.append('X-Access-Key', accessKey);
+
+			const body = JSON.stringify(newData);
+
+			const response = await fetch(endpoint, {
+				method: 'PUT',
+				headers,
+				body,
+			});
+
+			if (!response.ok) {
+				throw new Error(
+					`Failed to update data: ${response.status} ${response.statusText}`
+				);
+			}
+
+			console.log("--- JSON preview ---");
+			console.log(JSON.stringify(newData, null, 2));
+			console.log("--------------------");
+			
+			const responseData = await response.json();
+
+			return responseData;
+		} catch (error) {
+			// Handle JSON serialization errors
+			if (error instanceof TypeError && error.message.includes('circular')) {
+				throw new Error('Cannot serialize data: circular reference detected');
+			}
+
+			// Re-throw with additional context if it's not already an Error
+			if (error instanceof Error) {
+				throw error;
+			}
+
+			throw new Error(`Unexpected error while updating data: ${String(error)}`);
+		}
+	};
+
+	// Manejar el botón de confirmar de KeyModal
+	document.getElementById("confirmBtn").addEventListener("click", async () => {
+		const modal = document.getElementById("accessKeyModal");
+		const accessKeyInput = document.getElementById("accessKeyInput");
+		const accessKey = accessKeyInput.value.trim();
+
+		if (!accessKey) {
+			alert("Por favor, ingrese una clave de acceso");
+			return;
+		}
+
+		const container = document.querySelector(".json-viewer");
+		const updatedData = collectValues(container);
+
+		try {
+			await setData(endpoint, updatedData, accessKey);
+			alert("Datos actualizados correctamente");
+			modal.style.display = "none";
+		} catch (error) {
+			console.error("Error al actualizar los datos:", error);
+			alert(`Error: ${error.message}`);
+		}
+	});
+</script>
+
+<style>
+  section {
+    width: 100%;
+    padding: 1em;
+  }
+</style>

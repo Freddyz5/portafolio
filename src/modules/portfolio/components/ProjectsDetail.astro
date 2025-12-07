@@ -1,0 +1,185 @@
+---
+import SquareChevronRight from 'src/shared/icons/SquareChevronRight.astro';
+import Chip from './Chip.astro';
+import Github from 'src/shared/icons/Github.astro';
+import Link from 'src/shared/icons/Link.astro';
+import ButtonGlitch from './ButtonGlitch.astro';
+
+interface Projects {
+  id?: string | null | undefined;
+  name: string;
+  image?: string;
+  summary?: string;
+  description: string;
+  highlights?: string[];
+  technologies: string[];
+  url: string;
+  repo: string;
+}
+
+interface Props {
+  lang: string;
+  projects: Projects[];
+}
+
+const { lang, projects } = Astro.props;
+---
+
+<!-- <section id="project-detail" style="display: none;"> -->
+<section id="project-detail" style="display: none;">
+  <div class="back-link-container">
+    <a href="#" id="back-link" class="back-link">
+      ← {lang === 'es' ? 'Volver a proyectos' : 'Back to projects'}
+    </a>
+    <div/>
+  </div>
+
+  {projects && projects.map(({ id, name, image, description, highlights, technologies, url, repo }) => (
+    <div class="project-detail-card" data-project-id={id} style="display: none;">
+      <header>
+        <SquareChevronRight width={24} height={24} />
+        <h3>{name.split(" ").join("_")}</h3>
+      </header>
+      <article>
+        <figure>
+          <img
+            src={image ?? "https://images.unsplash.com/photo-1688377051459-aebb99b42bff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjaXR5JTIwbmVvbnxlbnwxfHx8fDE3NjMwNzkzODd8MA&ixlib=rb-4.1.0&q=80&w=1080"}
+            alt="Project Image"
+            width="100%"
+            height="100%"
+          />
+        </figure>
+        
+        {description &&
+          <div class="description-section section">
+            <h4>{lang === "es" ? "> INFORME_DE_LA_MISIÓN" : "> MISSION_BRIEF"}</h4>
+            <p> {description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus ratione quo esse magnam illo quas, quae odio. Explicabo dolorum odit distinctio dicta totam dolorem libero beatae assumenda vitae! Consequatur, eligendi.</p>
+          </div>
+        }
+
+        {highlights && highlights.length > 0 &&
+          <div class="highlights-section section">
+            <h4>{lang === "es" ? "> CARACTERÍSTICAS_CLAVE" : "> KEY_FEATURES"}</h4>
+            <ul class="highlights">
+              {highlights.map((point: string) => <li>{point}</li>)}
+            </ul>
+          </div>
+        }
+
+        {technologies && technologies.length > 0 &&
+          <div class="technologies-section section">
+            <h4>{lang === "es" ? "> STACK_TECNOLÓGICO" : "> TECH_STACK"}</h4>
+            <div class="stack-tags">
+              {technologies.map((tech: string) => <Chip text={tech} color="var(--color-text)" />)}
+            </div>
+          </div>
+        }
+
+        <div class="links-section">
+          <ButtonGlitch
+            id="code"
+            width="30%"
+            color="secondary"
+            icon={Github}
+            url={repo}
+            text={lang === "es" ? "Ver Código" : "View Code"}
+          />
+          <ButtonGlitch
+            id="demo"
+            width="30%"
+            icon={Link}
+            url={url}
+            text={lang === "es" ? "Ver Demo" : "View Demo"}
+          />
+        </div>
+      </article>
+    </div>
+  ))}
+</section>
+
+<style>
+  section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 6rem;
+    gap: 2rem;
+  }
+  .back-link-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .back-link {
+    padding: 0.2em 0.4em;
+		color: var(--color-text);
+		text-decoration: none;
+		font-weight: 500;
+		border-radius: 5px;
+		border: 1px solid var(--color-text);
+		transition: 300ms;
+  }
+  .back-link:hover {
+		color: var(--color-secondary-text);
+		border: 1px solid var(--color-secondary-glow);
+		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
+		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
+		scale: 1.05;
+		transition: 300ms;
+	}
+  header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--color-glow);
+    color: var(--color-bg-darker);
+    padding: 0.6rem 1rem;
+    border-radius: 6px 6px 0 0;
+    z-index: 1;
+  }
+  article {
+    width: 100%;
+    background-color: var(--color-bg);
+    border: 3px solid var(--color-glow);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 0 0 6px 6px;
+    z-index: 1;
+  }
+  figure {
+    width: 100%;
+    height: 500px;
+    border-radius: 2px;
+    border: var(--color-muted) 2px solid;
+    overflow: hidden;
+  }
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  h4 {
+    color: var(--color-accent);
+  }
+  .highlights {
+    list-style-type: "▸ ";
+    padding-left: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .stack-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .links-section {
+    display: flex;
+    gap: 1rem;
+  }
+</style>

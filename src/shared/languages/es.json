@@ -1,0 +1,301 @@
+{
+  "basics": {
+    "name": "Freddy Tacuri",
+    "label": "Front-end Developer con 2 años de experiencia en desarrollo web",
+    "image": "/freddytacuri.png",
+    "email": "freddytacuri@gmail.com",
+    "phone": "0995781302",
+    "url": "https://freddyz5.github.io/portafolio/",
+    "summary": "Apasionado por la creación y el desarrollo web, con un fuerte interés en entender el funcionamiento de las tecnologías. Soy un profesional autodidacta en constante evolución, con experiencia en desarrollo front-end y conocimientos en backend. He trabajado con tecnologías como Next.js, React, TypeScript y frameworks modernos, colaborando en proyectos innovadores.",
+    "location": {
+      "address": "Jose Maria Lequerica y Cayetano Ramirez",
+      "postalCode": "170512",
+      "city": "Quito",
+      "countryCode": "EC",
+      "region": "Ecuador"
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "freddy-tacuri",
+        "url": "https://www.linkedin.com/in/freddy-tacuri/"
+      },
+      {
+        "network": "GitHub",
+        "username": "Freddyz5",
+        "url": "https://github.com/Freddyz5"
+      },
+      {
+        "network": "Instagram",
+        "username": "freddy_tacuri_",
+        "url": "https://www.instagram.com/freddy_tacuri_/"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Init Grammers",
+      "position": "Desarrollador Web",
+      "url": "https://www.initgrammers.com",
+      "startDate": "2023-10-02",
+      "endDate": null,
+      "summary": [
+        {
+          "team": "Media Value - Plataforma de gestión de farmacias",
+          "summary": [
+            "Implementé la plataforma Canal, un sistema de contenido educativo similar a Netflix, optimizando la experiencia de usuario y asegurando una interfaz intuitiva.",
+            "Desarrollé la sección Mi Estudio, diseñando la lógica de paginación y visualización de videos, mejorando la navegación del usuario.",
+            "Optimizé la interfaz en Intranet, facilitando la gestión de farmacias a través de una UI más accesible y funcional.",
+            "Reduje tiempos de carga y mejoré la escalabilidad mediante la optimización de estilos en CSS sin frameworks predefinidos."
+          ]
+        },
+        {
+          "team": "MTC - Software especializado para la gestión eficaz de empaques en cadena de frío y ambientes controlados en la industria farmacéutica.",
+          "summary": [
+            "Diseñé e implementé un sistema de gestión de estados para las cajas reutilizables de transporte, permitiendo a los usuarios modificar su estado sin intervención manual de desarrolladores.",
+            "Creé endpoints en el backend para automatizar cambios de estado y mejorar la trazabilidad de los procesos.",
+            "Desarrollé filtros y una nueva tabla en el backend, optimizando la visualización y gestión de datos en la plataforma.",
+            "Colaboré en la corrección de errores y mejoras de la aplicación móvil, contribuyendo a una experiencia más estable y fluida."
+          ]
+        },
+        {
+          "team": "Marca Patito - Plataforma de recolección de residuos",
+          "summary": [
+            "Lideré el desarrollo frontend, estructurando la arquitectura del proyecto y estableciendo buenas prácticas.",
+            "Diseñé e implementé módulos reutilizables, hooks personalizados y un sistema de consumo de APIs eficiente.",
+            "Integré la identidad visual de la marca con una interfaz atractiva y funcional.",
+            "Implementé validaciones y mejoras en la gestión de usuarios y residuos, optimizando la interacción con la plataforma.",
+            "Participe en el backend, ajustando y mejorando endpoints para mejorar la eficiencia en la gestión de residuos y optimizar el flujo de datos."
+          ]
+        }
+      ]
+    }
+  ],
+  "volunteer": [{
+    "organization": "Organization",
+    "position": "Volunteer",
+    "url": "https://organization.com/",
+    "startDate": "2012-01-01",
+    "endDate": "2013-01-01",
+    "summary": "Description…",
+    "highlights": [
+      "Awarded 'Volunteer of the Month'"
+    ]
+  }],
+  "education": [{
+    "institution": "Universidad Politécnica Salesiana",
+    "url": "",
+    "area": "Ingeniería Electrónica (Inconcluso)",
+    "studyType": "",
+    "startDate": "2010-09-01",
+    "endDate": "2016-07-01",
+    "score": "",
+    "courses": [
+      ""
+    ]
+  }],
+  "awards": [{
+    "title": "",
+    "date": "",
+    "awarder": "",
+    "summary": ""
+  }],
+  "certificates": [
+    {
+      "name": "Diseño web responsive",
+      "date": "2023-08-12",
+      "issuer": "FreeCodeCamp",
+      "url": "https://www.freecodecamp.org/certification/freddyz5/responsive-web-design"
+    },
+    {
+      "name": "Javascript algoritmos y estructura de datos",
+      "date": "2023-08-27",
+      "issuer": "FreeCodeCamp",
+      "url": "https://www.freecodecamp.org/certification/freddyz5/javascript-algorithms-and-data-structures"
+    }
+  ],
+  "publications": [{
+    "name": "Publication",
+    "publisher": "Company",
+    "releaseDate": "2014-10-01",
+    "url": "https://publication.com",
+    "summary": "Description…"
+  }],
+  "skills": {
+    "languages": [
+      {
+        "name": "JavaScript",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "Backend", "Fullstack"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "Backend", "JavaScript Superset"
+        ]
+      }
+    ],
+    "frameworksLibraries": [
+      {
+        "name": "React",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "JavaScript Library", "UI"
+        ]
+      },
+      {
+        "name": "Next.js",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "React Framework", "SSR", "Static Generation"
+        ]
+      },
+      {
+        "name": "TanStack",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend"
+        ]
+      },
+      {
+        "name": "Prisma",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "ORM"
+        ]
+      },
+      {
+        "name": "Drizzle",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "ORM"
+        ]
+      },
+      {
+        "name": "Zustand",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "State manager"
+        ]
+      },
+      {
+        "name": "ShadCN",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "UI"
+        ]
+      },
+      {
+        "name": "Material",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "UI"
+        ]
+      },
+      {
+        "name": "HeroUI",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "UI"
+        ]
+      },
+      {
+        "name": "Astro",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "React Framework", "UI"
+        ]
+      },
+      {
+        "name": "Hono",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Backend"
+        ]
+      }
+    ],
+    "tegnologies": [
+      {
+        "name": "HTML",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend"
+        ]
+      },
+      {
+        "name": "CSS",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "Diseño Responsive"
+        ]
+      },
+      {
+        "name": "Tailwind",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "CSS Framework", "Diseño Responsive"
+        ]
+      },
+      {
+        "name": "GraphQL",
+        "level": "",
+        "keywords": [
+          "Desarrollo Web", "Frontend", "CSS Framework", "Diseño Responsive"
+        ]
+      },
+      {
+        "name": "Git",
+        "level": "",
+        "keywords": [
+          "Control de Versiones", "Colaboración", "Código Fuente"
+        ]
+      },
+      {
+        "name": "GitHub",
+        "level": "",
+        "keywords": [
+          "Control de Versiones", "Colaboración", "Código Fuente", "Git"
+        ]
+      }
+    ]
+  },
+  "languages": [
+    {
+      "language": "Español",
+      "fluency": "Hablante nativo"
+    },
+    {
+      "language": "Ingles",
+      "fluency": "Intermedio (B1)"
+    }
+  ],
+  "interests": [{
+    "name": "",
+    "keywords": []
+  }],
+  "references": [{
+    "name": "Jane Doe",
+    "reference": "Reference…"
+  }],
+  "projects": [
+    {
+      "name": "Sistema de Control de Gastos Personales",
+      "startDate": "2023-09-01",
+      "endDate": null,
+      "isActive": true,
+      "description": " Aplicación web para gestionar finanzas personales, permitiendo a los usuarios registrar y monitorear  sus ingresos y gastos. Construida con Next.js, React, Tailwind CSS y TypeScript para ofrecer una experiencia rápida y moderna.", 
+      "highlights": [
+        "Lidero el desarrollo frontend de esta aplicación web que permite a los usuarios gestionar sus finanzas personales, registrando y monitoreando ingresos y gastos.",
+        "Diseñé y estructuré la arquitectura del proyecto para garantizar mantenibilidad y escalabilidad.",
+        "Definí la forma de consumir los endpoints, encapsulando la lógica para facilitar su reutilización y extensión.",
+        "Implementé el flujo completo de autenticación de usuario.",
+        "Desarrollé la sección de categorías para clasificar ingresos y gastos.",
+        "Utilicé Next.js, React, Tailwind CSS y TypeScript para asegurar una experiencia rápida y moderna."
+      ],
+      "url": ""
+    }
+  ]
+}

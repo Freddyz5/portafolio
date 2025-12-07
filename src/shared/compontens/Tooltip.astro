@@ -1,0 +1,300 @@
+---
+interface Props {
+  text?: string;
+  position?: "top" | "bottom" | "left" | "right";
+  primaryColor?: string;
+  secondaryColor?: string;
+  bgColor?: string;
+  width?: string;
+  useSlotContent?: boolean;
+}
+
+const {
+  text = "",
+  position = "top",
+  primaryColor = "#00f2ea",
+  secondaryColor = "#a855f7",
+  bgColor = "rgba(13, 13, 13, 0.95)",
+  width = "220px",
+  useSlotContent = false,
+} = Astro.props;
+---
+
+<div
+  class="tooltip-wrapper"
+  style={`--primary-color: ${primaryColor}; --secondary-color: ${secondaryColor}; --bg-color: ${bgColor}; --tooltip-width: ${width};`}
+>
+  <div class="tooltip-trigger">
+    <slot name="trigger" />
+  </div>
+  <div class={`glitch-tooltip tooltip-${position}`} data-text={text}>
+    {useSlotContent ? (
+      <div class="tooltip-content">
+        <slot name="content" />
+      </div>
+    ) : (
+      <span class="tooltip-text" data-text={text}>{text}</span>
+    )}
+  </div>
+</div>
+
+<style>
+  .tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+    --glitch-anim-duration: 0.5s;
+  }
+
+  .tooltip-trigger {
+    display: inline-block;
+  }
+
+  .glitch-tooltip {
+    position: absolute;
+    width: var(--tooltip-width);
+    padding: 12px 16px;
+    background: var(--bg-color);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-family: "Fira Code", Consolas, "Courier New", Courier, monospace;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0.3s;
+    box-shadow: 0 0 20px rgba(0, 242, 234, 0.2);
+    z-index: 1000;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Crear un área "puente" invisible entre trigger y tooltip */
+  .glitch-tooltip::after {
+    content: "";
+    position: absolute;
+    background: transparent;
+    pointer-events: auto;
+  }
+
+  /* Puente para posición top */
+  .tooltip-top::after {
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 12px;
+  }
+
+  /* Puente para posición bottom */
+  .tooltip-bottom::after {
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 12px;
+  }
+
+  /* Puente para posición left */
+  .tooltip-left::after {
+    right: 100%;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+  }
+
+  /* Puente para posición right */
+  .tooltip-right::after {
+    left: 100%;
+    top: 0;
+    bottom: 0;
+    width: 12px;
+  }
+
+  /* Permitir interacción con el tooltip */
+  .tooltip-wrapper:hover .glitch-tooltip,
+  .glitch-tooltip:hover {
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0s;
+  }
+
+  /* Position variants */
+  .tooltip-top {
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(5px);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0.3s, transform 0.2s ease;
+  }
+
+  .tooltip-bottom {
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-5px);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0.3s, transform 0.2s ease;
+  }
+
+  .tooltip-left {
+    right: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(5px);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0.3s, transform 0.2s ease;
+  }
+
+  .tooltip-right {
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-5px);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0.3s, transform 0.2s ease;
+  }
+
+  /* Hover states */
+  .tooltip-wrapper:hover .tooltip-top,
+  .tooltip-top:hover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0s, transform 0.2s ease;
+  }
+
+  .tooltip-wrapper:hover .tooltip-bottom,
+  .tooltip-bottom:hover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0s, transform 0.2s ease;
+  }
+
+  .tooltip-wrapper:hover .tooltip-left,
+  .tooltip-left:hover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0s, transform 0.2s ease;
+  }
+
+  .tooltip-wrapper:hover .tooltip-right,
+  .tooltip-right:hover {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+    transition: opacity 0.2s ease 0s, visibility 0s linear 0s, transform 0.2s ease;
+  }
+
+  /* Glitch effect */
+  .tooltip-text {
+    position: relative;
+    z-index: 1;
+    display: block;
+  }
+
+  .tooltip-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Solo aplicar glitch cuando NO tiene contenido de slot */
+  .glitch-tooltip:not(:has(.tooltip-content)):hover {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 25px var(--primary-color);
+  }
+
+  .tooltip-wrapper:hover .glitch-tooltip:not(:has(.tooltip-content)) {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 25px var(--primary-color);
+  }
+
+  .tooltip-wrapper:hover .tooltip-text {
+    opacity: 0;
+  }
+
+  .glitch-tooltip:not(:has(.tooltip-content))::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    opacity: 0;
+    background-color: var(--primary-color);
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  }
+
+  /* Usar un elemento diferente para el segundo glitch */
+  .glitch-tooltip:not(:has(.tooltip-content)) .tooltip-text::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    opacity: 0;
+    background-color: var(--primary-color);
+    transition: opacity 0.2s ease;
+    z-index: 2;
+  }
+
+  .tooltip-wrapper:hover .glitch-tooltip:not(:has(.tooltip-content))::before {
+    opacity: 1;
+    color: var(--secondary-color);
+    animation: glitch-anim var(--glitch-anim-duration)
+      cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  }
+
+  .tooltip-wrapper:hover .glitch-tooltip:not(:has(.tooltip-content)) .tooltip-text::after {
+    opacity: 1;
+    color: var(--bg-color);
+    animation: glitch-anim var(--glitch-anim-duration)
+      cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+  }
+
+  @keyframes glitch-anim {
+    0% {
+      transform: translate(0);
+      clip-path: inset(0 0 0 0);
+    }
+    20% {
+      transform: translate(-3px, 2px);
+      clip-path: inset(50% 0 20% 0);
+    }
+    40% {
+      transform: translate(2px, -1px);
+      clip-path: inset(20% 0 60% 0);
+    }
+    60% {
+      transform: translate(-2px, 1px);
+      clip-path: inset(80% 0 5% 0);
+    }
+    80% {
+      transform: translate(3px, -2px);
+      clip-path: inset(30% 0 45% 0);
+    }
+    100% {
+      transform: translate(0);
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glitch-tooltip::before,
+    .glitch-tooltip::after {
+      animation: none !important;
+      opacity: 0 !important;
+    }
+
+    .tooltip-wrapper:hover .tooltip-text {
+      opacity: 1;
+    }
+  }
+</style>

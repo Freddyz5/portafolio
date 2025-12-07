@@ -1,0 +1,178 @@
+---
+import Terminal from "src/shared/icons/Terminal.astro";
+import CalendarIcon from "src/shared/icons/CalendarIcon.astro";
+
+interface Team {
+  teamName: string;
+  role: string;
+  stack: string[];
+  summary: string;
+}
+
+interface Props {
+  lang: "es" | "en";
+  name: string;
+  position: string;
+  url: string;
+  startDate: string;
+  endDate: string;
+  summary: string;
+  highlights?: string[];
+  teams?: Team[];
+}
+
+const { lang, name, position, url, startDate, endDate, summary, highlights, teams } = Astro.props;
+---
+
+<article>
+  <header>
+    <h2>{position}</h2>
+    <div class="company-wrapper">
+      <Terminal />
+      <a href={url} target="_blank">{name}</a>
+    </div>
+    <div class="period-wrapper">
+      <CalendarIcon />
+      <time>{startDate} - {endDate ? endDate : "Present"}</time>
+    </div>
+  </header>
+  <div class="content">
+    {summary &&
+      <p>{summary}</p>
+    }
+
+    {highlights &&
+      <div class="highlights-section">
+        <h3>{lang === "es" ? "> Logros Clave:" : "> Key Achievements:"}</h3>
+        <ul class="highlights">
+          {highlights.map((highlight: string) => <li>{highlight}</li>)}
+        </ul>
+      </div>
+    }
+
+    {teams &&
+      <div class="teams-section">
+        <h3>{lang === "es" ? "> Equipos:" : "> Teams:"}</h3>
+        {teams.map(({ teamName, role, stack, summary }: Team) => <>
+          <h4>{"▸ "} {teamName}</h4>
+          <h6>{role} | {stack && stack.join(" • ")}</h6>
+          <p>{summary}</p>
+        </>)}
+      </div>
+    }
+  </div>
+</article>
+
+<style>
+  article {
+    /* Colors */
+    --color-border: var(--color-muted);
+    --color-border-hover: var(--color-secondary-glow);
+    --color-bg-card: var(--color-bg);
+    --color-heading: var(--color-accent);
+
+    max-width: 1140px;
+    width: 100%;
+    border: 2px solid var(--color-border);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background-color: var(--color-bg-card);
+    z-index: 1;
+  }
+  article:hover {
+    border: 2px solid var(--color-border-hover);
+    background-color: var(--color-bg-darker);
+  }
+  header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 1rem 2rem;
+    border-bottom: 2px solid var(--color-border);
+    background-color: var(--color-bg-lighter);
+    transition: all 0.3s ease;
+  }
+  article:hover > header {
+    border-bottom: 2px solid var(--color-border-hover);
+    background-color: var(--color-bg);
+  }
+  h2 {
+    color: var(--color-heading);
+    transition: color 0.3s ease;
+  }
+  a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  article:hover h2, article:hover .company-wrapper, article:hover .company-wrapper a {
+    color: var(--color-secondary-accent);
+    transition: color 0.3s ease;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .company-wrapper, .period-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s ease;
+  }
+  .company-wrapper {
+    color: var(--color-accent);
+  }
+  .period-wrapper {
+    color: var(--color-muted);
+    transition: color 0.3s ease;
+  }
+  article:hover .period-wrapper {
+    color: var(--color-secondary-muted);
+    transition: color 0.3s ease;
+  }
+  .content {
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    color: var(--color-text);
+    transition: color 0.3s ease;
+  }
+  article:hover .content {
+    color: var(--color-secondary-text);
+    transition: color 0.3s ease;
+  }
+  .highlights-section, .teams-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .highlights {
+    list-style-type: "▸ ";
+    padding-left: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .teams-section p, .teams-section h6 {
+    padding-left: 0.8rem;
+  }
+  h3 {
+    color: var(--color-accent);
+    font-weight: lighter;
+    font-size: large;
+    transition: color 0.3s ease;
+  }
+  article:hover h3 {
+    color: var(--color-secondary-accent);
+    transition: color 0.3s ease;
+  }
+  h6 {
+    color: var(--color-muted);
+    transition: color 0.3s ease;
+  }
+  article:hover h6 {
+    color: var(--color-secondary-muted);
+    transition: color 0.3s ease;
+  }
+</style>

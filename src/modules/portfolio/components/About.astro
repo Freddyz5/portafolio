@@ -1,0 +1,182 @@
+---
+import ButtonGlitch from "../components/ButtonGlitch.astro";
+import Section from "./Section.astro";
+
+interface Props {
+  lang: "es" | "en";
+  summary: string;
+  name: string;
+  image: {
+    url1: string;
+    url2: string;
+    alt: string;
+  };
+}
+
+const { lang, summary, name, image } = Astro.props;
+---
+<Section
+  id="about"
+  title={lang === "es" ? "Acerca de mí" : "About me"}
+  subTittle={lang === "es" ? "REGISTRO_PERSONAL" : "PERSONAL_RECORD" }
+  styles={{
+    backgroundColor: "var(--color-bg-darker)",
+    height: "800px",
+    boxShadow: "0 0 50px 20px var(--color-bg-darker)"
+  }}
+>
+  <article>
+    <div class="summary-wrapper">
+      <p>{summary}</p>
+
+      <div class="buttons-wrapper">
+        <ButtonGlitch
+          id="resume-btn"
+          text={lang === "es" ? "Currículum" : "Resume"}
+          width="50%"
+          color="secondary"
+        />
+        <ButtonGlitch
+          id="contact-btn"
+          text={lang === "es" ? "Contacto" : "Contact"}
+          width="50%"
+        />
+      </div>
+    </div>
+
+    <figure>
+      <img
+        class="picture normal"
+        src={image.url1}
+        alt={image.alt}
+        loading="lazy"
+      />
+      <img
+        class="picture pixel"
+        src={image.url2}
+        alt={image.alt}
+        loading="lazy"
+      />
+      <p>{name}</p>
+    </figure>
+  </article>
+</Section>
+
+<script define:vars={{ lang }}>
+  const resumeBtn = document.getElementById("resume-btn");
+  const contactBtn = document.getElementById("contact-btn");
+  resumeBtn?.addEventListener("click", () => {
+    window.location.href = `/${lang}/curriculum-vitae`;
+  });
+  contactBtn?.addEventListener("click", () => {
+    window.location.href = "#contact";
+  });
+</script>
+
+<style>
+  article {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    max-width: 1140px;
+    width: 100%;
+    height: 400px;
+    gap: 5rem;
+  }
+  .summary-wrapper {
+    width: 60%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+  }
+  .summary-wrapper p {
+    height: 60%;
+    overflow: scroll;
+    color: var(--color-text);
+  }
+  .buttons-wrapper {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+  }
+
+  figure {
+    position: relative;
+    width: 450px;
+    height: 400px;
+    border: 2px solid color-mix(in srgb, var(--color-glow) 50%, transparent);
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--color-text);
+    background-image:
+			radial-gradient(
+				circle at center center,
+				transparent 0%,
+				rgba(255, 255, 255, 0) 99%
+			),
+			repeating-linear-gradient(
+				0deg,
+				color-mix(in srgb, var(--color-muted) 50%, transparent) 0px,
+				color-mix(in srgb, var(--color-muted) 50%, transparent) 1px,
+				transparent 1px,
+				transparent 24px
+			),
+			repeating-linear-gradient(
+				90deg,
+				color-mix(in srgb, var(--color-muted) 50%, transparent) 0px,
+				color-mix(in srgb, var(--color-muted) 50%, transparent) 1px,
+				transparent 1px,
+				transparent 24px
+			),
+			linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+    transition: all 2s ease;
+  }
+  figure:hover {
+    border-color: var(--color-secondary-glow);
+    transition: all 2s ease;
+  }
+
+  figure img {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    object-fit: cover;
+    transition: all 2s ease;
+  }
+  figure p {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .pixel {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .normal {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  figure:hover .pixel {
+    opacity: 0;
+  }
+  figure:hover .picture {
+    filter: drop-shadow(0px 0px 10px var(--color-secondary-glow));
+  }
+  .picture {
+    width: min(70vw, 360px);
+    padding: 10px 10px 0 10px;
+    filter: drop-shadow(0px 0px 10px var(--color-muted));
+    mask-image: linear-gradient(
+        black 90%,
+        transparent
+    );
+  }
+</style>

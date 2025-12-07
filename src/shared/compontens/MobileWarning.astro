@@ -1,0 +1,124 @@
+---
+import Warning from '../icons/Warning.astro';
+import ButtonGlitch from '../../modules/portfolio/components/ButtonGlitch.astro';
+
+interface Props {
+  lang: string;
+}
+
+const { lang } = Astro.props;
+
+const messages = {
+  es: {
+    title: "Experiencia Óptima en Pantalla Grande",
+    description: "Este portafolio está diseñado para ofrecer la mejor experiencia en dispositivos de escritorio. La versión móvil se encuentra actualmente en desarrollo.",
+    button: "Entendido"
+  },
+  en: {
+    title: "Best Viewed on Desktop",
+    description: "This portfolio is designed for the best experience on desktop devices. The mobile version is currently under development.",
+    button: "Got it"
+  }
+};
+
+const message = messages[lang as keyof typeof messages] || messages.en;
+---
+
+<section id="mobile-warning-modal" class="mobile-warning-modal">
+  <header>
+    <Warning />
+    <h3>{message.title}</h3>
+  </header>
+  <article class="mobile-warning-content">
+    <p>{">"} {message.description}</p>
+    <ButtonGlitch
+      id="close-mobile-warning"
+      type="submit"
+      text={message.button}
+    />
+    </div>
+  </article>
+</section>
+
+<script>
+  const modal = document.getElementById('mobile-warning-modal');
+  const closeButton = document.getElementById('close-mobile-warning');
+  
+  const isMobileScreen = () => window.innerWidth < 1024;
+  
+  if (isMobileScreen()) {
+    modal?.classList.add('show');
+  }
+  
+  const closeModal = () => {
+    modal?.classList.remove('show');
+    document.body.style.overflow = '';
+  };
+  
+  closeButton?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('show')) {
+      closeModal();
+    }
+  });
+</script>
+
+<style>
+  .mobile-warning-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: none;
+    background-color: color-mix(in srgb, var(--color-bg-darker) 50%, transparent);
+    backdrop-filter: blur(5px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  .mobile-warning-modal.show {
+    display: flex;
+  }
+  header {
+    width: 70%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--color-glow);
+    color: var(--color-bg-darker);
+    padding: 0.6rem 1rem;
+    border-radius: 6px 6px 0 0;
+    z-index: 1;
+  }
+  article {
+    width: 70%;
+    background-color: var(--color-bg);
+    border: 3px solid var(--color-glow);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-radius: 0 0 6px 6px;
+    z-index: 1;
+  }
+  p {
+    font-size: 1.2rem;
+  }
+  @media (min-width: 1024px) {
+    .mobile-warning-modal {
+      display: none !important;
+    }
+  }
+  /* @media (max-width: 480px) { */
+  @media (max-width: 600px) {
+    h3 {
+      font-size: max(12px, 3.2vw);
+    }
+    p {
+      font-size: max(10px, 3vw);
+    }
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+import Translate from '../icons/Translate.astro';
+
+interface Props {
+  currentLang: 'es' | 'en' | string;
+}
+
+const { currentLang } = Astro.props;
+const otherLang = currentLang === 'es' ? 'en' : 'es';
+const currentPath = Astro.url.pathname.replace(`/${currentLang}/`, `/${otherLang}/`);
+---
+
+<a href={currentPath} class="no-print">
+  <Translate />
+</a>
+
+<style>
+  a {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25%;
+    border: 1px solid black;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    background-color: white;
+    color: black;
+    transition: all 0.3s ease-in-out;
+  }
+
+  a:hover {
+    transform: scale(1.1);
+    transition: all 0.3s ease-in-out;
+  }
+</style>

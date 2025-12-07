@@ -2,12 +2,9 @@
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
     "moduleResolution": "node",
-    "strict": true, 
-    "allowJs": true,
+    "strict": true,
+    "baseUrl": ".",
+    "types": ["astro/client", "node"]
   },
-  "typeRoots": [
-      "../node_modules/@types/"
-  ],
-  "noImplicitAny": false,
-  "include": ["**/*.ts", "test"]
+  "include": ["src", "test", "astro.config.mjs", "env.d.ts"]
 }
