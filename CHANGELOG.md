@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/Freddyz5/portafolio/compare/v1.3.0...v1.4.0) (2025-12-09)
+
+
+### Features
+
+* Agregar página de redirección automática según el idioma del navegador ([2037545](https://github.com/Freddyz5/portafolio/commit/2037545a911502c0365eaa2e2f2489fad03fb0f2))
+
 # [1.3.0](https://github.com/Freddyz5/portafolio/compare/v1.2.0...v1.3.0) (2025-12-09)
 
 
