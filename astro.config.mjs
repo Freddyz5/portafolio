@@ -3,6 +3,10 @@ import { defineConfig, envField } from 'astro/config';
 export default defineConfig({
   site: 'https://freddyz5.github.io',
   base: '',
+  redirects: {
+    '/portafolio': '/es/portafolio',
+    '/curriculum-vitae': '/es/curriculum-vitae',
+  },
   env: {
     schema: {
       PUBLIC_JSON_ENDPOINT: envField.string({
