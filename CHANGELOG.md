@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Freddyz5/portafolio/compare/v1.1.0...v1.2.0) (2025-12-09)
+
+
+### Features
+
+* Actualizar acción de despliegue a la versión 4 ([c172b3e](https://github.com/Freddyz5/portafolio/commit/c172b3e7d9222d4f0fed164dcdb9278c11bee41c))
+
 # [1.1.0](https://github.com/Freddyz5/portafolio/compare/v1.0.0...v1.1.0) (2025-12-09)
 
 
