@@ -1,0 +1,44 @@
+name: Test Deploy (No Release)
+
+on:
+  push:
+    branches: [ deploy-test ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build Astro site
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
+      PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
+      PUBLIC_ACCESS_KEY_EMAIL: ${{ secrets.PUBLIC_ACCESS_KEY_EMAIL }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install, build, and upload site
+        uses: withastro/action@v3
+        env:
+          PUBLIC_ACCESS_KEY: ${{ secrets.PUBLIC_ACCESS_KEY }}
+          PUBLIC_JSON_ENDPOINT: ${{ secrets.PUBLIC_JSON_ENDPOINT }}
+          PUBLIC_ACCESS_KEY_EMAIL: ${{ secrets.PUBLIC_ACCESS_KEY_EMAIL }}
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
