@@ -3,8 +3,6 @@ import Layout from "src/modules/configurations/layout/Layout.astro";
 import Configurations from "src/modules/configurations/index.astro";
 import { getData } from "src/modules/configurations/services/getData";
 
-export const prerender = false;
-
 const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
 
 const data = await getData();
