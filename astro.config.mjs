@@ -4,7 +4,7 @@ export default defineConfig({
   site: 'https://freddyz5.github.io',
   base: '',
   redirects: {
-    '/portafolio': '/es/portafolio',
+    '/': '/es/',
     '/curriculum-vitae': '/es/curriculum-vitae',
   },
   env: {
