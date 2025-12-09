@@ -1,14 +1,15 @@
 ---
-export const prerender = false;
 import JsonNode from './components/JsonNode.astro';
 import NavBarJson from './components/NavBarJson.astro';
 import KeyModal from './components/KeyModal.astro';
 import { collectFirstLevelNodes } from './utils/collectFirstLevelNodes';
-import { getData } from './services/getData';
 
-const endpoint = import.meta.env.PUBLIC_JSON_ENDPOINT;
+interface Props {
+	endpoint: string;
+	data: any;
+}
 
-const data = await getData();
+const { endpoint, data } = Astro.props;
 
 const menuJson = collectFirstLevelNodes(data);
 ---
