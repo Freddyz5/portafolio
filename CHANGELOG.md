@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/Freddyz5/portafolio/compare/v1.0.0...v1.1.0) (2025-12-09)
+
+
+### Features
+
+* Actualizar acción de construcción a la versión 3 y ajustar checkout para obtener cambios del release ([ea73609](https://github.com/Freddyz5/portafolio/commit/ea73609b7ee3d4ea023f741c0d0b503cf7cbb806))
+
 # 1.0.0 (2025-12-09)
 
 
