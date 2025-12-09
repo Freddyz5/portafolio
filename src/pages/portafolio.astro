@@ -1,0 +1,20 @@
+---
+import Layout from '../modules/portfolio/layout/Layout.astro';
+import Portfolio from '../modules/portfolio/index.astro';
+import { getData } from '../shared/services/getData';
+
+const lang = 'es';
+
+const data = await getData('es') as any;
+const basics = data.basics;
+---
+
+<Layout
+	title={`Portfolio de ${basics.name} - ${basics.label}`}
+  image={basics.image}
+  summary={basics.summary}
+  url={basics.url}
+  lang={lang}
+>
+	<Portfolio data={data} />
+</Layout>
