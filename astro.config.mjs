@@ -2,7 +2,7 @@ import { defineConfig, envField } from 'astro/config';
 
 export default defineConfig({
   site: 'https://freddyz5.github.io',
-  base: 'portafolio',
+  base: '/',
   env: {
     schema: {
       PUBLIC_JSON_ENDPOINT: envField.string({
