@@ -29,6 +29,8 @@ const { data } = Astro.props;
   </div>
 
   <div class="editor-wrapper">
+    <div class="line-numbers" id="lineNumbers"></div>
+    <pre id="jsonDisplay" class="json-display"></pre>
     <textarea id="jsonEditor" spellcheck="false"></textarea>
   </div>
 
@@ -37,12 +39,48 @@ const { data } = Astro.props;
 
 <script define:vars={{ data }}>
   const editor = document.getElementById('jsonEditor');
+  const jsonDisplay = document.getElementById('jsonDisplay');
+  const lineNumbers = document.getElementById('lineNumbers');
   const formatBtn = document.getElementById('formatBtn');
   const consoleBtn = document.getElementById('consoleBtn');
   const statusDiv = document.getElementById('status');
 
+  // Función para highlight JSON
+  function highlightJSON(json) {
+    return json
+      .replace(/("([^"\\]|\\.)*")\s*:/g, '<span class="json-key">$1</span>:')
+      .replace(/:\s*("([^"\\]|\\.)*")/g, ': <span class="json-string">$1</span>')
+      .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="json-number">$1</span>')
+      .replace(/:\s*(true|false)/g, ': <span class="json-boolean">$1</span>')
+      .replace(/:\s*(null)/g, ': <span class="json-null">$1</span>')
+      .replace(/([{}\[\]])/g, '<span class="json-bracket">$1</span>');
+  }
+
+  // Función para actualizar números de línea
+  function updateLineNumbers() {
+    const lines = editor.value.split('\n').length;
+    lineNumbers.innerHTML = Array.from({ length: lines }, (_, i) => 
+      `<div class="line-number">${i + 1}</div>`
+    ).join('');
+  }
+
+  // Función para sincronizar el display con el editor
+  function syncDisplay() {
+    const highlighted = highlightJSON(editor.value);
+    jsonDisplay.innerHTML = highlighted + '\n';
+    updateLineNumbers();
+  }
+
+  // Sincronizar scroll
+  editor.addEventListener('scroll', () => {
+    jsonDisplay.scrollTop = editor.scrollTop;
+    jsonDisplay.scrollLeft = editor.scrollLeft;
+    lineNumbers.scrollTop = editor.scrollTop;
+  });
+
   // Cargar datos iniciales
   editor.value = JSON.stringify(data, null, 2);
+  syncDisplay();
 
   // Función para mostrar mensajes de estado
   function showStatus(message, type = 'info') {
@@ -60,6 +98,7 @@ const { data } = Astro.props;
       const jsonText = editor.value;
       const parsed = JSON.parse(jsonText);
       editor.value = JSON.stringify(parsed, null, 2);
+      syncDisplay();
       showStatus('✅ JSON formateado correctamente', 'success');
     } catch (error) {
       showStatus(`❌ Error al formatear: ${error.message}`, 'error');
@@ -89,9 +128,10 @@ const { data } = Astro.props;
     }
   });
 
-  // Auto-save en localStorage
+  // Auto-save en localStorage y actualizar display
   let saveTimeout;
   editor.addEventListener('input', () => {
+    syncDisplay();
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(() => {
       localStorage.setItem('json-draft', editor.value);
@@ -103,6 +143,7 @@ const { data } = Astro.props;
   const draft = localStorage.getItem('json-draft');
   if (draft && confirm('Se encontró un borrador guardado. ¿Desea recuperarlo?')) {
     editor.value = draft;
+    syncDisplay();
     showStatus('📄 Borrador recuperado', 'info');
   }
 
@@ -131,7 +172,7 @@ const { data } = Astro.props;
   });
 </script>
 
-<style>
+<style is:global>
   header {
     display: flex;
     justify-content: space-between;
@@ -161,29 +202,112 @@ const { data } = Astro.props;
 
   .editor-wrapper {
     width: 100%;
+    position: relative;
     display: flex;
     padding: 0.2rem;
     border: 1px solid var(--color-muted);
     border-radius: 4px;
     background-color: var(--color-muted);
+    overflow: hidden;
   }
 
-  #jsonEditor {
-    width: 100%;
-    field-sizing: content;
+  .line-numbers {
+    position: relative;
+    z-index: 1;
+    padding: 1rem 0.5rem;
+    background: var(--color-bg-darker);
+    color: var(--color-secondary-muted);
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: right;
+    user-select: none;
+    border-right: 1px solid var(--color-muted);
+    overflow: hidden;
+    min-width: 3rem;
+  }
+
+  .line-number {
+    height: 22.4px;
+  }
+
+  .json-display {
+    position: absolute;
+    top: 0.2rem;
+    left: calc(3rem + 0.5rem + 1px);
+    right: 0.2rem;
+    bottom: 0.2rem;
     padding: 1rem;
+    margin: 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
     font-size: 14px;
     line-height: 1.6;
     background: var(--color-bg);
     color: var(--color-text);
     border-radius: 4px;
+    overflow: hidden;
+    pointer-events: none;
+    white-space: pre;
+    word-wrap: normal;
+  }
+  
+  .json-display::-webkit-scrollbar {
+    display: none;
+  }
+
+  #jsonEditor {
+    position: absolute;
+    top: 0.2rem;
+    left: calc(3rem + 0.5rem + 1px);
+    right: 0.2rem;
+    bottom: 0.2rem;
+    width: calc(100% - 3rem - 0.5rem - 1px - 0.4rem);
+    field-sizing: content;
+    padding: 1rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--color-text);
+    border-radius: 4px;
     border: none;
     resize: none;
     outline: none;
+    overflow: hidden;
+    white-space: pre;
+    word-wrap: normal;
   }
 
   #jsonEditor::selection {
-    background: var(--color-muted);
+    background: rgba(137, 63, 59, 0.5);
+  }
+
+  /* Syntax highlighting colors */
+  .json-key {
+    color: var(--color-secondary-glow);
+    text-shadow: 0 0 8px var(--color-secondary-glow);
+  }
+
+  .json-string {
+    color: var(--color-text);
+  }
+
+  .json-number {
+    color: #FFB86C;
+  }
+
+  .json-boolean {
+    color: #FF79C6;
+  }
+
+  .json-null {
+    color: var(--color-muted);
+  }
+
+  .json-bracket {
+    color: var(--color-glow);
+    text-shadow: 0 0 8px var(--color-glow);
   }
 
   .status {
