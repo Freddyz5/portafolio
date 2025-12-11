@@ -1,0 +1,287 @@
+---
+interface Props {
+  data: any;
+}
+
+const { data } = Astro.props;
+---
+<div class="container">
+  <header>
+    <h1>📝 JSON Editor</h1>
+    <div class="actions">
+      <button id="formatBtn" class="btn btn-secondary">🎨 Formatear</button>
+      <button id="consoleBtn" class="btn btn-primary">🖨️ Imprimir en Consola</button>
+    </div>
+  </header>
+
+  <div class="editor-wrapper">
+    <textarea id="jsonEditor" spellcheck="false"></textarea>
+  </div>
+
+  <div id="status" class="status"></div>
+</div>
+
+<script define:vars={{ data }}>
+  const editor = document.getElementById('jsonEditor');
+  const formatBtn = document.getElementById('formatBtn');
+  const consoleBtn = document.getElementById('consoleBtn');
+  const statusDiv = document.getElementById('status');
+
+  // Cargar datos iniciales
+  editor.value = JSON.stringify(data, null, 2);
+
+  // Función para mostrar mensajes de estado
+  function showStatus(message, type = 'info') {
+    statusDiv.textContent = message;
+    statusDiv.className = `status ${type}`;
+    setTimeout(() => {
+      statusDiv.textContent = '';
+      statusDiv.className = 'status';
+    }, 3000);
+  }
+
+  // Formatear JSON
+  formatBtn.addEventListener('click', () => {
+    try {
+      const jsonText = editor.value;
+      const parsed = JSON.parse(jsonText);
+      editor.value = JSON.stringify(parsed, null, 2);
+      showStatus('✅ JSON formateado correctamente', 'success');
+    } catch (error) {
+      showStatus(`❌ Error al formatear: ${error.message}`, 'error');
+    }
+  });
+
+  // Imprimir en consola
+  consoleBtn.addEventListener('click', () => {
+    try {
+      const jsonText = editor.value;
+      const parsed = JSON.parse(jsonText);
+      
+      console.clear();
+      console.log('='.repeat(80));
+      console.log('📋 RESUME.JSON PREVIEW');
+      console.log('='.repeat(80));
+      console.log(parsed);
+      console.log('='.repeat(80));
+      console.log('JSON String:');
+      console.log(JSON.stringify(parsed, null, 2));
+      console.log('='.repeat(80));
+      
+      showStatus('✅ JSON impreso en consola (abre DevTools para verlo)', 'success');
+    } catch (error) {
+      showStatus(`❌ Error: JSON inválido - ${error.message}`, 'error');
+      console.error('Error al parsear JSON:', error);
+    }
+  });
+
+  // Auto-save en localStorage
+  let saveTimeout;
+  editor.addEventListener('input', () => {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      localStorage.setItem('json-draft', editor.value);
+      showStatus('💾 Guardado borrador localmente', 'info');
+    }, 1000);
+  });
+
+  // Recuperar borrador si existe
+  const draft = localStorage.getItem('json-draft');
+  if (draft && confirm('Se encontró un borrador guardado. ¿Desea recuperarlo?')) {
+    editor.value = draft;
+    showStatus('📄 Borrador recuperado', 'info');
+  }
+
+  // Atajos de teclado
+  editor.addEventListener('keydown', (e) => {
+    // Ctrl/Cmd + S para formatear
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      formatBtn.click();
+    }
+    
+    // Ctrl/Cmd + Enter para imprimir en consola
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      consoleBtn.click();
+    }
+
+    // Tab para indentar
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+      editor.selectionStart = editor.selectionEnd = start + 2;
+    }
+  });
+</script>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #30363d;
+  }
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .actions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: #238636;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #2ea043;
+  }
+
+  .btn-secondary {
+    background: #21262d;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+  }
+
+  .btn-secondary:hover {
+    background: #30363d;
+  }
+
+  .editor-wrapper {
+    flex: 1;
+    display: flex;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #161b22;
+  }
+
+  #jsonEditor {
+    flex: 1;
+    padding: 20px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    background: #0d1117;
+    color: #c9d1d9;
+    border: none;
+    resize: none;
+    outline: none;
+  }
+
+  #jsonEditor::selection {
+    background: #1f6feb;
+  }
+
+  .status {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    background: #161b22;
+    border: 1px solid #30363d;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .status.success {
+    border-left: 3px solid #238636;
+    opacity: 1;
+  }
+
+  .status.error {
+    border-left: 3px solid #da3633;
+    opacity: 1;
+  }
+
+  .status.info {
+    border-left: 3px solid #1f6feb;
+    opacity: 1;
+  }
+
+  /* Scrollbar personalizado */
+  #jsonEditor::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  #jsonEditor::-webkit-scrollbar-track {
+    background: #0d1117;
+  }
+
+  #jsonEditor::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 6px;
+  }
+
+  #jsonEditor::-webkit-scrollbar-thumb:hover {
+    background: #484f58;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .container {
+      padding: 10px;
+    }
+
+    header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+
+    .actions {
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+</style>

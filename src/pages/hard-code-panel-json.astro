@@ -1,0 +1,14 @@
+---
+import Layout from "src/modules/configurations/layout/Layout.astro";
+import { getData } from "src/modules/configurations/services/getData";
+import ConfigurationsJson from "src/modules/configurations/configurationsJson.astro";
+
+const data = await getData();
+---
+
+<Layout
+  title="JSON Editor - Portfolio"
+  description="Configuraciones"
+>
+  <ConfigurationsJson data={data} />
+</Layout>
