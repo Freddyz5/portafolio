@@ -1,3 +1,23 @@
+# [1.5.0](https://github.com/Freddyz5/portafolio/compare/v1.4.0...v1.5.0) (2025-12-11)
+
+
+### Bug Fixes
+
+* Actualizar enlaces de navegación y redirecciones para soporte de múltiples idiomas ([dd0dc25](https://github.com/Freddyz5/portafolio/commit/dd0dc2533a599e90f5fabfebaf8e97e30dbd0217))
+* Actualizar enlaces de PROJECT_LINKS para utilizar BASE_URL dinámicamente ([7138811](https://github.com/Freddyz5/portafolio/commit/71388112341d9f60db9213311e663d74eb241fa2))
+* Actualizar enlaces de proyectos para utilizar BASE_URL y eliminar código comentado ([20e879f](https://github.com/Freddyz5/portafolio/commit/20e879fc4c09d97a48b8f7bfe0c3be41c93ba519))
+* Ajustar rutas en PROJECT_LINKS para enlaces relativos ([ad040ad](https://github.com/Freddyz5/portafolio/commit/ad040add8bf50099986a110caaedff905d5d1976))
+* Eliminar archivos de curriculum vitae, portafolio y configuraciones ([1dd8704](https://github.com/Freddyz5/portafolio/commit/1dd87047198db8eab28e07b48c35d40deeed4ae9))
+* Eliminar uso de BASE_URL en enlaces de PROJECT_LINKS y ajustar rutas ([edafda8](https://github.com/Freddyz5/portafolio/commit/edafda80e32abba90c56fac85fa2557a4751799e))
+
+
+### Features
+
+* Actualizar redirecciones y agregar página de portafolio multilingüe ([d68213a](https://github.com/Freddyz5/portafolio/commit/d68213a546e2be9a179f70996dedb19f63733825))
+* Agregar flujo de trabajo para despliegue de prueba en GitHub Pages ([9089e2d](https://github.com/Freddyz5/portafolio/commit/9089e2d5653c7f68c633718e1c2d48c3eee4d74f))
+* Eliminar redirecciones y actualizar la configuración de la base en Astro ([fb5f7c4](https://github.com/Freddyz5/portafolio/commit/fb5f7c4fb358047f5fb2fa400c66774fd35241e1))
+* Establecer la base del sitio en la configuración de Astro ([ef96e0f](https://github.com/Freddyz5/portafolio/commit/ef96e0fa0637a8527b866c22bf59422696cdabd0))
+
 # [1.4.0](https://github.com/Freddyz5/portafolio/compare/v1.3.0...v1.4.0) (2025-12-09)
 
 
