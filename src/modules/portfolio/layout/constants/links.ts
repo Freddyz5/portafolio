@@ -1,5 +1,3 @@
-const BASE_URL = import.meta.env.BASE_URL;
-
 export type Link = {
   id: string;
   name: { es: string; en: string } | string;
@@ -38,19 +36,19 @@ export const PROJECT_LINKS: Array<Link> = [
   {
     id: 'home',
     name: { es: 'Inicio', en: 'Home' },
-    href: `${BASE_URL}/`,
+    href: './',
     isIcon: true
   },
   {
     id: 'experience',
     name: { es: 'Experiencia', en: 'Experience' },
-    href: `${BASE_URL}/#experience`,
+    href: './portafolio#experience',
     isIcon: false
   },
   {
     id: 'contact',
     name: { es: 'Contacto', en: 'Contact' },
-    href: `${BASE_URL}/#contact`,
+    href: './portafolio#contact',
     isIcon: false
   }
 ];
