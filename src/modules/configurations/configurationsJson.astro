@@ -7,7 +7,13 @@ interface Props {
 
 const { data } = Astro.props;
 ---
-<Section title="JSON Editor" subTittle="EDITA_TU_JSON_AQUI">
+<Section
+  title="JSON Editor"
+  subTittle="EDITA_TU_JSON_AQUI"
+  styles={{
+    backgroundColor: "var(--color-bg-darker)",
+  }}
+>
   <div class="actions" slot="buttons">
     <ButtonGlitch
       id="formatBtn"
