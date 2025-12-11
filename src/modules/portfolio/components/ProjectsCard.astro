@@ -68,7 +68,7 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
 				
 				const projectId = card.getAttribute('data-project-id');
 				const lang = window.location.pathname.includes('/es/') ? 'es' : 'en';
-				window.location.href = `${BASE_URL}/${lang}/portafolio/projects?id=${projectId}`;
+				window.location.href = `${BASE_URL}/${lang}/projects?id=${projectId}`;
 			});
 		});
 	});
