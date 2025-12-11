@@ -54,26 +54,25 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
 </article>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.project-card');
-    
-    cards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        // Si el click es en un enlace, no redirigir
-        if (target.tagName === 'A' || target.closest('a')) {
-          return;
-        }
-        
-        const projectId = card.getAttribute('data-project-id');
-        const lang = window.location.pathname.includes('/es/') ? 'es' : 'en';
-        window.location.href = `/${lang}/portafolio/projects?id=${projectId}`;
-      });
-    });
-  });
-</script>
-
-<style>
+	document.addEventListener('DOMContentLoaded', () => {
+		const BASE_URL = import.meta.env.BASE_URL;
+		const cards = document.querySelectorAll('.project-card');
+		
+		cards.forEach(card => {
+			card.addEventListener('click', (e) => {
+				const target = e.target as HTMLElement;
+				// Si el click es en un enlace, no redirigir
+				if (target.tagName === 'A' || target.closest('a')) {
+					return;
+				}
+				
+				const projectId = card.getAttribute('data-project-id');
+				const lang = window.location.pathname.includes('/es/') ? 'es' : 'en';
+				window.location.href = `${BASE_URL}/${lang}/projects?id=${projectId}`;
+			});
+		});
+	});
+</script><style>
   article {
     max-width: 500px;
     width: 100%;

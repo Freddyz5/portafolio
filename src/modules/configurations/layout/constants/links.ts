@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.BASE_URL;
+
 export type Link = {
   id: string;
   name: string;
@@ -15,13 +17,13 @@ export const LINKS: Array<Link> = [
   {
     id: 'portafolio',
     name: 'Portafolio',
-    href: '/portafolio',
+    href: `${BASE_URL}/es`,
     isIcon: false
   },
   {
     id: 'curriculumVitae',
     name: 'CV',
-    href: '/curriculum-vitae',
+    href: `${BASE_URL}/es/cv`,
     isIcon: false
   },
 ]

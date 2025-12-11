@@ -24,12 +24,6 @@ export const LINKS: Array<Link> = [
     href: '#projects',
     isIcon: false
   },
-  // {
-  //   id: 'about',
-  //   name: 'Acerca de mi',
-  //   href: '#about',
-  //   isIcon: false
-  // },
   {
     id: 'contact',
     name: { es: 'Contacto', en: 'Contact' },
@@ -42,19 +36,19 @@ export const PROJECT_LINKS: Array<Link> = [
   {
     id: 'home',
     name: { es: 'Inicio', en: 'Home' },
-    href: './',
+    href: '',
     isIcon: true
   },
   {
     id: 'experience',
     name: { es: 'Experiencia', en: 'Experience' },
-    href: '../portafolio#experience',
+    href: '',
     isIcon: false
   },
   {
     id: 'contact',
     name: { es: 'Contacto', en: 'Contact' },
-    href: '../portafolio#contact',
+    href: '',
     isIcon: false
   }
 ];

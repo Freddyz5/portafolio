@@ -62,11 +62,14 @@ const { lang, summary, name, image } = Astro.props;
   </article>
 </Section>
 
-<script define:vars={{ lang }}>
+<script>
+  const BASE_URL = import.meta.env.BASE_URL;
+  console.log(BASE_URL);
+  const lang = document.documentElement.getAttribute('data-lang') || 'es';
   const resumeBtn = document.getElementById("resume-btn");
   const contactBtn = document.getElementById("contact-btn");
   resumeBtn?.addEventListener("click", () => {
-    window.location.href = `/${lang}/curriculum-vitae`;
+    window.location.href = `${BASE_URL}/${lang}/cv`;
   });
   contactBtn?.addEventListener("click", () => {
     window.location.href = "#contact";
