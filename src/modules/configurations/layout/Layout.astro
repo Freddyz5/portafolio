@@ -43,8 +43,21 @@ const { title, description } = Astro.props
 
 <style is:global>
 	:root {
-    color-scheme: light dark;
-		color: #FFF7ED;
+		color-scheme: light dark;
+		
+		--color-secondary-text: #E4FBFB;
+		--color-secondary-glow: #00F7FF;
+		--color-secondary-accent: #00B8BF;
+		--color-secondary-muted: #1F4345;
+
+		--color-text: #FBE4E4;
+		--color-glow: #FF0800;
+		--color-accent: #BF0600;
+		--color-muted: #893f3b;
+
+		--color-bg-darker: #080404;
+		--color-bg: #151111;
+		--color-bg-lighter: #1F1616;
 	}
 
 	html {
@@ -53,19 +66,19 @@ const { title, description } = Astro.props
 	}
 
 	#mouse {
-		background-color: #25E5EB;
+		background-color: var(--color-secondary-glow);
 		position: fixed;
 		width: 50px;
 		height: 50px;
 		border-radius: 50%;
-		filter: blur(70px);
-		z-index: -1;
+		filter: blur(50px);
+		z-index: 0;
 		pointer-events: none;
 	}
 
 	body {
-		background-color: #141414;
-		color: #FFF7ED;
+		background-color: color-mix(in srgb, var(--color-bg) 100%, transparent);
+		color: var(--color-text);
 		cursor: ;
   }
 
@@ -88,5 +101,4 @@ const { title, description } = Astro.props
       scroll-behavior: auto;
     }
   }
-	
 </style>
