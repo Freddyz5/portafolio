@@ -3,22 +3,23 @@ import Section from "../components/Section.astro";
 
 interface Props {
   projects: any[];
+  lang: 'es' | 'en';
 }
 
-const { projects } = Astro.props;
+const { projects, lang } = Astro.props;
 ---
 
-<Section title="Proyectos">
+<Section title={lang === 'es' ? 'Proyectos' : 'Projects'}>
   <ul class="projects">
     {projects.map(({ name, summary, startDate, endDate, status, highlights, technologies, url, repo }) => {
       const formattedDate = (date: string) => {
-        const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
+        const formattedDate = new Date(date).toLocaleString((lang === 'es' ? 'es-ES' : 'en-US'), { year: 'numeric', month: 'long'});
         const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
         return result;
       }
 
       const startYear = formattedDate(startDate)
-      const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
+      const endYear = endDate !== null ? formattedDate(endDate) : (lang === 'es' ? 'Actualidad' : 'Present');
 
       return (
         <li>

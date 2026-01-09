@@ -3,13 +3,14 @@ import Section from "../components/Section.astro";
 
 interface Props {
   skills: any;
+  lang: 'es' | 'en';
 }
 
-const { skills } = Astro.props;
+const { skills, lang } = Astro.props;
 
 ---
 
-<Section title="Habilidades de programación">
+<Section title={lang === 'es' ? 'Habilidades de programación' : 'Programming Skills'}>
   <ul class="skills">
     {skills && skills.map(({ name, keywords }: { name: string, keywords: string[] }) => (
       <li><span>{name}:</span> {keywords.join(", ")}</li>

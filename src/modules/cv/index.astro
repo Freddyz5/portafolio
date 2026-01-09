@@ -22,12 +22,12 @@ const { basics, works, projects, education, certificates, skills, languages } = 
   <main>
     <Hero basics={basics} />
     <About summary={basics.summary} />
-    <Experience works={works} />
-    <Projects projects={projects} />
-    <Education education={education} />
-    <SupplementaryEducation certificates={certificates} />
-    <Skills skills={skills} />
-    <Languages languages={languages} />
+    <Experience works={works} lang={lang} />
+    <Projects projects={projects} lang={lang} />
+    <Education education={education} lang={lang} />
+    <SupplementaryEducation certificates={certificates} lang={lang} />
+    <Skills skills={skills} lang={lang} />
+    <Languages languages={languages} lang={lang} />
   </main>
 
   <KeyboardManager />
