@@ -10,9 +10,10 @@ interface Props {
   type?: "submit" | "button" | "reset";
   width?: string;
   color?: "primary" | "secondary";
+  disabled?: boolean;
 }
 
-const { id, className, text, icon: Icon, url, type = "button", width = "100%", color = "primary" } = Astro.props;
+const { id, className, text, icon: Icon, url, type = "button", width = "100%", color = "primary", disabled = false } = Astro.props;
 
 const buttonColors = color === "secondary"
   ? {
@@ -37,8 +38,10 @@ const buttonColors = color === "secondary"
     --secondary-color: ${buttonColors.accent};
     background-color: ${buttonColors.backgroundColor};
     color: ${buttonColors.color};
+    opacity: ${disabled ? 0.6 : 1};
   `}
-  class={`glitch-btn ${className}`}
+  class={`glitch-btn ${className ?? ""} ${disabled ? 'is-disabled' : ''}`}
+  disabled={disabled}
 >
   {Icon && <Icon width={24} height={24} />}
   {text}
@@ -48,7 +51,7 @@ const buttonColors = color === "secondary"
   if (url) {
     const urlLink = document.getElementById(id);
     urlLink?.addEventListener('click', () => {
-      window.location.href = url;
+      window.open(url, '_blank', 'noopener,noreferrer');
     });
   }
 </script>
@@ -81,8 +84,8 @@ const buttonColors = color === "secondary"
     overflow: hidden;
   }
 
-  .glitch-btn:hover,
-  .glitch-btn:focus {
+  .glitch-btn:not(.is-disabled):hover,
+  .glitch-btn:not(.is-disabled):focus {
     background-color: var(--primary-color);
     color: var(--bg-color);
     box-shadow: 0 0 25px var(--secondary-color);
@@ -114,20 +117,36 @@ const buttonColors = color === "secondary"
     transition: opacity 0.2s ease;
   }
 
-  .glitch-btn:hover::before,
-  .glitch-btn:focus::before {
+  .glitch-btn:not(.is-disabled):hover::before,
+  .glitch-btn:not(.is-disabled):focus::before {
     opacity: 1;
     color: var(--primary-color);
     animation: glitch-anim var(--glitch-anim-duration)
       cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
-
-  .glitch-btn:hover::after,
-  .glitch-btn:focus::after {
+  .glitch-btn:not(.is-disabled):hover::after,
+  .glitch-btn:not(.is-disabled):focus::after {
     opacity: 1;
     color: var(--bg-color);
     animation: glitch-anim var(--glitch-anim-duration)
       cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
+  }
+
+  /* Disabled state: remove animations and hover effects */
+  .glitch-btn.is-disabled,
+  .glitch-btn:disabled {
+    cursor: not-allowed;
+    box-shadow: none;
+    border-color: var(--primary-color);
+    opacity: 0.6;
+  }
+
+  .glitch-btn.is-disabled::before,
+  .glitch-btn.is-disabled::after,
+  .glitch-btn:disabled::before,
+  .glitch-btn:disabled::after {
+    animation: none !important;
+    opacity: 0 !important;
   }
 
   @keyframes glitch-anim {

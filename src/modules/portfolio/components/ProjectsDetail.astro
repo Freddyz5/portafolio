@@ -25,7 +25,6 @@ interface Props {
 const { lang, projects } = Astro.props;
 ---
 
-<!-- <section id="project-detail" style="display: none;"> -->
 <section id="project-detail" style="display: none;">
   <div class="back-link-container">
     <a href="#" id="back-link" class="back-link">
@@ -83,6 +82,7 @@ const { lang, projects } = Astro.props;
             icon={Github}
             url={repo}
             text={lang === "es" ? "Ver Código" : "View Code"}
+            disabled={repo ? false : true}
           />
           <ButtonGlitch
             id="demo"
@@ -90,6 +90,7 @@ const { lang, projects } = Astro.props;
             icon={Link}
             url={url}
             text={lang === "es" ? "Ver Demo" : "View Demo"}
+            disabled={url ? false : true}
           />
         </div>
       </article>

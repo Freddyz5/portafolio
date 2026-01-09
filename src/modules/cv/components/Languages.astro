@@ -3,12 +3,13 @@ import Section from "../components/Section.astro";
 
 interface Props {
   languages: any[];
+  lang: 'es' | 'en';
 }
 
-const { languages } = Astro.props;
+const { languages, lang } = Astro.props;
 ---
 
-<Section title="Idiomas">
+<Section title={lang === 'es' ? 'Idiomas' : 'Languages'}>
   <ul>
     {
       languages.map(({ language, fluency }) => (
