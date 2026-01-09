@@ -1,3 +1,14 @@
+## [1.5.1](https://github.com/Freddyz5/portafolio/compare/v1.5.0...v1.5.1) (2026-01-09)
+
+
+### Bug Fixes
+
+* actualizar información en resume.json, incluyendo enlaces, resúmenes y detalles de proyectos ([dec9157](https://github.com/Freddyz5/portafolio/commit/dec9157ff527c155cba4b3433de01660f323146f))
+* actualizar rutas de imágenes en resume.json y restaurar importación de datos en getData.ts ([541e812](https://github.com/Freddyz5/portafolio/commit/541e812074a0d05e48859992d1dfbe33dccb760d))
+* agregar soporte para el estado deshabilitado en los botones y enlaces de los componentes de portafolio ([39f8dea](https://github.com/Freddyz5/portafolio/commit/39f8dea2ff3ee730f29b53caa073c44759c8c4b9))
+* agregar soporte para el idioma en los componentes de CV y actualizar títulos dinámicamente ([ad40e37](https://github.com/Freddyz5/portafolio/commit/ad40e37ca9d87147853f71c12080d4d36f1b3b86))
+* corregir el cálculo de años en la sección de educación y actualizar la visualización de habilidades ([24be5fe](https://github.com/Freddyz5/portafolio/commit/24be5feffb95207f67a8b719be666c9984237657))
+
 # [1.5.0](https://github.com/Freddyz5/portafolio/compare/v1.4.0...v1.5.0) (2025-12-11)
 
 
