@@ -7,29 +7,13 @@ interface Props {
 
 const { skills } = Astro.props;
 
-const { languagesArray, frameworksLibrariesArray, technologiesArray } = skills.reduce((acc: any, skill: any) => {
-  if (skill.id.includes("language")) acc.languagesArray.push(skill);
-  else if (skill.id.includes("framework-library")) acc.frameworksLibrariesArray.push(skill);
-  else if (skill.id.includes("technology")) acc.technologiesArray.push(skill);
-  return acc;
-},
-{
-  languagesArray: [],
-  frameworksLibrariesArray: [],
-  technologiesArray: [],
-});
-
-const formatSkillNames = (skillsArray: any[]) => {
-  return skillsArray.map(({ name }: { name: string }) => name).join(", ");
-};
-
 ---
 
 <Section title="Habilidades de programación">
   <ul class="skills">
-    <li><span>Lenguajes: </span> {formatSkillNames(languagesArray)}</li>
-    <li><span>Frameworks / Librerías: </span> {formatSkillNames(frameworksLibrariesArray)}</li>
-    <li><span>Tecnologías: </span> {formatSkillNames(technologiesArray)}</li>
+    {skills && skills.map(({ name, keywords }: { name: string, keywords: string[] }) => (
+      <li><span>{name}:</span> {keywords.join(", ")}</li>
+    ))}
   </ul>
 </Section>
 

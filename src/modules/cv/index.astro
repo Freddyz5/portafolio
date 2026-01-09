@@ -11,9 +11,10 @@ import KeyboardManager from './components/KeyboardManager.astro';
 
 interface Props {
   data: any;
+  lang: 'es' | 'en';
 }
 
-const { data } = Astro.props;
+const { data, lang } = Astro.props;
 const { basics, works, projects, education, certificates, skills, languages } = data;
 ---
 

@@ -11,8 +11,8 @@ const { education } = Astro.props;
 <Section title="Educación">
   <ul>
     {education.map(({ institution, area, startDate, endDate }) => {
-      const startYear = new Date(startDate).getFullYear()
-      const endYear = endDate != null ? new Date(endDate).getFullYear() : "Actual"
+      const startYear = new Date(startDate).getUTCFullYear()
+      const endYear = endDate != null ? new Date(endDate).getUTCFullYear() : "Actualidad"
       const years = `${startYear} - ${endYear}`
 
       return (
