@@ -3,22 +3,23 @@ import Section from '../components/Section.astro';
 
 interface Props {
   works: any[];
+  lang: 'es' | 'en';
 }
 
-const { works } = Astro.props;
+const { works, lang } = Astro.props;
 ---
 
-<Section title="Experiencia Profesional">
+<Section title={lang === 'es' ? 'Experiencia Laboral' : 'Work Experience'}>
   <ul class="works">
     {works.map(({ name, position, url, startDate, endDate, summary, highlights, teams }) => {
       const formattedDate = (date: string) => {
-        const formattedDate = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'long'});
+        const formattedDate = new Date(date).toLocaleString((lang === 'es' ? 'es-ES' : 'en-US'), { year: 'numeric', month: 'long'});
         const result = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1).replace(' de', '');
         return result;
       }
 
       const startYear = formattedDate(startDate)
-      const endYear = endDate !== null ? formattedDate(endDate) : "Actualidad"
+      const endYear = endDate !== null ? formattedDate(endDate) : (lang === 'es' ? 'Actualidad' : 'Present');
 
       return (
         <li>

@@ -3,15 +3,16 @@ import Section from "../components/Section.astro"
 
 interface Props {
   certificates: any[];
+  lang: 'es' | 'en';
 }
 
-const { certificates } = Astro.props;
+const { certificates, lang } = Astro.props;
 ---
 
-<Section title="Educación Suplementaria">
+<Section title={lang === 'es' ? 'Educación Suplementaria' : 'Supplementary Education'}>
   <ul>
     {certificates.map(({ issuer, name, date, url }) => {
-      const year = new Date(date).toLocaleString('es-ES', { year: 'numeric', month: 'short'});
+      const year = new Date(date).toLocaleString(lang === 'es' ? 'es-ES' : 'en-US', { year: 'numeric', month: 'short'});
 
       return (
         <li>

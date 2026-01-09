@@ -41,14 +41,29 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     </div>
 
     <div class="links">
-      <a href={repo} target="_blank">
-        <Github width="18" height="18" />
-        Code
-      </a>
-      <a href={url} target="_blank">
-        <Link width="18" height="18" />
-        Demo
-      </a>
+      {repo ? (
+        <a href={repo} target="_blank" rel="noopener noreferrer" class="repo">
+          <Github width="18" height="18" />
+          Code
+        </a>
+      ) : (
+        <span class="repo disabled">
+          <Github width="18" height="18" />
+          Code
+        </span>
+      )}
+
+      {url ? (
+        <a href={url} target="_blank" rel="noopener noreferrer" class="url">
+          <Link width="18" height="18" />
+          Demo
+        </a>
+      ) : (
+        <span class="url disabled">
+          <Link width="18" height="18" />
+          Demo
+        </span>
+      )}
     </div>
   </div>
 </article>
@@ -72,7 +87,9 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
 			});
 		});
 	});
-</script><style>
+</script>
+
+<style>
   article {
     max-width: 500px;
     width: 100%;
@@ -141,5 +158,14 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
   .links a:hover {
     color: var(--color-secondary-glow);
     text-decoration: underline;
+  }
+  .links .disabled {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
   }
 </style>

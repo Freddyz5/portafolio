@@ -3,16 +3,17 @@ import Section from "../components/Section.astro"
 
 interface Props {
   education: any[];
+  lang: 'es' | 'en';
 }
 
-const { education } = Astro.props;
+const { education, lang } = Astro.props;
 ---
 
-<Section title="Educación">
+<Section title={lang === 'es' ? 'Educación' : 'Education'}>
   <ul>
     {education.map(({ institution, area, startDate, endDate }) => {
-      const startYear = new Date(startDate).getFullYear()
-      const endYear = endDate != null ? new Date(endDate).getFullYear() : "Actual"
+      const startYear = new Date(startDate).getUTCFullYear()
+      const endYear = endDate != null ? new Date(endDate).getUTCFullYear() : (lang === 'es' ? 'Actualidad' : 'Present')
       const years = `${startYear} - ${endYear}`
 
       return (

@@ -24,5 +24,5 @@ const basics = data.basics;
   url={basics.url}
 >
   <ButtonTranslate currentLang={lang} />
-  <CV data={data} />
+  <CV data={data} lang={lang as 'es' | 'en'} />
 </LayoutCV>
