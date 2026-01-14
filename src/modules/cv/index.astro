@@ -12,9 +12,10 @@ import KeyboardManager from './components/KeyboardManager.astro';
 interface Props {
   data: any;
   lang: 'es' | 'en';
+  isDev?: boolean;
 }
 
-const { data, lang } = Astro.props;
+const { data, lang, isDev = true } = Astro.props;
 const { basics, works, projects, education, certificates, skills, languages } = data;
 ---
 
@@ -25,8 +26,8 @@ const { basics, works, projects, education, certificates, skills, languages } = 
     <Experience works={works} lang={lang} />
     <Projects projects={projects} lang={lang} />
     <Education education={education} lang={lang} />
-    <SupplementaryEducation certificates={certificates} lang={lang} />
-    <Skills skills={skills} lang={lang} />
+    {isDev && <SupplementaryEducation certificates={certificates} lang={lang} />}
+    <Skills skills={skills} lang={lang} isDev={isDev} />
     <Languages languages={languages} lang={lang} />
   </main>
 
