@@ -1,3 +1,15 @@
+# [1.6.0](https://github.com/Freddyz5/portafolio/compare/v1.5.1...v1.6.0) (2026-01-14)
+
+
+### Bug Fixes
+
+* actualizar rutas de importación para el archivo resume.json en KeyboardManager y getData ([b75c0ed](https://github.com/Freddyz5/portafolio/commit/b75c0ede06dc7a21fe9e88b28233686f3dd019fb))
+
+
+### Features
+
+* agregar datos de currículum y soporte para múltiples idiomas en el componente CV ([f0e92f7](https://github.com/Freddyz5/portafolio/commit/f0e92f757c13dc3ecdf0a503a6e096563fba4b01))
+
 ## [1.5.1](https://github.com/Freddyz5/portafolio/compare/v1.5.0...v1.5.1) (2026-01-09)
 
 
