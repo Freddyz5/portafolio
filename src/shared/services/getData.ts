@@ -1,5 +1,5 @@
 import { separateLanguages } from '../utils/languageSeparator';
-import data from '../../resume.json'
+import data from '../../constants/resume.json'
 
 type LanguageType = 'es' | 'en';
 
