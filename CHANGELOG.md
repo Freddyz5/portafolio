@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/Freddyz5/portafolio/compare/v1.6.0...v1.7.0) (2026-07-11)
+
+
+### Features
+
+* agregar slash command /add-project para el portafolio ([435bb1b](https://github.com/Freddyz5/portafolio/commit/435bb1b769bd2ff10e781e253810c6e6db36223b))
+
 # [1.6.0](https://github.com/Freddyz5/portafolio/compare/v1.5.1...v1.6.0) (2026-01-14)
 
 
