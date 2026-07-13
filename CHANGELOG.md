@@ -1,3 +1,12 @@
+# [1.8.0](https://github.com/Freddyz5/portafolio/compare/v1.7.0...v1.8.0) (2026-07-13)
+
+
+### Features
+
+* add images to portfolio projects ([9a2baf9](https://github.com/Freddyz5/portafolio/commit/9a2baf9d01b43ec258b6b937ccb4e1f29b51e74b))
+* agregar proyecto Vision Craft al portafolio ([6578214](https://github.com/Freddyz5/portafolio/commit/6578214929af64be966ea795d94185ca846f311c))
+* agregar URL de demo desplegado a Vision Craft ([421ad26](https://github.com/Freddyz5/portafolio/commit/421ad26062e800362231ca1e1e118eedf6ac734d))
+
 # [1.7.0](https://github.com/Freddyz5/portafolio/compare/v1.6.0...v1.7.0) (2026-07-11)
 
 
