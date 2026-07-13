@@ -1,5 +1,10 @@
 ---
 import '@fontsource-variable/orbitron';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-mono/400-italic.css';
+import '@fontsource/vt323/400.css';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
@@ -92,10 +97,27 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		--cream: #fff7ed;
 		--glitch-label-bg: #212121;
 		--white-transparent: rgba(255, 255, 255, 0);
+
+		/* TIPOGRAFÍA · 3 voces */
+		--font-display: 'Orbitron Variable', sans-serif;   /* nombre, headers, etiquetas de panel */
+		--font-body: 'IBM Plex Mono', ui-monospace, 'Courier New', monospace; /* lectura, UI, botones */
+		--font-terminal: 'VT323', 'Courier New', monospace; /* sabor terminal: prompts, timestamps */
+
+		/* TIPOGRAFÍA · escala */
+		--fs-display: clamp(2.25rem, 6vw, 3rem);   /* ~48 · display / nombre */
+		--fs-title: 1.75rem;                        /* ~28 · título de sección */
+		--fs-subtitle: 1.25rem;                     /* ~20 · título de tarjeta / panel */
+		--fs-lead: 1.125rem;                        /* ~18 · lead / prompts */
+		--fs-body: 0.9375rem;                       /* ~15 · cuerpo */
+		--fs-meta: 0.75rem;                         /* ~12 · meta */
+
+		--fw-display: 600;
+		--fw-title: 600;
+		--fw-body: 400;
 	}
 
 	html {
-		font-family: 'Orbitron Variable', sans-serif;
+		font-family: var(--font-display);
 		scroll-behavior: smooth;
 	}
 
@@ -113,6 +135,12 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	body {
 		background-color: color-mix(in srgb, var(--bg-base) 100%, transparent);
 		color: var(--red-core);
+		font-family: var(--font-body);
+		font-size: var(--fs-body);
+		font-weight: var(--fw-body);
+		line-height: 1.5;
+		/* La fuente monoespaciada es más ancha: evita desbordes de texto */
+		overflow-wrap: break-word;
   }
 
 	* {

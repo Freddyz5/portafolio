@@ -14,6 +14,8 @@
   },
   "dependencies": {
     "@fontsource-variable/orbitron": "5.0.18",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@fontsource/vt323": "^5.2.7",
     "animejs": "3.2.2",
     "astro": "^5.16.4",
     "hotkeypad": "^1.0.2"

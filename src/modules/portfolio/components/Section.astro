@@ -53,12 +53,17 @@ const { id, title, subTittle, styles } = Astro.props;
   }
 
   h1 {
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: var(--fw-title);
     color: var(--red-glow);
     text-shadow: 0 0 15px var(--red-glow);
     text-transform: uppercase;
   }
   p {
-    font-family: 'Courier New', monospace;
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lead);
+    line-height: 1.2;
     text-transform: uppercase;
     color: var(--red-muted);
   }

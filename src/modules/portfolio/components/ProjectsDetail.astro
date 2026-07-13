@@ -141,6 +141,13 @@ const { lang, projects } = Astro.props;
     border-radius: 6px 6px 0 0;
     z-index: 1;
   }
+  header h3 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-title);
+    font-size: var(--fs-subtitle);
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
   article {
     width: 100%;
     background-color: var(--bg-base);
@@ -165,6 +172,9 @@ const { lang, projects } = Astro.props;
     gap: 0.5rem;
   }
   h4 {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lead);
+    line-height: 1.1;
     color: var(--red-accent);
   }
   .highlights {

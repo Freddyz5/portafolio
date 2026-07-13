@@ -93,6 +93,7 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
   article {
     max-width: 500px;
     width: 100%;
+    min-width: 0;
     background: var(--bg-base);
     border: 2px solid var(--red-muted);
     border-radius: 5px;
@@ -109,6 +110,14 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     align-items: center;
     gap: 0.3rem;
     color: var(--red-muted);
+  }
+  header h5 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-title);
+    font-size: var(--fs-meta);
+    letter-spacing: 0.05em;
+    overflow-wrap: anywhere;
+    min-width: 0;
   }
   figure {
     width: 100%;
@@ -129,6 +138,9 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     gap: 0.8rem;
   }
   .content h4 {
+    font-family: var(--font-display);
+    font-weight: var(--fw-title);
+    font-size: var(--fs-subtitle);
     color: var(--red-glow);
   }
   .content p {

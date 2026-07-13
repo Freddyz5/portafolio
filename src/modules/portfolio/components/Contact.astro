@@ -163,6 +163,9 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
 
 <style>
   header {
+    font-family: var(--font-display);
+    font-weight: var(--fw-title);
+    font-size: var(--fs-subtitle);
     background-color: var(--red-glow);
     width: 60%;
     color: var(--bg-field);
@@ -184,11 +187,19 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   article p {
     color: var(--red-accent);
   }
+  article > p {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lead);
+    line-height: 1.2;
+  }
   .network {
+    font-family: var(--font-display);
+    font-weight: var(--fw-title);
+    font-size: var(--fs-meta);
     text-transform: uppercase;
   }
   .username {
-    font-size: 0.85rem;
+    font-size: var(--fs-meta);
   }
   .contact-info {
     display: flex;
