@@ -7,7 +7,7 @@ interface Props {
 
 const { currentLang } = Astro.props;
 const otherLang = currentLang === 'es' ? 'en' : 'es';
-const currentPath = Astro.url.pathname.replace(`/${currentLang}/`, `/${otherLang}/`);
+const currentPath = Astro.url.pathname.replace(new RegExp(`/${currentLang}(/|$)`), `/${otherLang}$1`);
 ---
 
 <a href={currentPath} class="nav-link"  >
