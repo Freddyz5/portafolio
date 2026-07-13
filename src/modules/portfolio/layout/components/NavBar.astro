@@ -101,7 +101,7 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 
 <style>
 	#navbar {
-		background-color: var(--color-bg);
+		background-color: var(--bg-base);
 		position: sticky;
 		top: 0px;
 		left: 0px;
@@ -117,7 +117,6 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 		text-transform: capitalize;
 		white-space: nowrap;
 		font-size: max(1.4em, 1.3vw);
-		/* border-bottom: 1px solid #fff7ed; */
 		z-index: 3;
 
 		view-timeline-name: --navbar;
@@ -153,27 +152,27 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 	}
 	.nav-link {
 		padding: 0.2em 0.4em;
-		color: var(--color-text);
+		color: var(--red-core);
 		text-decoration: none;
 		font-weight: 500;
 		border-radius: 5px;
-		border: 1px solid var(--color-text);
+		border: 1px solid var(--red-core);
 		transition: 300ms;
 	}
 	.navLogo {
 		width: 40px;
 		height: 40px;
-		stroke: var(--color-glow);
-		color: var(--color-glow);
-		filter: drop-shadow(0 0 0.5rem var(--color-accent));
+		stroke: var(--red-glow);
+		color: var(--red-glow);
+		filter: drop-shadow(0 0 0.5rem var(--red-accent));
 		stroke-width: 5px;
 		transition: 0.3s;
 	}
 	h1 {
-		color: var(--color-text);
+		color: var(--red-core);
 		padding: 0.2em 0.4em;
 		border-radius: 5px;
-		border: 1px solid var(--color-text);
+		border: 1px solid var(--red-core);
 		text-align: center;
 		font-size: 25px;
 		font-weight: 400;
@@ -188,34 +187,34 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 		padding: 0.25em 0.25em;
 	}
 	.active {
-		border: 1px solid var(--color-glow);
-		color: var(--color-glow);
-		box-shadow: 0px 0px 10px 0px var(--color-accent);
-		background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+		border: 1px solid var(--red-glow);
+		color: var(--red-glow);
+		box-shadow: 0px 0px 10px 0px var(--red-accent);
+		background-color: color-mix(in srgb, var(--red-accent) 10%, transparent);
 		scale: 1.05;
 		transition: 300ms;
 	}
 	.home-link:hover .navLogo {
-		stroke: var(--color-secondary-glow);
-		color: var(--color-secondary-glow);
-		filter: drop-shadow(0 0 0.5rem var(--color-secondary-accent));
+		stroke: var(--cyan-glow);
+		color: var(--cyan-glow);
+		filter: drop-shadow(0 0 0.5rem var(--cyan-accent));
 		transform: rotate(30deg);
 		scale: 1.1;
 		transition: 0.3s;
 	}
 	.home-link:hover h1 {
-		border: 1px solid var(--color-secondary-glow);
-		color: var(--color-secondary-text);
-		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
-		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
+		border: 1px solid var(--cyan-glow);
+		color: var(--cyan-core);
+		box-shadow: 0px 0px 10px 0px var(--cyan-glow);
+		background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
 		scale: 1.05;
 		transition: 300ms;
 	}
 	.nav-link:hover {
-		color: var(--color-secondary-text);
-		border: 1px solid var(--color-secondary-glow);
-		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
-		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
+		color: var(--cyan-core);
+		border: 1px solid var(--cyan-glow);
+		background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
+		box-shadow: 0px 0px 10px 0px var(--cyan-glow);
 		scale: 1.05;
 		transition: 300ms;
 	}
@@ -223,15 +222,15 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 		70% {
 			top: 0px;
 			width: 100%;
-			border-bottom: 1px solid var(--color-text);
+			border-bottom: 1px solid var(--red-core);
 		}
 		100% {
-			background-color: color-mix(in srgb, var(--color-bg) 10%, transparent);
+			background-color: color-mix(in srgb, var(--bg-base) 10%, transparent);
 			backdrop-filter: blur(10px);
 			top: 1px;
 			width: 99.5%;
 			border-radius: 0.1em;
-			border-bottom: 0px solid var(--color-text);
+			border-bottom: 0px solid var(--red-core);
 		}
 	}
 	@media (700px >= width >= 0px) {
@@ -246,7 +245,7 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 			display: flex;
 		}
 		.menu-list {
-			background-color: color-mix(in srgb, var(--color-bg) 90%, transparent);
+			background-color: color-mix(in srgb, var(--bg-base) 90%, transparent);
 			width: fit-content;
 			display: none;
 			flex-direction: column;
@@ -255,7 +254,7 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 			top: 110%;
 			right: 1%;
 			padding: 0.5em;
-			border: 1px solid #fff7ed;
+			border: 1px solid var(--cream);
 			border-radius: 0.5em;
 		}
 		.menu-list:target {

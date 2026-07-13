@@ -3,7 +3,7 @@ import '@fontsource-variable/orbitron';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
-import MobileWarning from '../../../shared/compontens/MobileWarning.astro';
+import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
 
 interface Props {
@@ -67,19 +67,24 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	:root {
 		color-scheme: light dark;
 		
-		--color-secondary-text: #E4FBFB;
-		--color-secondary-glow: #00F7FF;
-		--color-secondary-accent: #00B8BF;
-		--color-secondary-muted: #1F4345;
+		--cyan-core: #E4FBFB;
+		--cyan-glow: #00F7FF;
+		--cyan-accent: #00B8BF;
+		--cyan-muted: #1F4345;
 
-		--color-text: #FBE4E4;
-		--color-glow: #FF0800;
-		--color-accent: #BF0600;
-		--color-muted: #893f3b;
+		--red-core: #FBE4E4;
+		--red-glow: #FF0800;
+		--red-accent: #BF0600;
+		--red-muted: #893f3b;
 
-		--color-bg-darker: #080404;
-		--color-bg: #151111;
-		--color-bg-lighter: #1F1616;
+		--bg-field: #080404;
+		--bg-base: #151111;
+		--bg-raised: #1F1616;
+
+		/* Auxiliares fuera del esquema red/cyan/bg — valores originales (ver inventario) */
+		--cream: #fff7ed;
+		--glitch-label-bg: #212121;
+		--white-transparent: rgba(255, 255, 255, 0);
 	}
 
 	html {
@@ -88,7 +93,7 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	}
 
 	#mouse {
-		background-color: var(--color-secondary-glow);
+		background-color: var(--cyan-glow);
 		position: fixed;
 		width: 50px;
 		height: 50px;
@@ -99,9 +104,8 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	}
 
 	body {
-		background-color: color-mix(in srgb, var(--color-bg) 100%, transparent);
-		color: var(--color-text);
-		cursor: ;
+		background-color: color-mix(in srgb, var(--bg-base) 100%, transparent);
+		color: var(--red-core);
   }
 
 	* {

@@ -4,7 +4,7 @@ interface Props {
   color?: string;
 }
 
-const { text, color = 'var(--color-muted)' } = Astro.props;
+const { text, color = 'var(--red-muted)' } = Astro.props;
 ---
 
 <span>
@@ -21,7 +21,7 @@ const { text, color = 'var(--color-muted)' } = Astro.props;
     transition: all 0.3s ease;
   }
   span:hover {
-    color: var(--color-secondary-accent);
-    border-color: var(--color-secondary-accent);
+    color: var(--cyan-accent);
+    border-color: var(--cyan-accent);
   }
 </style>

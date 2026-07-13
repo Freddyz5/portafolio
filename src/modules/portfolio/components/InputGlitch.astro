@@ -48,9 +48,9 @@ const { labelName, labelFor, dataText } = label || {}
 <style define:vars={{ margin }}>
   /* --- Root Variables & Wrapper --- */
   .glitch-input-wrapper {
-    --primary-color: var(--color-secondary-glow);
-    --secondary-color: var(--color-glow);
-    --text-color: var(--color-text);
+    --primary-color: var(--cyan-glow);
+    --secondary-color: var(--red-glow);
+    --text-color: var(--red-core);
 
     --glitch-anim-duration: 0.4s;
 
@@ -87,11 +87,11 @@ const { labelName, labelFor, dataText } = label || {}
       border-color 0.3s ease;
   }
   .holo-input::placeholder {
-    color: var(--color-muted);
+    color: var(--red-muted);
     opacity: 0.5;
   }
   .holo-input:focus{
-    color: var(--color-secondary-text);
+    color: var(--cyan-core);
   }
 
   /* --- Floating Label --- */
@@ -124,7 +124,7 @@ const { labelName, labelFor, dataText } = label || {}
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: #212121;
+    background-color: var(--glitch-label-bg);
   }
   .holo-input:focus + .input-label::before {
     color: var(--secondary-color);
@@ -159,9 +159,9 @@ const { labelName, labelFor, dataText } = label || {}
     background: linear-gradient(
       to bottom,
       transparent 0%,
-      var(--color-secondary-muted) 48%,
-      var(--color-secondary-glow) 50%,
-      var(--color-secondary-muted) 52%,
+      var(--cyan-muted) 48%,
+      var(--cyan-glow) 50%,
+      var(--cyan-muted) 52%,
       transparent 100%
     );
     opacity: 0;
@@ -174,7 +174,6 @@ const { labelName, labelFor, dataText } = label || {}
   .holo-input:focus ~ .input-border {
     border-radius: 10px;
     opacity: 1;
-    /* border-color: rgba(0, 242, 234, 0.5); */
   }
   .holo-input:focus ~ .corner {
     width: 1.25rem;
