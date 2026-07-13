@@ -422,7 +422,66 @@
         "Tailwind CSS"
       ],
       "url": "https://control-gastos-web.vercel.app/",
-      "repo": ""
+      "repo": "",
+      "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/v1783916116/e2msum9vm7chfqxw7smh.png"
+    },
+    {
+      "id": "proj-vision-craft",
+      "name": {
+        "es": "Vision Craft",
+        "en": "Vision Craft"
+      },
+      "startDate": "2026",
+      "endDate": null,
+      "status": {
+        "es": "En desarrollo",
+        "en": "In Development"
+      },
+      "summary": {
+        "es": "Aplicación web para crear vision boards: buscar imágenes, componerlas en un lienzo editable y exportarlas listas para imprimir a escala real.",
+        "en": "Web app for creating vision boards: search images, compose them on an editable canvas, and export them ready to print at real physical scale."
+      },
+      "description": {
+        "es": "Vision Craft es una aplicación construida con Astro y React (arquitectura de islas) que permite crear tableros visuales sin necesidad de backend tradicional. El usuario busca imágenes desde varios proveedores (Unsplash y Pexels a través de un proxy de API que mantiene las claves en el servidor), las organiza en un lienzo interactivo con arrastre y redimensionado sobre Konva, agrega texto y finalmente exporta el resultado en PNG o JSON. Su diferenciador es un motor de impresión que trabaja internamente en milímetros y convierte a escala física real, con soporte para dividir tableros grandes en múltiples hojas (tiling) para impresiones tipo póster de pared.",
+        "en": "Vision Craft is an application built with Astro and React (islands architecture) that lets users create visual boards without a traditional backend. Users search images from multiple providers (Unsplash and Pexels through an API proxy that keeps keys server-side), arrange them on an interactive canvas with drag & resize powered by Konva, add text, and finally export the result as PNG or JSON. Its differentiator is a print engine that works internally in millimetres and converts to real physical scale, with support for splitting large boards into multiple sheets (tiling) for wall-poster prints."
+      },
+      "highlights": {
+        "es": [
+          "Diseñé una arquitectura modular por dominios (Explore, Canvas, Design, Export) con islas de React sobre Astro para cargar interactividad solo donde se necesita.",
+          "Implementé la búsqueda de imágenes multi-proveedor (Unsplash y Pexels) mediante un endpoint de API en Astro que protege las claves del lado del servidor.",
+          "Construí el editor de lienzo con Konva y react-konva, con arrastre, redimensionado y capas de imágenes y texto.",
+          "Desarrollé un sistema de presets de tablero (A4, A3, US Letter, pósters, cuadrado) y dimensiones personalizadas trabajando internamente en milímetros.",
+          "Creé un motor de impresión y exportación a escala física real con conversión mm↔px y división en mosaico (tiling) para pósters de pared en varias hojas.",
+          "Integré persistencia local con nanostores para guardar automáticamente selecciones y tableros sin requerir autenticación.",
+          "Añadí exportación en PNG y JSON para imprimir y respaldar/importar tableros."
+        ],
+        "en": [
+          "Designed a modular, domain-driven architecture (Explore, Canvas, Design, Export) using React islands on Astro to load interactivity only where needed.",
+          "Implemented multi-provider image search (Unsplash and Pexels) through an Astro API endpoint that keeps API keys server-side.",
+          "Built the canvas editor with Konva and react-konva, supporting drag, resize, and image and text layers.",
+          "Developed a board preset system (A4, A3, US Letter, posters, square) plus custom dimensions, working internally in millimetres.",
+          "Created a print and export engine at real physical scale with mm↔px conversion and tiling to split wall posters across multiple sheets.",
+          "Integrated local persistence with nanostores to auto-save selections and boards without requiring authentication.",
+          "Added PNG and JSON export for printing and backing up/importing boards."
+        ]
+      },
+      "technologies": [
+        "TypeScript",
+        "Astro",
+        "React",
+        "Tailwind CSS",
+        "DaisyUI",
+        "Konva",
+        "react-konva",
+        "Nanostores",
+        "Vercel",
+        "Unsplash API",
+        "Pexels API",
+        "Bun"
+      ],
+      "url": "https://vision-craft-delta.vercel.app/",
+      "repo": "https://github.com/Freddyz5/vision-craft",
+      "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/v1783915717/ttso0hmyndo4g11bck4e.png"
     }
   ]
 }
