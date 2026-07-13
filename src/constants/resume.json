@@ -422,7 +422,8 @@
         "Tailwind CSS"
       ],
       "url": "https://control-gastos-web.vercel.app/",
-      "repo": ""
+      "repo": "",
+      "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/v1783916116/e2msum9vm7chfqxw7smh.png"
     },
     {
       "id": "proj-vision-craft",
@@ -479,7 +480,8 @@
         "Bun"
       ],
       "url": "https://vision-craft-delta.vercel.app/",
-      "repo": "https://github.com/Freddyz5/vision-craft"
+      "repo": "https://github.com/Freddyz5/vision-craft",
+      "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/v1783915717/ttso0hmyndo4g11bck4e.png"
     }
   ]
 }
