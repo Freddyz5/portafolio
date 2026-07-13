@@ -69,7 +69,7 @@ const { lang, projects } = Astro.props;
           <div class="technologies-section section">
             <h4>{lang === "es" ? "> STACK_TECNOLÓGICO" : "> TECH_STACK"}</h4>
             <div class="stack-tags">
-              {technologies.map((tech: string) => <Chip text={tech} color="var(--color-text)" />)}
+              {technologies.map((tech: string) => <Chip text={tech} color="var(--red-core)" />)}
             </div>
           </div>
         }
@@ -115,18 +115,18 @@ const { lang, projects } = Astro.props;
   }
   .back-link {
     padding: 0.2em 0.4em;
-		color: var(--color-text);
+		color: var(--red-core);
 		text-decoration: none;
 		font-weight: 500;
 		border-radius: 5px;
-		border: 1px solid var(--color-text);
+		border: 1px solid var(--red-core);
 		transition: 300ms;
   }
   .back-link:hover {
-		color: var(--color-secondary-text);
-		border: 1px solid var(--color-secondary-glow);
-		background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
-		box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
+		color: var(--cyan-core);
+		border: 1px solid var(--cyan-glow);
+		background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
+		box-shadow: 0px 0px 10px 0px var(--cyan-glow);
 		scale: 1.05;
 		transition: 300ms;
 	}
@@ -135,16 +135,16 @@ const { lang, projects } = Astro.props;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: var(--color-glow);
-    color: var(--color-bg-darker);
+    background-color: var(--red-glow);
+    color: var(--bg-field);
     padding: 0.6rem 1rem;
     border-radius: 6px 6px 0 0;
     z-index: 1;
   }
   article {
     width: 100%;
-    background-color: var(--color-bg);
-    border: 3px solid var(--color-glow);
+    background-color: var(--bg-base);
+    border: 3px solid var(--red-glow);
     padding: 2rem;
     display: flex;
     flex-direction: column;
@@ -156,7 +156,7 @@ const { lang, projects } = Astro.props;
     width: 100%;
     height: 500px;
     border-radius: 2px;
-    border: var(--color-muted) 2px solid;
+    border: var(--red-muted) 2px solid;
     overflow: hidden;
   }
   .section {
@@ -165,7 +165,7 @@ const { lang, projects } = Astro.props;
     gap: 0.5rem;
   }
   h4 {
-    color: var(--color-accent);
+    color: var(--red-accent);
   }
   .highlights {
     list-style-type: "▸ ";

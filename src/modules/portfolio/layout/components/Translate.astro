@@ -7,7 +7,7 @@ interface Props {
 
 const { currentLang } = Astro.props;
 const otherLang = currentLang === 'es' ? 'en' : 'es';
-const currentPath = Astro.url.pathname.replace(`/${currentLang}/`, `/${otherLang}/`);
+const currentPath = Astro.url.pathname.replace(new RegExp(`/${currentLang}(/|$)`), `/${otherLang}$1`);
 ---
 
 <a href={currentPath} class="nav-link"  >
@@ -20,19 +20,19 @@ const currentPath = Astro.url.pathname.replace(`/${currentLang}/`, `/${otherLang
     text-decoration: none;
     display: flex;
     align-items: center;
-    color: var(--color-text);
+    color: var(--red-core);
     padding: 0.2em 0.4em;
     border-radius: 5px;
-    border: 1px solid var(--color-text);
+    border: 1px solid var(--red-core);
     transition: 300ms;
     cursor: pointer;
     /* text-transform: lowercase; */
   }
   .nav-link:hover{
-    border: 1px solid var(--color-secondary-glow);
-    color: var(--color-secondary-text);
-    background: color-mix(in srgb, var(--color-secondary-glow) 70%, transparent);
-    box-shadow: 0px 0px 10px 0px var(--color-secondary-glow);
+    border: 1px solid var(--cyan-glow);
+    color: var(--cyan-core);
+    background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
+    box-shadow: 0px 0px 10px 0px var(--cyan-glow);
     scale: 1.1;
     transition: 300ms;
   }

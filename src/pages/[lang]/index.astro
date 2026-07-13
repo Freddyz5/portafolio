@@ -1,7 +1,8 @@
 ---
 import Layout from '../../modules/portfolio/layout/Layout.astro';
 import Portfolio from '../../modules/portfolio/index.astro';
-import { getData } from '../../shared/services/getData';
+import { separateLanguages } from '../../shared/utils/languageSeparator';
+import resume from '../../constants/resume.json';
 
 export async function getStaticPaths() {
   return [
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 
 const { lang } = Astro.params;
 
-const data = await getData(lang !== 'es' && lang !== 'en' ? 'en' : lang) as any;
+const data = separateLanguages(resume, lang !== 'es' && lang !== 'en' ? 'en' : lang) as any;
 const basics = data.basics;
 ---
 

@@ -69,14 +69,14 @@ const { lang, name, label } = Astro.props;
 	}
 	h1 {
 		font-size: clamp(1.5em, 8vw, 2.5em);
-		color: var(--color-glow);
-		text-shadow: 0 0 15px var(--color-glow);
+		color: var(--red-glow);
+		text-shadow: 0 0 15px var(--red-glow);
 	}
 	h2 {
 		font-size: clamp(0.5em, 4vw, 1.25em);
 		font-weight: 400;
 		margin-bottom: 1.5em;
-		color: var(--color-text);
+		color: var(--red-core);
 	}
 	.button-container {
 		display: flex;
@@ -84,32 +84,6 @@ const { lang, name, label } = Astro.props;
 		gap: 1em;
 		width: 100%;
 	}
-	/* .button {
-		width: fit-content;
-		color: #f3ffed;
-		text-decoration: none;
-		margin: 2em;
-		padding: 1px;
-		border-radius: 8px;
-		background: linear-gradient(90deg, #25e5eb 0%, #c01522 100%);
-		box-shadow: 5px 20px 40px 0px rgba(192, 21, 34, 0.5);
-		transition: 0.3s;
-	}
-	p {
-		background-color: #090909;
-		border-radius: 8px;
-		padding: 0.4em 0.8em;
-		transition: 0.3s;
-		font-size: clamp(1em, 4vw, 1.25em);
-	}
-	.button:hover p {
-		background-color: #090909bf;
-		transition: 0.3s;
-	}
-	.button:hover {
-		scale: 1.05;
-		transition: 0.3s;
-	} */
 	@media (width <= 900px) {
 		.home {
 			flex-direction: column;
