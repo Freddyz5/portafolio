@@ -163,6 +163,8 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
 
 <style>
   header {
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
     background-color: var(--red-glow);
     width: 60%;
     color: var(--bg-field);
@@ -180,6 +182,11 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     gap: 2rem;
     border-radius: 0 0 6px 6px;
     z-index: 1;
+  }
+  article > p {
+    font-family: var(--font-terminal);
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
   }
   article p {
     color: var(--red-accent);
