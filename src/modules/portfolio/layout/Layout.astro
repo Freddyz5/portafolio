@@ -67,16 +67,23 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	:root {
 		color-scheme: light dark;
 		
+		/* CIAN · datos / nominal */
 		--cyan-core: #E4FBFB;
 		--cyan-glow: #00F7FF;
 		--cyan-accent: #00B8BF;
 		--cyan-muted: #1F4345;
 
-		--red-core: #FBE4E4;
-		--red-glow: #FF0800;
+		/* ROJO · identidad / alerta */
+		--red-core: #FFE3DE;
+		--red-glow: #FF2D0F;
 		--red-accent: #BF0600;
-		--red-muted: #893f3b;
+		--red-muted: #893F3B;
 
+		/* ÁMBAR · señal (aplicación real —cursor, boot, warnings— en pasos posteriores) */
+		--amber-glow: #FFB000;
+		--amber-core: #FFE9C2;
+
+		/* FONDO · rampa cálida */
 		--bg-field: #080404;
 		--bg-base: #151111;
 		--bg-raised: #1F1616;
