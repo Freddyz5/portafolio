@@ -68,12 +68,14 @@ const { lang, name, label } = Astro.props;
 		margin-top: -10rem;
 	}
 	h1 {
-		font-size: clamp(1.5em, 8vw, 2.5em);
+		font-family: var(--font-display);
+		font-size: var(--fs-display);
+		font-weight: 600;
 		color: var(--red-glow);
 		text-shadow: 0 0 15px var(--red-glow);
 	}
 	h2 {
-		font-size: clamp(0.5em, 4vw, 1.25em);
+		font-size: var(--fs-lead);
 		font-weight: 400;
 		margin-bottom: 1.5em;
 		color: var(--red-core);
