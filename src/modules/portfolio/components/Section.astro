@@ -17,7 +17,7 @@ const { id, title, subTittle, styles } = Astro.props;
   <header>
     {title && <div class="title-wrapper">
       <div class="experience-title-line" />
-      <h1>{title}</h1>
+      <h1 class="glow-red">{title}</h1>
     </div>}
     {subTittle && <p>{">"} {subTittle}</p>}
   </header>
@@ -56,8 +56,7 @@ const { id, title, subTittle, styles } = Astro.props;
     font-family: var(--font-display);
     font-size: var(--fs-title);
     font-weight: 600;
-    color: var(--red-glow);
-    text-shadow: 0 0 15px var(--red-glow);
+    /* color + glow los aporta la utilidad global .glow-red */
     text-transform: uppercase;
   }
   p {

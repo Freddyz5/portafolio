@@ -88,6 +88,15 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		--amber-glow: #FFB000;
 		--amber-core: #FFE9C2;
 
+		/* GLOW · text-shadow de fósforo en 3 capas (núcleo + halo + bloom).
+		   Recetas reutilizables; se aplican vía .glow-red / .glow-cyan / .glow-amber. */
+		--text-glow-red: 0 0 1px currentColor, 0 0 8px var(--red-glow),
+			0 0 22px color-mix(in srgb, var(--red-glow) 55%, transparent);
+		--text-glow-cyan: 0 0 1px currentColor, 0 0 8px var(--cyan-glow),
+			0 0 20px color-mix(in srgb, var(--cyan-glow) 45%, transparent);
+		--text-glow-amber: 0 0 1px currentColor, 0 0 8px var(--amber-glow),
+			0 0 16px color-mix(in srgb, var(--amber-glow) 55%, transparent);
+
 		/* FONDO · rampa cálida */
 		--bg-field: #080404;
 		--bg-base: #151111;
@@ -148,9 +157,60 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		object-position: center center;
 	}
 
+	/* ===== Utilidades de glow de fósforo (por rol) ===== */
+	.glow-red   { color: var(--red-glow);   text-shadow: var(--text-glow-red); }
+	.glow-cyan  { color: var(--cyan-glow);  text-shadow: var(--text-glow-cyan); }
+	.glow-amber { color: var(--amber-glow); text-shadow: var(--text-glow-amber); }
+
+	/* ===== Overlay CRT global: scanlines + viñeta + flicker =====
+	   Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
+	   legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
+	   solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
+	body::before,
+	body::after {
+		content: "";
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 1000;
+	}
+	/* Viñeta */
+	body::before {
+		background: radial-gradient(
+			ellipse at center,
+			transparent 60%,
+			color-mix(in srgb, var(--bg-field) 55%, transparent) 100%
+		);
+	}
+	/* Scanlines + flicker */
+	body::after {
+		background: repeating-linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, 0.14) 0px,
+			rgba(0, 0, 0, 0.14) 1px,
+			transparent 1px,
+			transparent 3px
+		);
+		mix-blend-mode: multiply;
+		opacity: 0.6;
+		animation: crt-flicker 7s ease-in-out infinite;
+	}
+
+	@keyframes crt-flicker {
+		0%, 88%, 100% { opacity: 0.6; }
+		90% { opacity: 0.54; }
+		92% { opacity: 0.63; }
+		94% { opacity: 0.5; }
+		96% { opacity: 0.6; }
+	}
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
+    }
+    /* Sin parpadeo; las scanlines/viñeta quedan estáticas y sutiles. */
+    body::after {
+      animation: none;
     }
   }
 	
