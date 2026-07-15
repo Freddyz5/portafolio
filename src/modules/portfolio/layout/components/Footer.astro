@@ -6,6 +6,10 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+
+// Enlace discreto al sistema de diseño (contenido secundario: solo footer, nunca nav).
+const designSystemHref = `${import.meta.env.BASE_URL}/${lang === 'es' ? 'es' : 'en'}/design-system`;
+const designSystemLabel = lang === 'es' ? 'Sistema de diseño' : 'Design system';
 ---
 
 <footer>
@@ -29,11 +33,13 @@ const { lang } = Astro.props;
 			Midudev
 		</a>
 	</p>
+	<p class="footer-secondary">
+		<a href={designSystemHref} class="design-system-link">{designSystemLabel}</a>
+	</p>
 </footer>
 
 <style>
 	footer {
-		/* margin-top: -100px; */
 		padding-top: 1.8em;
 		padding-bottom: 1em;
 		text-align: center;
@@ -44,23 +50,23 @@ const { lang } = Astro.props;
 			radial-gradient(
 				circle at center center,
 				transparent 0%,
-				rgba(255, 255, 255, 0) 99%
+				var(--white-transparent) 99%
 			),
 			repeating-linear-gradient(
 				0deg,
-				color-mix(in srgb, var(--color-muted) 25%, transparent) 0px,
-				color-mix(in srgb, var(--color-muted) 25%, transparent) 1px,
+				color-mix(in srgb, var(--red-muted) 25%, transparent) 0px,
+				color-mix(in srgb, var(--red-muted) 25%, transparent) 1px,
 				transparent 1px,
 				transparent 10px
 			),
 			repeating-linear-gradient(
 				90deg,
-				color-mix(in srgb, var(--color-muted) 25%, transparent) 0px,
-				color-mix(in srgb, var(--color-muted) 25%, transparent) 1px,
+				color-mix(in srgb, var(--red-muted) 25%, transparent) 0px,
+				color-mix(in srgb, var(--red-muted) 25%, transparent) 1px,
 				transparent 1px,
 				transparent 10px
 			),
-			linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+			linear-gradient(90deg, var(--white-transparent), var(--white-transparent));
 	}
 	footer::after {
 		content: "";
@@ -69,7 +75,7 @@ const { lang } = Astro.props;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(to top, transparent 30%, var(--color-bg-darker) 100%);
+		background: linear-gradient(to top, transparent 30%, var(--bg-field) 100%);
 	}
 	figure {
 		align-items: center;
@@ -80,8 +86,8 @@ const { lang } = Astro.props;
 	svg {
 		width: 25px;
 		height: 25px;
-		stroke: var(--color-text);
-		color: var(--color-text);
+		stroke: var(--red-core);
+		color: var(--red-core);
 		stroke-width: 5px;
 	}
 	.logo-footer {
@@ -89,9 +95,9 @@ const { lang } = Astro.props;
 		transition: 0.3s ease;
 	}
 	.logo-footer:hover {
-		stroke: var(--color-secondary-glow);
-		color: var(--color-secondary-glow);
-		filter: drop-shadow(0 0 0.5rem var(--color-secondary-accent));
+		stroke: var(--cyan-glow);
+		color: var(--cyan-glow);
+		filter: drop-shadow(0 0 0.5rem var(--cyan-accent));
 		transform: rotate(30deg);
 		scale: 1.1;
 		transition: 0.3s ease;
@@ -101,7 +107,21 @@ const { lang } = Astro.props;
 	}
 	a {
 		position: relative;
-		color: var(--color-text);
+		color: var(--red-core);
 		z-index: 5;
+		transition: 0.3s ease;
+	}
+	a:hover {
+		color: var(--cyan-glow);
+		text-shadow: var(--text-glow-cyan);
+	}
+	.footer-secondary {
+		display: block;
+		margin-top: 0.6em;
+		font-size: var(--fs-meta);
+	}
+	.design-system-link {
+		color: color-mix(in srgb, var(--red-core) 55%, transparent);
+		letter-spacing: 0.05em;
 	}
 </style>

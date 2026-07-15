@@ -20,9 +20,9 @@ const { lang, summary, name, image } = Astro.props;
   title={lang === "es" ? "Acerca de mí" : "About me"}
   subTittle={lang === "es" ? "REGISTRO_PERSONAL" : "PERSONAL_RECORD" }
   styles={{
-    backgroundColor: "var(--color-bg-darker)",
+    backgroundColor: "var(--bg-field)",
     height: "800px",
-    boxShadow: "0 0 50px 20px var(--color-bg-darker)"
+    boxShadow: "0 0 50px 20px var(--bg-field)"
   }}
 >
   <article>
@@ -97,7 +97,7 @@ const { lang, summary, name, image } = Astro.props;
   .summary-wrapper p {
     height: 60%;
     overflow: scroll;
-    color: var(--color-text);
+    color: var(--red-core);
   }
   .buttons-wrapper {
     width: 100%;
@@ -109,35 +109,35 @@ const { lang, summary, name, image } = Astro.props;
     position: relative;
     width: 450px;
     height: 400px;
-    border: 2px solid color-mix(in srgb, var(--color-glow) 50%, transparent);
+    border: 2px solid color-mix(in srgb, var(--red-glow) 50%, transparent);
     border-radius: 5px;
     cursor: pointer;
-    color: var(--color-text);
+    color: var(--red-core);
     background-image:
 			radial-gradient(
 				circle at center center,
 				transparent 0%,
-				rgba(255, 255, 255, 0) 99%
+				var(--white-transparent) 99%
 			),
 			repeating-linear-gradient(
 				0deg,
-				color-mix(in srgb, var(--color-muted) 50%, transparent) 0px,
-				color-mix(in srgb, var(--color-muted) 50%, transparent) 1px,
+				color-mix(in srgb, var(--red-muted) 50%, transparent) 0px,
+				color-mix(in srgb, var(--red-muted) 50%, transparent) 1px,
 				transparent 1px,
 				transparent 24px
 			),
 			repeating-linear-gradient(
 				90deg,
-				color-mix(in srgb, var(--color-muted) 50%, transparent) 0px,
-				color-mix(in srgb, var(--color-muted) 50%, transparent) 1px,
+				color-mix(in srgb, var(--red-muted) 50%, transparent) 0px,
+				color-mix(in srgb, var(--red-muted) 50%, transparent) 1px,
 				transparent 1px,
 				transparent 24px
 			),
-			linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0));
+			linear-gradient(90deg, var(--white-transparent), var(--white-transparent));
     transition: all 2s ease;
   }
   figure:hover {
-    border-color: var(--color-secondary-glow);
+    border-color: var(--cyan-glow);
     transition: all 2s ease;
   }
 
@@ -171,12 +171,12 @@ const { lang, summary, name, image } = Astro.props;
     opacity: 0;
   }
   figure:hover .picture {
-    filter: drop-shadow(0px 0px 10px var(--color-secondary-glow));
+    filter: drop-shadow(0px 0px 10px var(--cyan-glow));
   }
   .picture {
     width: min(70vw, 360px);
     padding: 10px 10px 0 10px;
-    filter: drop-shadow(0px 0px 10px var(--color-muted));
+    filter: drop-shadow(0px 0px 10px var(--red-muted));
     mask-image: linear-gradient(
         black 90%,
         transparent

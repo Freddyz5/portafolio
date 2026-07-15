@@ -93,14 +93,14 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
   article {
     max-width: 500px;
     width: 100%;
-    background: var(--color-bg);
-    border: 2px solid var(--color-muted);
+    background: var(--bg-base);
+    border: 2px solid var(--red-muted);
     border-radius: 5px;
     transition: all 0.3s ease;
   }
   article:hover {
     transform: translateY(-4px);
-    border-color: var(--color-glow);
+    border-color: var(--red-glow);
   }
   header {
     padding: 0.5rem;
@@ -108,7 +108,7 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    color: var(--color-muted);
+    color: var(--red-muted);
   }
   figure {
     width: 100%;
@@ -129,11 +129,14 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     gap: 0.8rem;
   }
   .content h4 {
-    color: var(--color-glow);
+    font-family: var(--font-display);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    color: var(--red-glow);
   }
   .content p {
     height: 3.8rem;
-    color: var(--color-text);
+    color: var(--red-core);
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -153,17 +156,17 @@ const { id, name, image, summary, description, technologies, url, repo } = Astro
     align-items: center;
     gap: 0.3rem;
     text-decoration: none;
-    color: var(--color-text);
+    color: var(--red-core);
   }
   .links a:hover {
-    color: var(--color-secondary-glow);
+    color: var(--cyan-glow);
     text-decoration: underline;
   }
   .links .disabled {
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    color: var(--color-muted);
+    color: var(--red-muted);
     cursor: not-allowed;
     opacity: 0.6;
     pointer-events: none;

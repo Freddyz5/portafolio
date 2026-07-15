@@ -34,9 +34,9 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   title={lang === "es" ? "Iniciar Contacto" : "Initiate Contact"}
   subTittle={lang === "es" ? "CANAL_DE_COMUNICACIONES_ABIERTO" : "OPEN_COMMUNICATION_CHANNEL"}
   styles={{
-    backgroundColor: "var(--color-bg-darker)",
+    backgroundColor: "var(--bg-field)",
     height: "1000px",
-    boxShadow: "0 0 50px 20px var(--color-bg-darker)"
+    boxShadow: "0 0 50px 20px var(--bg-field)"
   }}
 >
   <header>Contact_interface</header>
@@ -163,16 +163,18 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
 
 <style>
   header {
-    background-color: var(--color-glow);
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
+    background-color: var(--red-glow);
     width: 60%;
-    color: var(--color-bg-darker);
+    color: var(--bg-field);
     padding: 0.6rem 1rem;
     border-radius: 6px 6px 0 0;
     z-index: 1;
   }
   article {
-    background-color: var(--color-bg);
-    border: 3px solid var(--color-glow);
+    background-color: var(--bg-base);
+    border: 3px solid var(--red-glow);
     padding: 2rem;
     width: 60%;
     display: flex;
@@ -181,8 +183,13 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     border-radius: 0 0 6px 6px;
     z-index: 1;
   }
+  article > p {
+    font-family: var(--font-terminal);
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+  }
   article p {
-    color: var(--color-accent);
+    color: var(--red-accent);
   }
   .network {
     text-transform: uppercase;
@@ -198,12 +205,12 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   .contact-info a {
     width: 30%;
     height: 150px;
-    border: 2px solid var(--color-glow);
+    border: 2px solid var(--red-glow);
     border-radius: 5px;
     text-decoration: none;
-    color: var(--color-text);
+    color: var(--red-core);
 
-    background-color: var(--color-bg-lighter);
+    background-color: var(--bg-raised);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -212,18 +219,19 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     transition: all 0.3s ease;
   }
   .contact-info a:hover {
-    border: 2px solid var(--color-secondary-glow);
-    background-color: var(--color-secondary-muted);
-    color: var(--color-secondary-text);
-    box-shadow: 0 0 10px var(--color-secondary-glow);
+    border: 2px solid var(--cyan-glow);
+    background-color: var(--cyan-muted);
+    color: var(--cyan-core);
+    text-shadow: var(--text-glow-cyan);
+    box-shadow: 0 0 10px var(--cyan-glow);
     scale: 1.05;
     transition: all 0.3s ease;
   }
   .contact-info a p {
-    color: var(--color-text);
+    color: var(--red-core);
   }
   .contact-info a:hover p {
-    color: var(--color-secondary-text);
+    color: var(--cyan-core);
   }
   .contact-form {
     display: flex;

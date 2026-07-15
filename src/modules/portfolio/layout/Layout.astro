@@ -1,9 +1,14 @@
 ---
 import '@fontsource-variable/orbitron';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-mono/400-italic.css';
+import '@fontsource/vt323/400.css';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
-import MobileWarning from '../../../shared/compontens/MobileWarning.astro';
+import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
 
 interface Props {
@@ -67,28 +72,61 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	:root {
 		color-scheme: light dark;
 		
-		--color-secondary-text: #E4FBFB;
-		--color-secondary-glow: #00F7FF;
-		--color-secondary-accent: #00B8BF;
-		--color-secondary-muted: #1F4345;
+		/* CIAN · datos / nominal */
+		--cyan-core: #E4FBFB;
+		--cyan-glow: #00F7FF;
+		--cyan-accent: #00B8BF;
+		--cyan-muted: #1F4345;
 
-		--color-text: #FBE4E4;
-		--color-glow: #FF0800;
-		--color-accent: #BF0600;
-		--color-muted: #893f3b;
+		/* ROJO · identidad / alerta */
+		--red-core: #FFE3DE;
+		--red-glow: #FF2D0F;
+		--red-accent: #BF0600;
+		--red-muted: #893F3B;
 
-		--color-bg-darker: #080404;
-		--color-bg: #151111;
-		--color-bg-lighter: #1F1616;
+		/* ÁMBAR · señal (aplicación real —cursor, boot, warnings— en pasos posteriores) */
+		--amber-glow: #FFB000;
+		--amber-core: #FFE9C2;
+
+		/* GLOW · text-shadow de fósforo en 3 capas (núcleo + halo + bloom).
+		   Recetas reutilizables; se aplican vía .glow-red / .glow-cyan / .glow-amber. */
+		--text-glow-red: 0 0 1px currentColor, 0 0 8px var(--red-glow),
+			0 0 22px color-mix(in srgb, var(--red-glow) 55%, transparent);
+		--text-glow-cyan: 0 0 1px currentColor, 0 0 8px var(--cyan-glow),
+			0 0 20px color-mix(in srgb, var(--cyan-glow) 45%, transparent);
+		--text-glow-amber: 0 0 1px currentColor, 0 0 8px var(--amber-glow),
+			0 0 16px color-mix(in srgb, var(--amber-glow) 55%, transparent);
+
+		/* FONDO · rampa cálida */
+		--bg-field: #080404;
+		--bg-base: #151111;
+		--bg-raised: #1F1616;
+
+		/* Auxiliares fuera del esquema red/cyan/bg — valores originales (ver inventario) */
+		--cream: #fff7ed;
+		--glitch-label-bg: #212121;
+		--white-transparent: rgba(255, 255, 255, 0);
+
+		/* TIPOGRAFÍA · 3 voces */
+		--font-display: 'Orbitron Variable', sans-serif;      /* nombre, headers, etiquetas de panel, CTA */
+		--font-body: 'IBM Plex Mono', 'Courier New', Courier, monospace; /* cuerpo, datos, UI */
+		--font-terminal: 'VT323', 'Courier New', Courier, monospace;     /* sabor terminal: prompts, timestamps */
+
+		/* ESCALA tipográfica */
+		--fs-display: clamp(2rem, 6vw, 3rem);    /* ~48 / 600 */
+		--fs-title: clamp(1.5rem, 4vw, 1.75rem); /* ~28 / 600 */
+		--fs-lead: 1.125rem;                     /* ~18 */
+		--fs-body: 0.9375rem;                    /* ~15 */
+		--fs-meta: 0.75rem;                      /* ~12 */
 	}
 
 	html {
-		font-family: 'Orbitron Variable', sans-serif;
+		font-family: var(--font-body);
 		scroll-behavior: smooth;
 	}
 
 	#mouse {
-		background-color: var(--color-secondary-glow);
+		background-color: var(--cyan-glow);
 		position: fixed;
 		width: 50px;
 		height: 50px;
@@ -99,9 +137,10 @@ const { title, image, summary, url, lang, links } = Astro.props;
 	}
 
 	body {
-		background-color: color-mix(in srgb, var(--color-bg) 100%, transparent);
-		color: var(--color-text);
-		cursor: ;
+		background-color: color-mix(in srgb, var(--bg-base) 100%, transparent);
+		color: var(--red-core);
+		font-size: var(--fs-body);
+		line-height: 1.6;
   }
 
 	* {
@@ -118,9 +157,60 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		object-position: center center;
 	}
 
+	/* ===== Utilidades de glow de fósforo (por rol) ===== */
+	.glow-red   { color: var(--red-glow);   text-shadow: var(--text-glow-red); }
+	.glow-cyan  { color: var(--cyan-glow);  text-shadow: var(--text-glow-cyan); }
+	.glow-amber { color: var(--amber-glow); text-shadow: var(--text-glow-amber); }
+
+	/* ===== Overlay CRT global: scanlines + viñeta + flicker =====
+	   Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
+	   legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
+	   solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
+	body::before,
+	body::after {
+		content: "";
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+		z-index: 1000;
+	}
+	/* Viñeta */
+	body::before {
+		background: radial-gradient(
+			ellipse at center,
+			transparent 60%,
+			color-mix(in srgb, var(--bg-field) 55%, transparent) 100%
+		);
+	}
+	/* Scanlines + flicker */
+	body::after {
+		background: repeating-linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, 0.14) 0px,
+			rgba(0, 0, 0, 0.14) 1px,
+			transparent 1px,
+			transparent 3px
+		);
+		mix-blend-mode: multiply;
+		opacity: 0.6;
+		animation: crt-flicker 7s ease-in-out infinite;
+	}
+
+	@keyframes crt-flicker {
+		0%, 88%, 100% { opacity: 0.6; }
+		90% { opacity: 0.54; }
+		92% { opacity: 0.63; }
+		94% { opacity: 0.5; }
+		96% { opacity: 0.6; }
+	}
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
+    }
+    /* Sin parpadeo; las scanlines/viñeta quedan estáticas y sutiles. */
+    body::after {
+      animation: none;
     }
   }
 	

@@ -1,0 +1,42 @@
+---
+/*
+  Ruta pública secundaria: /[lang]/design-system (es/en).
+  Documenta el sistema de diseño HLCS alimentándose de los tokens y componentes
+  REALES del sitio (ver DESIGN_SYSTEM.md). Usa el mismo Layout, glow y CRT que
+  el resto del sitio. Enlazada discretamente desde el footer, ausente del nav.
+*/
+import Layout from '../../modules/portfolio/layout/Layout.astro';
+import DesignSystem from '../../modules/design-system/DesignSystem.astro';
+import { separateLanguages } from '../../shared/utils/languageSeparator';
+import resume from '../../constants/resume.json';
+
+export async function getStaticPaths() {
+  return [
+    { params: { lang: 'es' } },
+    { params: { lang: 'en' } }
+  ];
+}
+
+const { lang } = Astro.params as { lang: 'es' | 'en' };
+const isEs = lang !== 'en';
+
+const data = separateLanguages(resume, lang !== 'es' && lang !== 'en' ? 'en' : lang) as any;
+const { basics } = data;
+
+const title = isEs
+  ? 'HLCS — Sistema de diseño · Freddy Tacuri'
+  : 'HLCS — Design system · Freddy Tacuri';
+const summary = isEs
+  ? 'HLCS (Hardcode Labs Computer Systems): el sistema de diseño del sitio, alimentado por sus tokens y componentes reales.'
+  : 'HLCS (Hardcode Labs Computer Systems): the site’s design system, powered by its real tokens and components.';
+---
+
+<Layout
+  title={title}
+  image={basics.image}
+  summary={summary}
+  url={basics.url}
+  lang={lang}
+>
+  <DesignSystem lang={lang} />
+</Layout>

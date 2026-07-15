@@ -66,22 +66,22 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
 <style>
   article {
     /* Colors */
-    --color-border: var(--color-muted);
-    --color-border-hover: var(--color-secondary-glow);
-    --color-bg-card: var(--color-bg);
-    --color-heading: var(--color-accent);
+    --card-border: var(--red-muted);
+    --card-border-hover: var(--cyan-glow);
+    --bg-base-card: var(--bg-base);
+    --card-heading: var(--red-accent);
 
     max-width: 1140px;
     width: 100%;
-    border: 2px solid var(--color-border);
+    border: 2px solid var(--card-border);
     border-radius: 5px;
     transition: all 0.3s ease;
-    background-color: var(--color-bg-card);
+    background-color: var(--bg-base-card);
     z-index: 1;
   }
   article:hover {
-    border: 2px solid var(--color-border-hover);
-    background-color: var(--color-bg-darker);
+    border: 2px solid var(--card-border-hover);
+    background-color: var(--bg-field);
   }
   header {
     width: 100%;
@@ -89,25 +89,25 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
     flex-direction: column;
     gap: 0.8rem;
     padding: 1rem 2rem;
-    border-bottom: 2px solid var(--color-border);
-    background-color: var(--color-bg-lighter);
+    border-bottom: 2px solid var(--card-border);
+    background-color: var(--bg-raised);
     transition: all 0.3s ease;
   }
   article:hover > header {
-    border-bottom: 2px solid var(--color-border-hover);
-    background-color: var(--color-bg);
+    border-bottom: 2px solid var(--card-border-hover);
+    background-color: var(--bg-base);
   }
   h2 {
-    color: var(--color-heading);
+    color: var(--card-heading);
     transition: color 0.3s ease;
   }
   a {
-    color: var(--color-accent);
+    color: var(--red-accent);
     text-decoration: none;
     transition: color 0.3s ease;
   }
   article:hover h2, article:hover .company-wrapper, article:hover .company-wrapper a {
-    color: var(--color-secondary-accent);
+    color: var(--cyan-accent);
     transition: color 0.3s ease;
   }
   a:hover {
@@ -120,14 +120,19 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
     transition: color 0.3s ease;
   }
   .company-wrapper {
-    color: var(--color-accent);
+    color: var(--red-accent);
   }
   .period-wrapper {
-    color: var(--color-muted);
+    color: var(--red-muted);
     transition: color 0.3s ease;
   }
+  time {
+    font-family: var(--font-terminal);
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
   article:hover .period-wrapper {
-    color: var(--color-secondary-muted);
+    color: var(--cyan-muted);
     transition: color 0.3s ease;
   }
   .content {
@@ -135,11 +140,11 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    color: var(--color-text);
+    color: var(--red-core);
     transition: color 0.3s ease;
   }
   article:hover .content {
-    color: var(--color-secondary-text);
+    color: var(--cyan-core);
     transition: color 0.3s ease;
   }
   .highlights-section, .teams-section {
@@ -158,21 +163,22 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
     padding-left: 0.8rem;
   }
   h3 {
-    color: var(--color-accent);
+    font-family: var(--font-terminal);
+    color: var(--red-accent);
     font-weight: lighter;
-    font-size: large;
+    font-size: 1.4rem;
     transition: color 0.3s ease;
   }
   article:hover h3 {
-    color: var(--color-secondary-accent);
+    color: var(--cyan-accent);
     transition: color 0.3s ease;
   }
   h6 {
-    color: var(--color-muted);
+    color: var(--red-muted);
     transition: color 0.3s ease;
   }
   article:hover h6 {
-    color: var(--color-secondary-muted);
+    color: var(--cyan-muted);
     transition: color 0.3s ease;
   }
 </style>

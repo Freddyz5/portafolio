@@ -17,7 +17,7 @@ const { id, title, subTittle, styles } = Astro.props;
   <header>
     {title && <div class="title-wrapper">
       <div class="experience-title-line" />
-      <h1>{title}</h1>
+      <h1 class="glow-red">{title}</h1>
     </div>}
     {subTittle && <p>{">"} {subTittle}</p>}
   </header>
@@ -49,17 +49,21 @@ const { id, title, subTittle, styles } = Astro.props;
   .experience-title-line {
     height: 4px;
     width: 3rem;
-    background-color: var(--color-glow);
+    background-color: var(--red-glow);
   }
 
   h1 {
-    color: var(--color-glow);
-    text-shadow: 0 0 15px var(--color-glow);
+    font-family: var(--font-display);
+    font-size: var(--fs-title);
+    font-weight: 600;
+    /* color + glow los aporta la utilidad global .glow-red */
     text-transform: uppercase;
   }
   p {
-    font-family: 'Courier New', monospace;
+    font-family: var(--font-terminal);
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
     text-transform: uppercase;
-    color: var(--color-muted);
+    color: var(--red-muted);
   }
 </style>
