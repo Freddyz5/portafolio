@@ -6,6 +6,10 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+
+// Enlace discreto al sistema de diseño (contenido secundario: solo footer, nunca nav).
+const designSystemHref = `${import.meta.env.BASE_URL}/${lang === 'es' ? 'es' : 'en'}/design-system`;
+const designSystemLabel = lang === 'es' ? 'Sistema de diseño' : 'Design system';
 ---
 
 <footer>
@@ -28,6 +32,9 @@ const { lang } = Astro.props;
 		>
 			Midudev
 		</a>
+	</p>
+	<p class="footer-secondary">
+		<a href={designSystemHref} class="design-system-link">{designSystemLabel}</a>
 	</p>
 </footer>
 
@@ -107,5 +114,14 @@ const { lang } = Astro.props;
 	a:hover {
 		color: var(--cyan-glow);
 		text-shadow: var(--text-glow-cyan);
+	}
+	.footer-secondary {
+		display: block;
+		margin-top: 0.6em;
+		font-size: var(--fs-meta);
+	}
+	.design-system-link {
+		color: color-mix(in srgb, var(--red-core) 55%, transparent);
+		letter-spacing: 0.05em;
 	}
 </style>
