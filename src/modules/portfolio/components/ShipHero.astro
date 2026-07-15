@@ -1,0 +1,387 @@
+---
+/**
+ * ShipHero — nave 3D del hero renderizada como wireframe de fósforo rojo.
+ *
+ * Sustituye al antiguo logo SVG (que arrancaba en opacity:0, dependía del hover
+ * y se centraba con margin-top negativo). Este componente es decorativo
+ * (aria-hidden): el contenido accesible del hero vive en Home.astro.
+ *
+ * El GLB se coloca en public/models/nave.glb y se sirve respetando el base path
+ * (`/portafolio/`). Three corre SOLO en cliente: va dentro de un <script> de
+ * Astro, que se transpila con esbuild y nunca se ejecuta en SSR.
+ */
+---
+
+<div class="ship-hero" aria-hidden="true">
+	<canvas class="ship-hero__canvas"></canvas>
+	<!-- Pantalla de carga a pantalla completa: aire de "arranque del sistema" -->
+	<div class="ship-hero__fallback" data-state="loading">
+		<div class="ship-hero__boot">
+			<span class="ship-hero__mark glow-red">◈ HLCS</span>
+			<div class="ship-hero__bar"><span class="ship-hero__fill"></span></div>
+			<span class="ship-hero__msg"></span>
+		</div>
+	</div>
+</div>
+
+<script>
+	import * as THREE from "three";
+	import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+	/* ===================== Parámetros ajustables ===================== */
+	const EDGE_COLOR = 0xff2d0f; // rojo fósforo (identidad HLCS = --red-glow)
+	const SOLID_COLOR = 0x000000; // cuerpo oscuro bajo los edges (= --bg-base)
+	const FADE_EASE = 2; // factor de suavizado para la transición de opacidad
+	const EDGE_THRESHOLD_ANGLE = 35; // grados: solo bordes significativos, no la malla de triángulos
+
+	const ROTATION_SPEED = 0.5; // rad/s de autorotación idle (Y)
+	const HOVER_SLOWDOWN = 0.3; // al hacer hover gira a esta fracción de la velocidad idle
+	const HOVER_EASE = 2; // suavizado del cambio de velocidad (mayor = transición más rápida)
+	const CAMERA_FOV = 40; // grados
+	const TARGET_SIZE = 2; // tamaño (unidades) al que se normaliza la nave
+	const CAMERA_FIT = 1; // margen de encuadre: menor = nave más grande en pantalla
+
+	// null => canvas transparente (deja ver el fondo oscuro del sitio y el blob
+	// cian del cursor). Un hex (p.ej. 0x151111) pinta un fondo opaco.
+	const BACKGROUND: number | null = null;
+	/* ================================================================= */
+
+	// Ruta del GLB respetando el base path, tolerante a la barra final de BASE_URL.
+	const MODEL_URL = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/models/nave.glb`;
+
+	const root = document.querySelector<HTMLElement>(".ship-hero");
+	const canvas = root?.querySelector<HTMLCanvasElement>(".ship-hero__canvas");
+	const fallback = root?.querySelector<HTMLElement>(".ship-hero__fallback");
+	const msg = root?.querySelector<HTMLElement>(".ship-hero__msg");
+	const fill = root?.querySelector<HTMLElement>(".ship-hero__fill");
+
+	// Solo actúa si el componente está en la página.
+	if (root && canvas) {
+		const prefersReduced = window.matchMedia(
+			"(prefers-reduced-motion: reduce)"
+		).matches;
+
+		const setFallback = (state: "loading" | "error" | "ready", text = "") => {
+			fallback?.setAttribute("data-state", state);
+			if (msg) msg.textContent = text;
+		};
+		setFallback("loading", "INICIANDO SISTEMA…");
+
+		// Recursos a liberar en el cleanup.
+		const geometries: THREE.BufferGeometry[] = [];
+		const materials: THREE.Material[] = [];
+
+		let renderer: THREE.WebGLRenderer | null = null;
+		let ro: ResizeObserver | null = null;
+		let rafId = 0;
+		let disposed = false;
+		let dismissTimer = 0;
+
+		// Oculta la pantalla de carga (fade-out) y desbloquea el sitio.
+		const dismissBoot = () => fallback?.setAttribute("data-state", "ready");
+		// En error NO dejamos el boot a pantalla completa bloqueando la página:
+		// mostramos el aviso un instante y luego lo ocultamos.
+		const failBoot = (text: string) => {
+			setFallback("error", text);
+			dismissTimer = window.setTimeout(dismissBoot, 1600);
+		};
+
+		try {
+			renderer = new THREE.WebGLRenderer({
+				canvas,
+				antialias: true,
+				alpha: BACKGROUND === null,
+				powerPreference: "high-performance",
+			});
+		} catch (err) {
+			// Sin WebGL: mostramos el aviso y desbloqueamos el sitio.
+			failBoot("WEBGL NO DISPONIBLE");
+			console.error("[ShipHero] WebGL no disponible:", err);
+		}
+
+		if (renderer) {
+			renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+			if (BACKGROUND === null) renderer.setClearColor(0x000000, 0);
+			else renderer.setClearColor(BACKGROUND, 1);
+
+			const scene = new THREE.Scene();
+			if (BACKGROUND !== null) scene.background = new THREE.Color(BACKGROUND);
+
+			const camera = new THREE.PerspectiveCamera(CAMERA_FOV, 1, 0.1, 100);
+
+			// Grupo contenedor: la nave rota sobre este pivote centrado en el origen.
+			const pivot = new THREE.Group();
+			scene.add(pivot);
+
+			const sizeOf = () => {
+				const w = canvas.clientWidth || 1;
+				const h = canvas.clientHeight || 1;
+				return { w, h };
+			};
+
+			// Wireframe limpio, sin glow: render directo (sin postprocessing).
+			const render = () => renderer!.render(scene, camera);
+
+			const applySize = () => {
+				const { w, h } = sizeOf();
+				camera.aspect = w / h;
+				camera.updateProjectionMatrix();
+				renderer!.setSize(w, h, false);
+				if (prefersReduced && pivot.children.length) render();
+			};
+
+			// Materiales compartidos (una sola instancia; se liberan en cleanup).
+			const edgeMat = new THREE.LineBasicMaterial({ color: EDGE_COLOR });
+			materials.push(edgeMat);
+			// Cuerpo oscuro (permite fade al hacer hover).
+			const bodyMat = new THREE.MeshBasicMaterial({
+				color: SOLID_COLOR,
+				transparent: true,
+				opacity: 1,
+				depthWrite: true,
+				colorWrite: true,
+				polygonOffset: true, // empuja el relleno para que los edges queden encima
+				polygonOffsetFactor: 1,
+				polygonOffsetUnits: 1,
+			});
+			materials.push(bodyMat);
+
+			// ---- Interactividad: hover sobre la nave ----
+			// Al pasar el cursor: el relleno (cuerpo sólido) se desvanece y baja
+			// la velocidad de giro. Al salir, vuelve al estado idle.
+			let hover = false;
+			const setHover = (v: boolean) => {
+				hover = v;
+				if (prefersReduced) {
+					bodyMat.opacity = hover ? 0 : 1;
+					if (pivot.children.length) render();
+				}
+			};
+			const onEnter = () => setHover(true);
+			const onLeave = () => setHover(false);
+			canvas.addEventListener("pointerenter", onEnter);
+			canvas.addEventListener("pointerleave", onLeave);
+
+			const disposeMaterial = (m: THREE.Material | THREE.Material[]) => {
+				const arr = Array.isArray(m) ? m : [m];
+				for (const mat of arr) {
+					for (const key of Object.keys(mat) as (keyof typeof mat)[]) {
+						const val = mat[key] as unknown;
+						if (val instanceof THREE.Texture) val.dispose();
+					}
+					mat.dispose();
+				}
+			};
+
+			const clock = new THREE.Clock();
+			const speedIdle = ROTATION_SPEED;
+			const speedHover = ROTATION_SPEED * HOVER_SLOWDOWN;
+			let curSpeed = speedIdle;
+			const animate = () => {
+				if (disposed) return;
+				rafId = requestAnimationFrame(animate);
+				const dt = clock.getDelta();
+				// Ease suave hacia la velocidad objetivo según el estado de hover.
+				const target = hover ? speedHover : speedIdle;
+				curSpeed += (target - curSpeed) * Math.min(1, dt * HOVER_EASE);
+				pivot.rotation.y += curSpeed * dt;
+
+				// Fade suave del relleno.
+				const targetOpacity = hover ? 0.6 : 1;
+				bodyMat.opacity +=
+					(targetOpacity - bodyMat.opacity) * Math.min(1, dt * FADE_EASE);
+
+				render();
+			};
+
+			const loader = new GLTFLoader();
+			loader.load(
+				MODEL_URL,
+				(gltf) => {
+					if (disposed) return;
+					const model = gltf.scene;
+
+					// Sustituir cada malla por: cuerpo oscuro + edges rojos encima.
+					model.traverse((obj) => {
+						const mesh = obj as THREE.Mesh;
+						if (!mesh.isMesh) return;
+						// Liberar el material original (y sus texturas: el GLB pesa ~20MB).
+						disposeMaterial(mesh.material);
+						mesh.material = bodyMat;
+
+						const edges = new THREE.EdgesGeometry(
+							mesh.geometry,
+							EDGE_THRESHOLD_ANGLE
+						);
+						geometries.push(edges);
+						// Como hijo de la malla, el LineSegments hereda su transform.
+						mesh.add(new THREE.LineSegments(edges, edgeMat));
+					});
+
+					// Centrar en el origen y normalizar el tamaño.
+					const box = new THREE.Box3().setFromObject(model);
+					const size = box.getSize(new THREE.Vector3());
+					const center = box.getCenter(new THREE.Vector3());
+					const maxDim = Math.max(size.x, size.y, size.z) || 1;
+					model.position.sub(center);
+					model.scale.setScalar(TARGET_SIZE / maxDim);
+					pivot.add(model);
+
+					// Cámara en ángulo three-quarter, a distancia que encuadre la nave.
+					const fitDist =
+						TARGET_SIZE /
+						2 /
+						Math.tan((CAMERA_FOV * Math.PI) / 180 / 2);
+					const dir = new THREE.Vector3(0.75, 0.5, 1).normalize();
+					camera.position.copy(dir.multiplyScalar(fitDist * CAMERA_FIT));
+					camera.lookAt(0, 0, 0);
+
+					applySize();
+					setFallback("ready");
+
+					if (prefersReduced) render(); // render estático
+					else animate();
+				},
+				(evt) => {
+					if (evt.total > 0) {
+						const pct = Math.round((evt.loaded / evt.total) * 100);
+						setFallback("loading", `CARGANDO SISTEMA… ${pct}%`);
+						if (fill) fill.style.width = `${pct}%`;
+					}
+				},
+				(err) => {
+					failBoot("FALLO DE CARGA · SISTEMA DEGRADADO");
+					console.error("[ShipHero] Error al cargar el GLB:", err);
+				}
+			);
+
+			applySize();
+			ro = new ResizeObserver(applySize);
+			ro.observe(canvas);
+
+			// ---- Cleanup: liberar GPU/observers al salir o navegar ----
+			const cleanup = () => {
+				if (disposed) return;
+				disposed = true;
+				cancelAnimationFrame(rafId);
+				clearTimeout(dismissTimer);
+				canvas.removeEventListener("pointerenter", onEnter);
+				canvas.removeEventListener("pointerleave", onLeave);
+				ro?.disconnect();
+				for (const g of geometries) g.dispose();
+				for (const m of materials) m.dispose();
+				renderer?.dispose();
+			};
+			window.addEventListener("pagehide", cleanup, { once: true });
+			// Astro View Transitions (por si se activan más adelante).
+			document.addEventListener("astro:before-swap", cleanup, { once: true });
+		}
+	}
+</script>
+
+<style>
+	.ship-hero {
+		position: absolute;
+		top: 5%;
+		width: min(94vw, 760px);
+		height: min(54vh, 520px);
+	}
+	.ship-hero__canvas {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+	/* ===== Pantalla de carga a pantalla completa (arranque del sistema) =====
+	   Cubre todo el viewport mientras carga el GLB, dando el aire de que arranca
+	   todo el sistema y no solo la nave. En error se muestra un instante y se
+	   oculta para no bloquear el sitio (ver failBoot en el script). */
+	.ship-hero__fallback {
+		position: fixed;
+		inset: 0;
+		z-index: 5000; /* sobre el overlay CRT (1000) y la nav; bajo el modal móvil (9999) */
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: var(--bg-field);
+		font-family: var(--font-terminal);
+		/* fade-out: primero la opacidad, luego se oculta (visibility con retardo) */
+		transition: opacity 0.55s ease, visibility 0s linear 0.55s;
+	}
+	.ship-hero__fallback[data-state="ready"] {
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+	}
+	/* Scanlines + viñeta propias: refuerzan el aire de terminal en el boot. */
+	.ship-hero__fallback::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background:
+			repeating-linear-gradient(
+				to bottom,
+				rgba(255, 255, 255, 0.035) 0 1px,
+				transparent 1px 3px
+			),
+			radial-gradient(
+				ellipse at center,
+				transparent 55%,
+				color-mix(in srgb, var(--bg-field) 85%, transparent) 100%
+			);
+	}
+	.ship-hero__boot {
+		position: relative;
+		z-index: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.5rem;
+		padding: 2rem;
+		text-align: center;
+	}
+	.ship-hero__mark {
+		font-family: var(--font-display);
+		font-size: clamp(1.75rem, 5vw, 2.75rem);
+		letter-spacing: 0.35em;
+	}
+	.ship-hero__bar {
+		width: min(70vw, 340px);
+		height: 4px;
+		background: color-mix(in srgb, var(--red-glow) 15%, transparent);
+		border: 1px solid var(--red-muted);
+		overflow: hidden;
+	}
+	.ship-hero__fill {
+		display: block;
+		width: 0%;
+		height: 100%;
+		background: var(--red-glow);
+		box-shadow: 0 0 8px var(--red-glow);
+		transition: width 0.25s ease;
+	}
+	.ship-hero__msg {
+		font-size: var(--fs-body);
+		letter-spacing: 0.2em;
+		color: var(--amber-glow);
+		text-shadow: var(--text-glow-amber);
+		min-height: 1.6em;
+	}
+	.ship-hero__fallback[data-state="error"] .ship-hero__msg {
+		color: var(--red-glow);
+		text-shadow: var(--text-glow-red);
+	}
+	.ship-hero__fallback[data-state="error"] .ship-hero__fill {
+		background: var(--red-accent);
+		box-shadow: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ship-hero__fallback {
+			transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+		}
+		.ship-hero__fill {
+			transition: none;
+		}
+	}
+</style>
