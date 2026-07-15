@@ -1,5 +1,6 @@
 ---
 import Section from "../components/Section.astro";
+import { highlightText } from "src/shared/utils/highlightText";
 
 interface Props {
   projects: any[];
@@ -42,9 +43,9 @@ const { projects, lang } = Astro.props;
               <p>{summary}</p>
               {highlights && highlights.length > 0 &&
                 <ul>
-                  {highlights.map((highlight: string) => (
+                  {highlights.map((highlight: unknown) => (
                     <li>
-                      <p>{highlight}</p>
+                      <p>{highlightText(highlight)}</p>
                     </li>
                   ))}
                 </ul>

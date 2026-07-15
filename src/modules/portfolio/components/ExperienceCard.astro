@@ -1,6 +1,7 @@
 ---
 import Terminal from "src/shared/icons/Terminal.astro";
 import CalendarIcon from "src/shared/icons/CalendarIcon.astro";
+import { highlightText } from "src/shared/utils/highlightText";
 
 interface Team {
   teamName: string;
@@ -17,7 +18,7 @@ interface Props {
   startDate: string;
   endDate: string;
   summary: string;
-  highlights?: string[];
+  highlights?: unknown[];
   teams?: Team[];
 }
 
@@ -45,7 +46,7 @@ const { lang, name, position, url, startDate, endDate, summary, highlights, team
       <div class="highlights-section">
         <h3>{lang === "es" ? "> Logros Clave:" : "> Key Achievements:"}</h3>
         <ul class="highlights">
-          {highlights.map((highlight: string) => <li>{highlight}</li>)}
+          {highlights.map((highlight: unknown) => <li>{highlightText(highlight)}</li>)}
         </ul>
       </div>
     }
