@@ -1,3 +1,19 @@
+# [1.9.0](https://github.com/Freddyz5/portafolio/compare/v1.8.0...v1.9.0) (2026-07-15)
+
+
+### Bug Fixes
+
+* agregar opción ignoreDeprecations en tsconfig ([7ca57b1](https://github.com/Freddyz5/portafolio/commit/7ca57b1d3c4de8225d5a0b1ef68cfc52b4c1eeab))
+
+
+### Features
+
+* **crt:** glow de fósforo por rol + overlay CRT (paso 4) ([e4bb383](https://github.com/Freddyz5/portafolio/commit/e4bb3833fd1316b23ef73f71da492b53b1eed495))
+* **design-system:** página /sistema-de-diseno HLCS (paso 7) ([116b8d4](https://github.com/Freddyz5/portafolio/commit/116b8d4f5cb6700d4fe0d3c9a061eb601f5819b5))
+* **portfolio:** add interactive 3D ship hero section ([80a1312](https://github.com/Freddyz5/portafolio/commit/80a1312f0337835cd30d79643909ee9c821a9157))
+* recolor a paleta HLCS (paso 2) — rojo más cálido + tokens de ámbar ([a79de76](https://github.com/Freddyz5/portafolio/commit/a79de76fc24c421984a826e016edde2265ffafe7)), closes [#FF0800](https://github.com/Freddyz5/portafolio/issues/FF0800) [#FF2D0F](https://github.com/Freddyz5/portafolio/issues/FF2D0F) [#FBE4E4](https://github.com/Freddyz5/portafolio/issues/FBE4E4) [#FFE3DE](https://github.com/Freddyz5/portafolio/issues/FFE3DE) [#893f3b](https://github.com/Freddyz5/portafolio/issues/893f3b) [#893F3B](https://github.com/Freddyz5/portafolio/issues/893F3B) [#FFB000](https://github.com/Freddyz5/portafolio/issues/FFB000) [#FFE9C2](https://github.com/Freddyz5/portafolio/issues/FFE9C2) [151111/#1F1616](https://github.com/Freddyz5/portafolio/issues/1F1616)
+* **typography:** sistema tipográfico de 3 voces tokenizado (paso 3) ([452bb9a](https://github.com/Freddyz5/portafolio/commit/452bb9a153d1096f1e73d086076f5b47ab94f7b9))
+
 # [1.8.0](https://github.com/Freddyz5/portafolio/compare/v1.7.0...v1.8.0) (2026-07-13)
 
 
