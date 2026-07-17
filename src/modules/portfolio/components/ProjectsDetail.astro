@@ -4,6 +4,7 @@ import Chip from './Chip.astro';
 import Github from 'src/shared/icons/Github.astro';
 import Link from 'src/shared/icons/Link.astro';
 import ButtonGlitch from './ButtonGlitch.astro';
+import { highlightText } from 'src/shared/utils/highlightText';
 
 interface Projects {
   id?: string | null | undefined;
@@ -11,7 +12,7 @@ interface Projects {
   image?: string;
   summary?: string;
   description: string;
-  highlights?: string[];
+  highlights?: unknown[];
   technologies: string[];
   url: string;
   repo: string;
@@ -60,7 +61,7 @@ const { lang, projects } = Astro.props;
           <div class="highlights-section section">
             <h4>{lang === "es" ? "> CARACTERÍSTICAS_CLAVE" : "> KEY_FEATURES"}</h4>
             <ul class="highlights">
-              {highlights.map((point: string) => <li>{point}</li>)}
+              {highlights.map((point: unknown) => <li>{highlightText(point)}</li>)}
             </ul>
           </div>
         }

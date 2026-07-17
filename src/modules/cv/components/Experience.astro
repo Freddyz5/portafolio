@@ -1,5 +1,6 @@
 ---
 import Section from '../components/Section.astro';
+import { highlightText } from 'src/shared/utils/highlightText';
 
 interface Props {
   works: any[];
@@ -41,21 +42,38 @@ const { works, lang } = Astro.props;
               <p>{summary}</p>
               {highlights && highlights.length > 0 &&
                 <ul class="highlights">
-                  {highlights.map((highlight: string) => (
+                  {highlights.map((highlight: unknown) => (
                     <li>
-                      <p>{highlight}</p>
+                      <p>{highlightText(highlight)}</p>
                     </li>
                   ))}
                 </ul>
               }
               {teams && teams.length > 0 &&
                 <ul class="teams">
-                  {teams.map(({ teamName, summary }: { teamName: string; summary: string }) => (
-                    <li>
-                      <h5 class="teamName">{teamName}</h5>
-                      <p>{summary}</p>
-                    </li>
-                  ))}
+                  {teams.map((team: any) => {
+                    const { teamName, role, stack, summary, highlights } = team;
+                    const sortedHighlights = Array.isArray(highlights)
+                      ? [...highlights].sort((a, b) => (a?.priority ?? 0) - (b?.priority ?? 0))
+                      : [];
+                    return (
+                      <li>
+                        <h5 class="teamName">{teamName}</h5>
+                        {role && <p class="teamRole">{role}</p>}
+                        {stack && stack.length > 0 && <p class="teamStack">{stack.join(' • ')}</p>}
+                        {summary && <p>{summary}</p>}
+                        {sortedHighlights.length > 0 &&
+                          <ul class="highlights">
+                            {sortedHighlights.map((highlight: unknown) => (
+                              <li>
+                                <p>{highlightText(highlight)}</p>
+                              </li>
+                            ))}
+                          </ul>
+                        }
+                      </li>
+                    );
+                  })}
                 </ul>
               }
             </footer>
@@ -140,6 +158,18 @@ const { works, lang } = Astro.props;
     line-height: 1.5;
     margin: 0;
     color: #555;
+  }
+
+  .teamRole {
+    margin: 0;
+    font-weight: 500;
+    color: #555;
+  }
+
+  .teamStack {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #777;
   }
 
   @media (width <= 700px) {

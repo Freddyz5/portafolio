@@ -1,0 +1,419 @@
+---
+import { UI_LABELS } from '../constants/UI_LABELS';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const ui = UI_LABELS[lang];
+---
+
+<main id="preview" class="preview" data-empty={ui.empty}>
+  <p class="empty-hint no-print">{ui.empty}</p>
+  <noscript>{ui.noscript}</noscript>
+</main>
+
+<!--
+  Los estilos van `is:global` a propósito: el contenido del preview lo construye
+  LabController con innerHTML, así que no lleva los atributos de scoping de Astro.
+  La "Vista CV" replica los estilos de src/modules/cv (Layout + componentes); si
+  cambia el diseño del CV real, hay que reflejarlo aquí y en utils/cvRenderer.ts.
+-->
+<style is:global>
+  .preview {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .empty-hint {
+    color: #888;
+    font-size: 13px;
+    padding: 24px;
+  }
+
+  /* ============================================================
+     Vista CV — replica de /[lang]/cv (Layout + componentes)
+     ============================================================ */
+  .cv-view {
+    background: #efeeee;
+    color: #000;
+    font-family: LatinModern, "Courier New", Courier, monospace;
+    letter-spacing: -0.025rem;
+  }
+  .cv-view a {
+    text-decoration: none;
+  }
+  .cv-view ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cv-view h1,
+  .cv-view h2,
+  .cv-view h3,
+  .cv-view h4,
+  .cv-view h5 {
+    margin: 0;
+  }
+  .cv-view p {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .cv-view time {
+    color: #555;
+  }
+
+  .cv-main {
+    padding: 2rem;
+    margin: auto;
+    width: 100%;
+  }
+
+  /* hero */
+  .cv-hero {
+    max-width: 700px;
+    margin: 0 auto 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .cv-hero .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+  .cv-hero a,
+  .cv-hero span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #000;
+  }
+  .cv-hero .print {
+    display: none;
+  }
+
+  /* section */
+  .cv-section {
+    max-width: 700px;
+    margin: 0 auto 48px;
+  }
+  .cv-section > h2 {
+    color: #000;
+    margin-bottom: 0.9rem;
+    line-height: 1.5;
+    border-bottom: 1px solid #000;
+  }
+  .cv-view .cv-about {
+    color: #000;
+  }
+
+  /* experience */
+  .cv-view .works {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .cv-view .works article h3 {
+    font-weight: 500;
+  }
+  .cv-view .works article a {
+    font-weight: bold;
+    color: #444;
+  }
+  .cv-view .works article a:hover {
+    text-decoration: underline;
+  }
+  .cv-view .works article h4 {
+    font-weight: lighter;
+  }
+  .cv-view .works header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .cv-view .works header div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cv-view .works time {
+    font-size: 0.85rem;
+    min-width: 102px;
+  }
+  .cv-view .works footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .cv-view .works footer p {
+    break-inside: avoid;
+  }
+  .cv-view .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: circle;
+    padding-left: 1rem;
+    break-inside: avoid;
+  }
+  .cv-view .teams {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: square;
+    padding-left: 1rem;
+    break-inside: avoid;
+  }
+  .cv-view .teamName {
+    line-height: 1.5;
+    margin: 0;
+    color: #555;
+  }
+  .cv-view .teamRole {
+    margin: 0;
+    font-weight: 500;
+    color: #555;
+  }
+  .cv-view .teamStack {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #777;
+  }
+
+  /* projects */
+  .cv-view .projects {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .cv-view .projects header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .cv-view .projects article div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .cv-view .projects article h3 {
+    font-weight: 500;
+  }
+  .cv-view .projects article a {
+    font-weight: bold;
+    color: #444;
+  }
+  .cv-view .projects article a:hover {
+    text-decoration: underline;
+  }
+  .cv-view .projects article h4,
+  .cv-view .projects article h5 {
+    font-weight: 400;
+    margin: 0;
+  }
+  .cv-view .projects time {
+    font-size: 0.85rem;
+    min-width: 102px;
+  }
+  .cv-view .projects footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .cv-view .projects footer ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    list-style-type: circle;
+    padding-left: 1rem;
+  }
+
+  /* education + certificates */
+  .cv-view .edu-list,
+  .cv-view .cert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .cv-view .edu-list article h3,
+  .cv-view .cert-list article h3 {
+    font-weight: bold;
+    color: #444;
+  }
+  .cv-view .edu-list header,
+  .cv-view .cert-list header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .cv-view .edu-list time,
+  .cv-view .cert-list time {
+    font-size: 0.85rem;
+    min-width: 102px;
+  }
+  .cv-view .edu-list footer p {
+    color: #000;
+  }
+  .cv-view .cert-list footer a {
+    color: #000;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .cv-view .cert-list footer a:hover {
+    text-decoration: underline;
+  }
+
+  /* skills + languages */
+  .cv-view .skills,
+  .cv-view .langs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .cv-view .skills li,
+  .cv-view .langs li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .cv-view .skills li span,
+  .cv-view .langs li span {
+    color: #444;
+    font-weight: bold;
+  }
+
+  @media (max-width: 700px) {
+    .cv-view .works time,
+    .cv-view .projects time,
+    .cv-view .edu-list time,
+    .cv-view .cert-list time {
+      text-align: right;
+    }
+    .cv-section,
+    .cv-hero {
+      margin-bottom: 38px;
+    }
+  }
+
+  /* ============================================================
+     Vista ATS — plantilla plana
+     ============================================================ */
+  .ats {
+    max-width: 820px;
+    margin: 0 auto;
+    background: #fff;
+    color: #111;
+    padding: 40px 44px;
+    box-shadow: 0 0 0 1px #e2e2e2;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+      sans-serif;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .ats h1 {
+    font-size: 24px;
+    margin: 0 0 2px;
+  }
+  .ats .role-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: #222;
+  }
+  .ats .contact {
+    font-size: 12.5px;
+    color: #333;
+    margin: 0;
+  }
+  .ats section {
+    margin-top: 18px;
+  }
+  .ats h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #333;
+    padding-bottom: 3px;
+    margin: 0 0 8px;
+  }
+  .ats h3 {
+    font-size: 14px;
+    margin: 10px 0 1px;
+  }
+  .ats h4 {
+    font-size: 13px;
+    margin: 8px 0 1px;
+    color: #222;
+  }
+  .ats .meta {
+    font-size: 12px;
+    color: #555;
+    margin: 0 0 4px;
+  }
+  .ats .stack {
+    font-size: 12.5px;
+    margin: 2px 0;
+  }
+  .ats p {
+    margin: 4px 0;
+  }
+  .ats ul {
+    margin: 4px 0 8px;
+    padding-left: 18px;
+  }
+  .ats li {
+    margin: 2px 0;
+  }
+  .ats ul.plain {
+    list-style: none;
+    padding-left: 0;
+  }
+  .ats .team {
+    margin: 6px 0;
+  }
+  .ats .entry {
+    margin-bottom: 10px;
+  }
+
+  /* ----- impresión ----- */
+  @media print {
+    .preview {
+      flex: none;
+    }
+    /* vista CV: mostrar separadores " • " en lugar de iconos */
+    .cv-view {
+      background: #fff;
+    }
+    .cv-view .print {
+      display: block;
+    }
+    .cv-main {
+      padding: 0;
+    }
+    /* vista ATS */
+    .ats {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+      box-shadow: none;
+      font-size: 11pt;
+    }
+  }
+</style>
