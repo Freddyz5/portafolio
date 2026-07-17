@@ -24,14 +24,24 @@ const profilesInfo = socialProfiles
     }
   })
 
-profilesInfo.push({
-  id: "Portfolio",
-  section: "Social",
-  title:  `${lang === 'es' ? 'Visitar mi Portafolio' : 'Visit my Portfolio'}`,
-  url: basics.url,
-  icon: SOCIAL_ICONS['Portfolio'],
-  hotkey: "ctrl+O"
-})
+profilesInfo.push(
+  {
+    id: "cv-lab",
+    section: `${lang === 'es' ? 'Acciones' : 'Actions'}`,
+    title: `${lang === 'es' ? 'Laboratorio de CV' : 'CV Lab'}`,
+    url: `${import.meta.env.BASE_URL}/${lang}/cv/lab`,
+    icon: SOCIAL_ICONS['Lab'],
+    hotkey: "ctrl+b",
+  },
+  {
+    id: "Portfolio",
+    section: "Social",
+    title: `${lang === 'es' ? 'Visitar mi Portafolio' : 'Visit my Portfolio'}`,
+    url: `${import.meta.env.BASE_URL}/${lang}`,
+    icon: SOCIAL_ICONS['Portfolio'],
+    hotkey: "ctrl+O"
+  }
+)
 ---
 
 <footer id="normal-footer" class="no-print">
