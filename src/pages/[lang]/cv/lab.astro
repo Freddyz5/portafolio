@@ -1,0 +1,16 @@
+---
+import LayoutLab from 'src/modules/cv-lab/layout/Layout.astro';
+import CvLab from 'src/modules/cv-lab/index.astro';
+import { UI_LABELS } from 'src/modules/cv-lab/constants/UI_LABELS';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const { lang } = Astro.params;
+const l = lang === 'en' ? 'en' : 'es';
+---
+
+<LayoutLab title={UI_LABELS[l].title} lang={l}>
+  <CvLab lang={l} />
+</LayoutLab>

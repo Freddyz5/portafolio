@@ -1,0 +1,152 @@
+---
+import ViewToggle from './ViewToggle.astro';
+import { UI_LABELS } from '../constants/UI_LABELS';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+const ui = UI_LABELS[lang];
+---
+
+<aside class="panel-input no-print">
+  <h1>{ui.title}</h1>
+  <p class="hint">{ui.hint}</p>
+
+  <ViewToggle lang={lang} />
+
+  <div id="variant-box" class="variant">—</div>
+  <div id="error-box" class="box error" hidden></div>
+  <div id="warn-box" class="box warn" hidden></div>
+
+  <textarea id="cv-input" spellcheck="false" placeholder={ui.placeholder}></textarea>
+
+  <div class="btns">
+    <div class="btns-s1">
+      <button id="btn-load" type="button">{ui.load}</button>
+      <button id="btn-base" type="button">{ui.loadBase}</button>
+    </div>
+    
+    <div class="btns-s2">
+      <button id="btn-copy" type="button">{ui.copy}</button>
+      <button id="btn-clear" type="button">{ui.clear}</button>
+      <button id="btn-print" type="button">{ui.print}</button>
+    </div>
+      
+  </div>
+</aside>
+
+<style>
+  .panel-input {
+    flex: 0 0 400px;
+    padding: 0 6px;
+    position: sticky;
+    top: 24px;
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .panel-input h1 {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .hint {
+    font-size: 12px;
+    color: #555;
+    margin: 0;
+  }
+
+  .variant {
+    font-size: 13px;
+    font-weight: 600;
+    background: #111;
+    color: #fff;
+    padding: 6px 10px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 55vh;
+    padding: 8px;
+    border: 1px solid #bbb;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 12px;
+    line-height: 1.4;
+    resize: vertical;
+  }
+
+  .btns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .btns-s1, .btns-s2 {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+  }
+
+  .btns button {
+    width: 100%;
+    padding: 8px 14px;
+    margin: 4px 0;
+    border: 1px solid #111;
+    background: #111;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .btns button:hover {
+    box-shadow: 2px 2px 0px 0px #555;
+    scale: 1.02;
+  }
+
+  #btn-clear, #btn-copy, #btn-base {
+    background: #fff;
+    color: #111;
+  }
+
+  #btn-clear:hover {
+    box-shadow: 2px 2px 0px 0px #555;
+    scale: 1.02;
+  }
+
+  .box {
+    font-size: 12.5px;
+    padding: 8px 10px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .box.error {
+    background: #fde8e8;
+    color: #9b1c1c;
+    border: 1px solid #f5b5b5;
+  }
+
+  .box.warn {
+    background: #fef3c7;
+    color: #8a6d1b;
+    border: 1px solid #f2e08a;
+  }
+
+  @media (max-width: 900px) {
+    .panel-input {
+      position: static;
+      flex-basis: auto;
+      width: 100%;
+      max-height: none;
+    }
+
+    textarea {
+      height: 40vh;
+    }
+  }
+</style>

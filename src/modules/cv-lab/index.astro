@@ -1,0 +1,40 @@
+---
+import InputPanel from './components/InputPanel.astro';
+import LabController from './components/LabController.astro';
+import Preview from './components/Preview.astro';
+
+interface Props {
+  lang: 'es' | 'en';
+}
+
+const { lang } = Astro.props;
+---
+
+<div id="cv-lab" class="lab" data-lang={lang}>
+  <InputPanel lang={lang} />
+  <Preview lang={lang} />
+</div>
+
+<LabController />
+
+<style>
+  .lab {
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    align-items: flex-start;
+  }
+
+  @media (max-width: 900px) {
+    .lab {
+      flex-direction: column;
+    }
+  }
+
+  @media print {
+    .lab {
+      display: block;
+      padding: 0;
+    }
+  }
+</style>
