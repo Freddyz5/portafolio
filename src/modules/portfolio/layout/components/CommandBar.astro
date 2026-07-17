@@ -1,0 +1,366 @@
+---
+/*
+  Paso 6 · Barra de comandos FR-3D — capa OPCIONAL de mejora progresiva.
+
+  - Sin JS no aparece (atributo `hidden`); el sitio navega con scroll/click/teclado.
+  - Cada comando tiene un equivalente visible en la interfaz (nav, footer, botones);
+    nada es exclusivo del comando.
+  - No captura el foco por defecto ni interfiere con el scroll. Se enfoca con `/`
+    o `` ` `` (o click) y se cierra con `Esc`. Sin focus trap.
+  - `help` siempre lista los comandos disponibles.
+*/
+interface Props {
+  lang: 'es' | 'en' | string;
+}
+
+const { lang } = Astro.props;
+const isEs = lang !== 'en';
+const BASE_URL = import.meta.env.BASE_URL;
+
+const inputAria = isEs
+  ? 'Barra de comandos opcional. Escribe help y pulsa Enter para ver los comandos.'
+  : 'Optional command bar. Type help and press Enter to list commands.';
+const placeholder = isEs
+  ? 'help · inicio · proyectos · cv · contacto…'
+  : 'help · home · projects · cv · contact…';
+const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
+const label = isEs ? 'Consola' : 'Console';
+---
+
+<aside
+  id="fr3d-cmd"
+  class="cmdbar"
+  data-lang={isEs ? 'es' : 'en'}
+  data-base={BASE_URL}
+  aria-label={isEs ? 'Barra de comandos (opcional)' : 'Command bar (optional)'}
+  hidden
+>
+  <div class="cmdbar__log" id="fr3d-cmd-log" role="log" aria-live="polite"></div>
+  <form class="cmdbar__form" id="fr3d-cmd-form" autocomplete="off">
+    <label class="cmdbar__prompt" for="fr3d-cmd-input">
+      <span class="cmdbar__badge">{label}</span>
+      <span aria-hidden="true" class="glow-amber">FR-3D&nbsp;&gt;</span>
+    </label>
+    <input
+      id="fr3d-cmd-input"
+      class="cmdbar__input"
+      type="text"
+      name="cmd"
+      spellcheck="false"
+      autocapitalize="off"
+      autocorrect="off"
+      aria-label={inputAria}
+      placeholder={placeholder}
+    />
+    <span class="cmdbar__hint" aria-hidden="true">{hint}</span>
+  </form>
+</aside>
+
+<script>
+  interface CmdBarEl extends HTMLElement {}
+
+  const bar = document.getElementById('fr3d-cmd') as CmdBarEl | null;
+  if (bar) {
+    const lang = bar.dataset.lang === 'en' ? 'en' : 'es';
+    const base = bar.dataset.base || '';
+    const isEs = lang === 'es';
+    const form = document.getElementById('fr3d-cmd-form') as HTMLFormElement | null;
+    const input = document.getElementById('fr3d-cmd-input') as HTMLInputElement | null;
+    const log = document.getElementById('fr3d-cmd-log') as HTMLDivElement | null;
+
+    // Activar (mejora progresiva: solo con JS).
+    bar.hidden = false;
+
+    const t = (es: string, en: string) => (isEs ? es : en);
+
+    const print = (text: string, tone: 'out' | 'err' | 'echo' = 'out') => {
+      if (!log) return;
+      const line = document.createElement('div');
+      line.className = `cmdbar__line cmdbar__line--${tone}`;
+      line.textContent = text;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    };
+
+    const clearLog = () => {
+      if (log) log.innerHTML = '';
+    };
+
+    // Navega a una sección: si está en la página actual, hace scroll suave;
+    // si no, navega a la home con el ancla (equivalente al nav visible).
+    const goSection = (id: string) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        history.replaceState(null, '', `#${id}`);
+      } else {
+        window.location.href = `${base}/${lang}/#${id}`;
+      }
+    };
+
+    const goPage = (path: string) => {
+      window.location.href = `${base}/${lang}/${path}`;
+    };
+
+    type Command = {
+      run: () => void;
+      help: string;
+    };
+
+    const commands: Record<string, Command> = {
+      help: {
+        help: t('Lista los comandos disponibles', 'List available commands'),
+        run: () => {
+          print(t('Comandos disponibles:', 'Available commands:'), 'out');
+          Object.keys(commands)
+            .filter((k) => !ALIASES.has(k))
+            .forEach((k) => print(`  ${k.padEnd(18)} ${commands[k].help}`, 'out'));
+          print(
+            t(
+              'Todo esto también está en el menú, el footer y los botones.',
+              'All of this is also in the menu, footer and buttons.',
+            ),
+            'out',
+          );
+        },
+      },
+      inicio: {
+        help: t('Ir al inicio', 'Go to home'),
+        run: () => goSection('home'),
+      },
+      experiencia: {
+        help: t('Ir a experiencia', 'Go to experience'),
+        run: () => goSection('experience'),
+      },
+      proyectos: {
+        help: t('Ir a proyectos', 'Go to projects'),
+        run: () => goSection('projects'),
+      },
+      contacto: {
+        help: t('Ir a contacto', 'Go to contact'),
+        run: () => goSection('contact'),
+      },
+      cv: {
+        help: t('Abrir el CV', 'Open the CV'),
+        run: () => goPage('cv'),
+      },
+      'sistema-de-diseno': {
+        help: t('Abrir el sistema de diseño', 'Open the design system'),
+        run: () => goPage('design-system'),
+      },
+      idioma: {
+        help: t('Cambiar de idioma (es/en)', 'Switch language (es/en)'),
+        run: () => {
+          window.location.href = window.location.pathname.includes('/es/')
+            ? window.location.pathname.replace('/es/', '/en/')
+            : window.location.pathname.replace('/en/', '/es/');
+        },
+      },
+      whoami: {
+        help: t('¿Quién es FR-3D?', 'Who is FR-3D?'),
+        run: () =>
+          print(
+            t(
+              'FR-3D · núcleo de a bordo del portafolio de Freddy Tacuri.',
+              'FR-3D · onboard core of Freddy Tacuri’s portfolio.',
+            ),
+            'out',
+          ),
+      },
+      clear: {
+        help: t('Limpiar la consola', 'Clear the console'),
+        run: () => clearLog(),
+      },
+    };
+
+    // Alias en el idioma alterno + atajos (no se listan por separado en help).
+    const ALIAS_MAP: Record<string, string> = {
+      home: 'inicio',
+      start: 'inicio',
+      experience: 'experiencia',
+      projects: 'proyectos',
+      contact: 'contacto',
+      'design-system': 'sistema-de-diseno',
+      ds: 'sistema-de-diseno',
+      lang: 'idioma',
+      language: 'idioma',
+      ayuda: 'help',
+      about: 'inicio',
+      fr3d: 'whoami',
+      cls: 'clear',
+    };
+    const ALIASES = new Set(Object.keys(ALIAS_MAP));
+    Object.keys(ALIAS_MAP).forEach((alias) => {
+      commands[alias] = commands[ALIAS_MAP[alias]];
+    });
+
+    const runCommand = (raw: string) => {
+      const name = raw.trim().toLowerCase();
+      if (!name) return;
+      print(`FR-3D > ${name}`, 'echo');
+
+      // Easter eggs.
+      if (name === 'sudo' || name.startsWith('sudo ')) {
+        print(t('Permiso denegado: aquí mandas tú de otra forma :)', 'Permission denied: you already run this show :)'), 'err');
+        return;
+      }
+      if (name === 'help --easter' || name === 'konami') {
+        print('↑ ↑ ↓ ↓ ← → ← → B A', 'out');
+        return;
+      }
+
+      const cmd = commands[name];
+      if (cmd) {
+        cmd.run();
+      } else {
+        print(
+          t(
+            `Comando no reconocido: "${name}". Escribe help.`,
+            `Unknown command: "${name}". Type help.`,
+          ),
+          'err',
+        );
+      }
+    };
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!input) return;
+      runCommand(input.value);
+      input.value = '';
+    });
+
+    // `/` o `` ` `` enfocan la barra, salvo que ya se esté escribiendo en otro campo.
+    document.addEventListener('keydown', (e) => {
+      const active = document.activeElement as HTMLElement | null;
+      const typing =
+        active &&
+        (active.tagName === 'INPUT' ||
+          active.tagName === 'TEXTAREA' ||
+          active.isContentEditable);
+
+      if ((e.key === '/' || e.key === '`') && !typing) {
+        e.preventDefault();
+        input?.focus();
+      } else if (e.key === 'Escape' && active === input) {
+        input?.blur();
+      }
+    });
+  }
+</script>
+
+<style>
+  .cmdbar {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 900; /* sobre el nav (3); bajo CRT (1000) y modales */
+    width: min(96vw, 720px);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-terminal);
+    pointer-events: none; /* solo los hijos interactivos capturan eventos */
+  }
+  .cmdbar[hidden] {
+    display: none;
+  }
+
+  .cmdbar__log {
+    pointer-events: auto;
+    max-height: 32vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+    padding: 0 0.6em;
+    font-size: clamp(0.9rem, 2.6vw, 1.1rem);
+    line-height: 1.35;
+  }
+  .cmdbar__log:empty {
+    display: none;
+  }
+  .cmdbar__line {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: color-mix(in srgb, var(--bg-base) 82%, transparent);
+    padding: 0.05em 0.4em;
+    border-radius: 2px;
+  }
+  .cmdbar__line--out {
+    color: var(--cyan-core);
+  }
+  .cmdbar__line--echo {
+    color: var(--amber-core);
+  }
+  .cmdbar__line--err {
+    color: var(--red-glow);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--red-glow) 55%, transparent);
+  }
+
+  .cmdbar__form {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.4em 0.7em;
+    background: color-mix(in srgb, var(--bg-base) 92%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid color-mix(in srgb, var(--amber-glow) 40%, transparent);
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+  }
+  .cmdbar__prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+    white-space: nowrap;
+    cursor: text;
+  }
+  .cmdbar__badge {
+    font-family: var(--font-body);
+    font-size: 0.62em;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--red-core) 65%, transparent);
+    border: 1px solid color-mix(in srgb, var(--red-core) 35%, transparent);
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+  }
+  .cmdbar__input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    color: var(--amber-core);
+    font-family: var(--font-terminal);
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    caret-color: var(--amber-glow);
+    outline: none;
+  }
+  .cmdbar__input::placeholder {
+    color: color-mix(in srgb, var(--red-core) 45%, transparent);
+  }
+  .cmdbar__input:focus-visible {
+    outline: none;
+  }
+  .cmdbar__form:focus-within {
+    border-color: var(--amber-glow);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--amber-glow) 35%, transparent);
+  }
+  .cmdbar__hint {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--red-core) 50%, transparent);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 560px) {
+    .cmdbar__badge,
+    .cmdbar__hint {
+      display: none;
+    }
+  }
+</style>

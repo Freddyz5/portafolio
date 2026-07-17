@@ -1,0 +1,260 @@
+---
+/*
+  Paso 6 · Boot FR-3D — capa ADITIVA de mejora progresiva.
+
+  - El contenido real vive SIEMPRE en el DOM (esto es solo un overlay decorativo
+    fijo por encima). Sin JS no se muestra nada: el atributo `hidden` lo mantiene
+    fuera hasta que el script lo activa.
+  - Corre UNA sola vez por navegador (localStorage) y es saltable (botón, tecla,
+    click o toque).
+  - `prefers-reduced-motion` → no hay animación: se revela el sitio al instante.
+  - Es fijo (fuera de flujo) → al desaparecer no hay layout shift.
+  - Decorativo para lectores de pantalla: el overlay no oculta el contenido real
+    (los adornos son aria-hidden; el botón de saltar mantiene su etiqueta).
+*/
+interface Props {
+  lang: 'es' | 'en' | string;
+}
+
+const { lang } = Astro.props;
+const isEs = lang !== 'en';
+
+const skipLabel = isEs ? 'saltar' : 'skip';
+const skipAria = isEs ? 'Saltar la secuencia de arranque' : 'Skip the boot sequence';
+
+// Líneas de arranque en la voz de FR-3D (el núcleo del sitio).
+const lines = isEs
+  ? [
+      'FR-3D CORE // hardcode labs',
+      '> montando sistema de archivos ......... ok',
+      '> cargando módulos de identidad ........ ok',
+      '> calibrando fósforo CRT ............... ok',
+      '> enlazando con freddy.exe ............. ok',
+      '> sistema listo. bienvenido.',
+    ]
+  : [
+      'FR-3D CORE // hardcode labs',
+      '> mounting filesystem ................. ok',
+      '> loading identity modules ............ ok',
+      '> calibrating CRT phosphor ............ ok',
+      '> linking with freddy.exe ............. ok',
+      '> system ready. welcome.',
+    ];
+---
+
+<div id="fr3d-boot" class="boot" data-boot hidden>
+  <div class="boot__screen">
+    <pre class="boot__log glow-amber" id="fr3d-boot-log" aria-hidden="true"></pre>
+    <div class="boot__meter" aria-hidden="true">
+      <div class="boot__bar" id="fr3d-boot-bar"></div>
+      <span class="boot__pct" id="fr3d-boot-pct">0%</span>
+    </div>
+  </div>
+  <button type="button" id="fr3d-boot-skip" class="boot__skip" aria-label={skipAria}>
+    {skipLabel} <span aria-hidden="true">&#9654;</span>
+  </button>
+</div>
+
+<script is:inline define:vars={{ lines }}>
+  // Decisión PRE-PAINT: este script es inline y síncrono en la posición del
+  // overlay, así que decide antes de pintar el resto del body (sin flash).
+  (function () {
+    var STORAGE_KEY = 'fr3d-boot-seen';
+    var el = document.getElementById('fr3d-boot');
+    if (!el) return;
+
+    var reduce = false;
+    try {
+      reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    } catch (_) {}
+
+    var seen = false;
+    try {
+      seen = localStorage.getItem(STORAGE_KEY) === '1';
+    } catch (_) {}
+
+    // Sin animación o ya visto: no mostramos el boot, se revela el sitio directo.
+    if (reduce || seen) return;
+
+    var markSeen = function () {
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch (_) {}
+    };
+
+    // Activar overlay (cubre el viewport antes de que pinte el contenido).
+    el.hidden = false;
+    el.classList.add('is-active');
+
+    var logEl = document.getElementById('fr3d-boot-log');
+    var barEl = document.getElementById('fr3d-boot-bar');
+    var pctEl = document.getElementById('fr3d-boot-pct');
+    var skipEl = document.getElementById('fr3d-boot-skip');
+
+    var finished = false;
+    var timers = [];
+
+    function clearTimers() {
+      for (var i = 0; i < timers.length; i++) clearTimeout(timers[i]);
+      timers = [];
+    }
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      clearTimers();
+      markSeen();
+      // Estado final visible un instante y fade-out.
+      if (barEl) barEl.style.width = '100%';
+      if (pctEl) pctEl.textContent = '100%';
+      el.classList.add('is-done');
+      document.removeEventListener('keydown', onKey, true);
+      window.setTimeout(function () {
+        el.hidden = true;
+        el.classList.remove('is-active', 'is-done');
+      }, 600);
+    }
+
+    function onKey(e) {
+      // Cualquier tecla salta (menos modificadores puros).
+      if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') return;
+      e.preventDefault();
+      finish();
+    }
+
+    if (skipEl) skipEl.addEventListener('click', function (e) { e.stopPropagation(); finish(); });
+    el.addEventListener('click', finish);
+    el.addEventListener('touchstart', finish, { passive: true });
+    document.addEventListener('keydown', onKey, true);
+
+    // Escritura de líneas + barra de progreso (~2.2s en total).
+    var total = lines.length;
+    var perLine = 300;
+    lines.forEach(function (line, i) {
+      timers.push(window.setTimeout(function () {
+        if (finished || !logEl) return;
+        logEl.textContent += (i === 0 ? '' : '\n') + line;
+        var pct = Math.round(((i + 1) / total) * 100);
+        if (barEl) barEl.style.width = pct + '%';
+        if (pctEl) pctEl.textContent = pct + '%';
+      }, i * perLine));
+    });
+
+    // Cierre automático tras la última línea.
+    timers.push(window.setTimeout(finish, total * perLine + 500));
+  })();
+</script>
+
+<style>
+  .boot {
+    position: fixed;
+    inset: 0;
+    z-index: 9000; /* sobre CRT (1000) y ship-fallback (5000); bajo modal móvil (9999) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background: var(--bg-field);
+    font-family: var(--font-terminal);
+    /* fade-out suave al terminar */
+    transition: opacity 0.55s ease, visibility 0s linear 0.55s;
+  }
+  /* Sin JS (o antes de activar) el overlay NO existe visualmente. */
+  .boot[hidden] {
+    display: none;
+  }
+  .boot.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  /* Scanlines + viñeta propias para reforzar el aire de terminal. */
+  .boot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.04) 0 1px,
+        transparent 1px 3px
+      ),
+      radial-gradient(
+        ellipse at center,
+        transparent 55%,
+        color-mix(in srgb, var(--bg-field) 85%, transparent) 100%
+      );
+  }
+
+  .boot__screen {
+    position: relative;
+    z-index: 1;
+    width: min(90vw, 560px);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .boot__log {
+    margin: 0;
+    min-height: 8.5em;
+    font-family: var(--font-terminal);
+    font-size: clamp(1rem, 3.6vw, 1.35rem);
+    line-height: 1.35;
+    color: var(--amber-glow);
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .boot__meter {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+  }
+  .boot__bar {
+    height: 0.7em;
+    width: 0%;
+    flex: 1;
+    background: var(--amber-glow);
+    box-shadow: 0 0 8px var(--amber-glow);
+    transition: width 0.28s ease;
+  }
+  .boot__meter {
+    border: 1px solid color-mix(in srgb, var(--amber-glow) 45%, transparent);
+    padding: 0.35em 0.5em;
+    border-radius: 3px;
+  }
+  .boot__pct {
+    font-size: clamp(0.95rem, 3vw, 1.2rem);
+    color: var(--amber-core);
+    min-width: 3.2em;
+    text-align: right;
+  }
+  .boot__skip {
+    position: relative;
+    z-index: 1;
+    font-family: var(--font-terminal);
+    font-size: clamp(1rem, 3.4vw, 1.25rem);
+    letter-spacing: 0.06em;
+    color: var(--red-core);
+    background: transparent;
+    border: 1px solid var(--red-core);
+    border-radius: 4px;
+    padding: 0.3em 1em;
+    cursor: pointer;
+    transition: 200ms;
+  }
+  .boot__skip:hover,
+  .boot__skip:focus-visible {
+    color: var(--cyan-core);
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 10px var(--cyan-glow);
+    background: color-mix(in srgb, var(--cyan-glow) 15%, transparent);
+    outline: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* Refuerzo defensivo: si el overlay llegara a mostrarse, sin transición. */
+    .boot { transition: none; }
+    .boot__bar { transition: none; }
+  }
+</style>

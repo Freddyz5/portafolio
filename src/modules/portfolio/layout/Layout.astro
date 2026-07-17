@@ -8,6 +8,8 @@ import '@fontsource/vt323/400.css';
 
 import NavBar from './components/NavBar.astro';
 import Footer from './components/Footer.astro';
+import BootSequence from './components/BootSequence.astro';
+import CommandBar from './components/CommandBar.astro';
 import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
 
@@ -48,11 +50,13 @@ const { title, image, summary, url, lang, links } = Astro.props;
   </head>
 
 	<body id="body">
+		<BootSequence lang={lang} />
 		<MobileWarning lang={lang} />
 		<div id="mouse" />
 		<NavBar lang={lang} links={links} />
 		<slot />
 		<Footer lang={lang} />
+		<CommandBar lang={lang} />
 	</body>
 </html>
 
