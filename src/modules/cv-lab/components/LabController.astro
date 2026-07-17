@@ -1,0 +1,160 @@
+---
+// Componente sin markup: cablea el panel con el preview.
+---
+
+<script>
+  import { separateLanguages } from 'src/shared/utils/languageSeparator';
+  import masterResume from 'src/constants/resume.json';
+  import { STATUS_LABELS } from '../constants/PREVIEW_LABELS';
+  import { SKELETON_RESUME } from '../constants/SKELETON_RESUME';
+  import { buildATSView } from '../utils/atsRenderer';
+  import { buildCVView } from '../utils/cvRenderer';
+  import { escapeHtml } from '../utils/html';
+  import { labStore, type LabView } from '../utils/store';
+  import { checkTags } from '../utils/tags';
+
+  const root = document.getElementById('cv-lab') as HTMLElement;
+  const lang = (root?.dataset.lang === 'en' ? 'en' : 'es') as 'es' | 'en';
+  const t = STATUS_LABELS[lang];
+
+  const textarea = document.getElementById('cv-input') as HTMLTextAreaElement;
+  const preview = document.getElementById('preview') as HTMLElement;
+  const errorBox = document.getElementById('error-box') as HTMLElement;
+  const warnBox = document.getElementById('warn-box') as HTMLElement;
+  const variantBox = document.getElementById('variant-box') as HTMLElement;
+  const btnLoad = document.getElementById('btn-load') as HTMLButtonElement;
+  const btnBase = document.getElementById('btn-base') as HTMLButtonElement;
+  const btnCopy = document.getElementById('btn-copy') as HTMLButtonElement;
+  const btnClear = document.getElementById('btn-clear') as HTMLButtonElement;
+  const btnPrint = document.getElementById('btn-print') as HTMLButtonElement;
+  const btnViewCv = document.getElementById('view-cv') as HTMLButtonElement;
+  const btnViewAts = document.getElementById('view-ats') as HTMLButtonElement;
+
+  let view: LabView = labStore.getView();
+  const copyLabel = btnCopy.textContent ?? '';
+  let copyTimer: number | undefined;
+
+  function showError(message: string): void {
+    errorBox.textContent = message;
+    errorBox.hidden = false;
+  }
+
+  function showWarn(message: string): void {
+    warnBox.textContent = message;
+    warnBox.hidden = false;
+  }
+
+  function clearBoxes(): void {
+    errorBox.hidden = true;
+    errorBox.textContent = '';
+    warnBox.hidden = true;
+    warnBox.textContent = '';
+  }
+
+  function resetPreview(): void {
+    preview.innerHTML = `<p class="empty-hint no-print">${escapeHtml(preview.dataset.empty)}</p>`;
+    variantBox.textContent = '—';
+  }
+
+  function updateToggle(): void {
+    btnViewCv.classList.toggle('active', view === 'cv');
+    btnViewAts.classList.toggle('active', view === 'ats');
+  }
+
+  function render(jsonText: string): void {
+    clearBoxes();
+
+    let raw: any;
+    try {
+      raw = JSON.parse(jsonText);
+    } catch (e) {
+      showError(`${t.invalidJson}: ${(e as Error).message}`);
+      resetPreview();
+      return;
+    }
+
+    const variant = raw?.meta?.variant;
+    variantBox.textContent = variant ? `${t.viewing}: ${variant}` : t.noVariant;
+
+    const tags = checkTags(raw);
+    if (tags.vocabMissing) showWarn(t.vocabMissing);
+    else if (tags.unknown.length)
+      showWarn(`${t.unknownTags}: ${tags.unknown.join(', ')}`);
+
+    let data: any;
+    try {
+      data = separateLanguages(raw, lang);
+    } catch (e) {
+      showError(`${t.renderFail}: ${(e as Error).message}`);
+      return;
+    }
+
+    try {
+      const build = view === 'ats' ? buildATSView : buildCVView;
+      preview.innerHTML = build(data, lang);
+    } catch (e) {
+      showError(`${t.renderFail}: ${(e as Error).message}`);
+    }
+  }
+
+  function setView(next: LabView): void {
+    if (view === next) return;
+    view = next;
+    labStore.setView(next);
+    updateToggle();
+    if (textarea.value.trim()) render(textarea.value);
+  }
+
+  textarea.addEventListener('input', () => {
+    const value = textarea.value;
+    labStore.setInput(value);
+    if (value.trim()) render(value);
+    else {
+      clearBoxes();
+      resetPreview();
+    }
+  });
+
+  function loadJson(source: unknown): void {
+    textarea.value = JSON.stringify(source, null, 2);
+    labStore.setInput(textarea.value);
+    render(textarea.value);
+  }
+
+  btnLoad.addEventListener('click', () => loadJson(masterResume));
+  btnBase.addEventListener('click', () => loadJson(SKELETON_RESUME));
+
+  btnCopy.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(textarea.value);
+      btnCopy.textContent = t.copied;
+      window.clearTimeout(copyTimer);
+      copyTimer = window.setTimeout(() => {
+        btnCopy.textContent = copyLabel;
+      }, 1200);
+    } catch {
+      showError(t.copyFail);
+    }
+  });
+
+  btnClear.addEventListener('click', () => {
+    textarea.value = '';
+    labStore.removeInput();
+    clearBoxes();
+    resetPreview();
+  });
+
+  btnPrint.addEventListener('click', () => {
+    window.print();
+  });
+
+  btnViewCv.addEventListener('click', () => setView('cv'));
+  btnViewAts.addEventListener('click', () => setView('ats'));
+
+  updateToggle();
+  const saved = labStore.getInput();
+  if (saved) {
+    textarea.value = saved;
+    render(saved);
+  }
+</script>

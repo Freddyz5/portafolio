@@ -1,0 +1,56 @@
+---
+interface Props {
+  title: string;
+  lang: 'es' | 'en';
+}
+
+const { title, lang } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: #f3f4f6;
+    color: #111;
+    font-family: LatinModern, "Courier New", Courier, monospace;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  @media print {
+    @page {
+      margin: 1.5cm;
+    }
+
+    body {
+      background: #fff;
+    }
+
+    .no-print {
+      display: none !important;
+    }
+  }
+</style>
