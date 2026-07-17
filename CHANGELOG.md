@@ -1,3 +1,20 @@
+# [1.10.0](https://github.com/Freddyz5/portafolio/compare/v1.9.0...v1.10.0) (2026-07-17)
+
+
+### Bug Fixes
+
+* corrige comentarios en los componentes ShipHero y DesignSystem ([a733b57](https://github.com/Freddyz5/portafolio/commit/a733b57c72f61eb432babf32a97c32be060b5c02))
+* Implement code changes to enhance functionality and improve performance ([fe0434e](https://github.com/Freddyz5/portafolio/commit/fe0434ead0e7a3d3eae23ebb26832f6c68867c06))
+
+
+### Features
+
+* add unified highlight handler and improve experience display ([87ad2e6](https://github.com/Freddyz5/portafolio/commit/87ad2e6e5137386d1ce21b181852d899cb7c4273))
+* **cv-lab:** add full CV lab tool for resume variant testing ([e8d6d09](https://github.com/Freddyz5/portafolio/commit/e8d6d09cb6a53dc76311a796a8f22ec1b9cd977b))
+* **cv:** add cv lab action and associated social icon ([cf7eefb](https://github.com/Freddyz5/portafolio/commit/cf7eefb17b3f8948f30c9901de5a7b5ed988d2cc))
+* eliminar archivo resumeSound.json y sus datos asociados ([68fe4db](https://github.com/Freddyz5/portafolio/commit/68fe4db88f0e94a013c942ac319b19dcbf9fd51d))
+* eliminar componente CV y sus dependencias ([13d98a1](https://github.com/Freddyz5/portafolio/commit/13d98a14c415ccdc92856e05e775d75e263c31b1))
+
 # [1.9.0](https://github.com/Freddyz5/portafolio/compare/v1.8.0...v1.9.0) (2026-07-15)
 
 
