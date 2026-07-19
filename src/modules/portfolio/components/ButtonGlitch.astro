@@ -1,102 +1,161 @@
 ---
-import type { AstroComponentFactory } from 'astro/dist/runtime/server';
+/**
+ * ButtonGlitch — botón/enlace unificado con tres variantes.
+ *
+ *  - primary   (glitch): acción decisiva. Contorno rojo, texto rojo, glitch al hover.
+ *  - secondary (glitch): acción decisiva alternativa. Relleno cian, texto oscuro, glitch al hover.
+ *  - quiet     (sin glitch): CTA no decisiva. Transición suave, dos tonos vía `tone`:
+ *        · tone="cyan"  (default) — acento de interfaz.
+ *        · tone="muted"           — rojo apagado (mantiene el rojo escaso).
+ *
+ * Renderiza <a> si recibe `href` y no está deshabilitado; si no, <button>.
+ * El glitch se reserva a la acción decisiva de cada vista; el resto usa `variant="quiet"`.
+ */
+import type { AstroComponentFactory } from "astro/dist/runtime/server";
 
 interface Props {
   id?: string | null | undefined;
   className?: string | null | undefined;
   text?: string;
   icon?: AstroComponentFactory;
-  url?: string;
+  href?: string;
+  target?: string;
   type?: "submit" | "button" | "reset";
   width?: string;
-  color?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "quiet";
+  tone?: "cyan" | "muted";
   disabled?: boolean;
 }
 
-const { id, className, text, icon: Icon, url, type = "button", width = "100%", color = "primary", disabled = false } = Astro.props;
+const {
+  id,
+  className,
+  text,
+  icon: Icon,
+  href,
+  target,
+  type = "button",
+  width,
+  variant = "primary",
+  tone = "cyan",
+  disabled = false,
+} = Astro.props;
 
-const buttonColors = color === "secondary"
-  ? {
-      main: "var(--cyan-glow)",
-      accent: "var(--red-glow)",
-      backgroundColor: "var(--cyan-glow)",
-      color: "var(--bg-base)",
-    }
-  : {
-      main: "var(--red-glow)",
-      accent: "var(--cyan-glow)",
-    };
+const rel = target === "_blank" ? "noopener noreferrer" : undefined;
+const resolvedWidth = width ?? (variant === "quiet" ? "auto" : "100%");
+const iconSize = variant === "quiet" ? 18 : 24;
+
+const cls = [
+  "glitch-btn",
+  `glitch-btn--${variant}`,
+  variant === "quiet" ? `tone-${tone}` : "",
+  disabled ? "is-disabled" : "",
+  className ?? "",
+]
+  .filter(Boolean)
+  .join(" ");
+
+const styleAttr = `width:${resolvedWidth}`;
 ---
 
-<button
-  id={id}
-  data-text={text}
-  type={type}
-  style={`
-    width: ${width};
-    --primary-color: ${buttonColors.main};
-    --secondary-color: ${buttonColors.accent};
-    background-color: ${buttonColors.backgroundColor};
-    color: ${buttonColors.color};
-    opacity: ${disabled ? 0.6 : 1};
-  `}
-  class={`glitch-btn ${className ?? ""} ${disabled ? 'is-disabled' : ''}`}
-  disabled={disabled}
->
-  {Icon && <Icon width={24} height={24} />}
-  {text}
-</button>
-
-<script define:vars={{ id, url}}>
-  if (url) {
-    const urlLink = document.getElementById(id);
-    urlLink?.addEventListener('click', () => {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    });
-  }
-</script>
+{
+  disabled ? (
+    <button
+      id={id}
+      type="button"
+      class={cls}
+      style={styleAttr}
+      data-text={text}
+      disabled
+    >
+      {Icon && <Icon width={iconSize} height={iconSize} />}
+      {text}
+    </button>
+  ) : href ? (
+    <a
+      id={id}
+      href={href}
+      target={target}
+      rel={rel}
+      class={cls}
+      style={styleAttr}
+      data-text={text}
+    >
+      {Icon && <Icon width={iconSize} height={iconSize} />}
+      {text}
+    </a>
+  ) : (
+    <button id={id} type={type} class={cls} style={styleAttr} data-text={text}>
+      {Icon && <Icon width={iconSize} height={iconSize} />}
+      {text}
+    </button>
+  )
+}
 
 <style>
+  /* Base común a todas las variantes */
   .glitch-btn {
     --bg-color: var(--bg-base);
-    
     --glitch-anim-duration: 0.5s;
 
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    
-    padding: 0.8em;
-    background-color: transparent;
-    color: var(--primary-color);
-    font-size: 1rem;
-    font-weight: 700;
+
     font-family: var(--font-display);
+    font-size: 1rem;
     letter-spacing: 0.12em;
+    text-decoration: none;
     cursor: pointer;
     border-radius: 10px;
     position: relative;
-    border: 2px solid var(--primary-color);
-    transition: all 0.3s;
     overflow: hidden;
+    transition: all 0.3s;
   }
 
-  .glitch-btn:not(.is-disabled):hover,
-  .glitch-btn:not(.is-disabled):focus {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
-    box-shadow: 0 0 25px var(--secondary-color);
-    border: 2px solid var(--secondary-color);
-    outline: none;
-  }
-
-  .glitch-btn:active {
+  .glitch-btn:not(.is-disabled):active {
     transform: scale(0.97);
   }
 
-  .glitch-btn::before,
-  .glitch-btn::after {
+  /* ---- Variantes con glitch (primary / secondary) ---- */
+  .glitch-btn--primary,
+  .glitch-btn--secondary {
+    padding: 0.8em;
+    font-weight: 700;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+  }
+
+  .glitch-btn--primary {
+    --primary-color: var(--red-glow);
+    --secondary-color: var(--cyan-glow);
+  }
+
+  .glitch-btn--secondary {
+    --primary-color: var(--cyan-glow);
+    --secondary-color: var(--red-glow);
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+  }
+
+  .glitch-btn--primary:not(.is-disabled):hover,
+  .glitch-btn--primary:not(.is-disabled):focus,
+  .glitch-btn--secondary:not(.is-disabled):hover,
+  .glitch-btn--secondary:not(.is-disabled):focus {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 25px var(--secondary-color);
+    border-color: var(--secondary-color);
+    outline: none;
+  }
+
+  /* Capa glitch (solo variantes con glitch) */
+  .glitch-btn--primary::before,
+  .glitch-btn--primary::after,
+  .glitch-btn--secondary::before,
+  .glitch-btn--secondary::after {
     content: attr(data-text);
     position: absolute;
     top: 0;
@@ -111,30 +170,76 @@ const buttonColors = color === "secondary"
     transition: opacity 0.2s ease;
   }
 
-  .glitch-btn:not(.is-disabled):hover::before,
-  .glitch-btn:not(.is-disabled):focus::before {
+  .glitch-btn--primary:not(.is-disabled):hover::before,
+  .glitch-btn--primary:not(.is-disabled):focus::before,
+  .glitch-btn--secondary:not(.is-disabled):hover::before,
+  .glitch-btn--secondary:not(.is-disabled):focus::before {
     opacity: 1;
     color: var(--primary-color);
     animation: glitch-anim var(--glitch-anim-duration)
       cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
-  .glitch-btn:not(.is-disabled):hover::after,
-  .glitch-btn:not(.is-disabled):focus::after {
+  .glitch-btn--primary:not(.is-disabled):hover::after,
+  .glitch-btn--primary:not(.is-disabled):focus::after,
+  .glitch-btn--secondary:not(.is-disabled):hover::after,
+  .glitch-btn--secondary:not(.is-disabled):focus::after {
     opacity: 1;
     color: var(--bg-color);
     animation: glitch-anim var(--glitch-anim-duration)
       cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both;
   }
 
-  /* Disabled state: remove animations and hover effects */
+  /* ---- Variante quiet (sin glitch) ---- */
+  .glitch-btn--quiet {
+    padding: 0.8em 1.4em;
+    font-weight: 500;
+    text-transform: uppercase;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: background-color 0.25s ease, border-color 0.25s ease,
+      box-shadow 0.25s ease, color 0.25s ease;
+  }
+
+  /* Tono cian (interfaz) */
+  .glitch-btn--quiet.tone-cyan {
+    color: var(--cyan-glow);
+    border-color: var(--cyan-accent);
+  }
+  .glitch-btn--quiet.tone-cyan:not(.is-disabled):hover,
+  .glitch-btn--quiet.tone-cyan:not(.is-disabled):focus-visible {
+    background-color: color-mix(in srgb, var(--cyan-glow) 8%, transparent);
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--cyan-glow) 30%, transparent);
+  }
+
+  /* Tono muted (rojo apagado, sin bloom → respeta el rojo escaso) */
+  .glitch-btn--quiet.tone-muted {
+    color: var(--red-core);
+    border-color: var(--red-muted);
+  }
+  .glitch-btn--quiet.tone-muted:not(.is-disabled):hover,
+  .glitch-btn--quiet.tone-muted:not(.is-disabled):focus-visible {
+    background-color: color-mix(in srgb, var(--red-glow) 8%, transparent);
+    border-color: var(--red-accent);
+  }
+
+  /* ---- Estado deshabilitado ---- */
   .glitch-btn.is-disabled,
   .glitch-btn:disabled {
     cursor: not-allowed;
+  }
+  .glitch-btn--primary.is-disabled,
+  .glitch-btn--secondary.is-disabled,
+  .glitch-btn--primary:disabled,
+  .glitch-btn--secondary:disabled {
     box-shadow: none;
     border-color: var(--primary-color);
     opacity: 0.6;
   }
-
+  .glitch-btn--quiet.is-disabled,
+  .glitch-btn--quiet:disabled {
+    opacity: 0.45;
+  }
   .glitch-btn.is-disabled::before,
   .glitch-btn.is-disabled::after,
   .glitch-btn:disabled::before,
@@ -183,10 +288,15 @@ const buttonColors = color === "secondary"
       opacity: 1;
     }
   }
+
+  @media (max-width: 700px) {
+    .glitch-btn--quiet {
+      width: 100% !important;
+    }
+  }
   @media (max-width: 600px) {
     .glitch-btn {
       font-size: min(3.5vw, 1rem);
-      
     }
   }
 </style>
