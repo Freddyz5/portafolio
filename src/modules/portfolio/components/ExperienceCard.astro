@@ -1,11 +1,11 @@
 ---
-import Terminal from "src/shared/icons/Terminal.astro";
-import CalendarIcon from "src/shared/icons/CalendarIcon.astro";
-import { highlightText } from "src/shared/utils/highlightText";
+import Chip from "./Chip.astro";
 
 interface Team {
   teamName: string;
   role: string;
+  startDate?: string;
+  endDate?: string | null;
   stack: string[];
   summary: string;
 }
@@ -22,164 +22,236 @@ interface Props {
   teams?: Team[];
 }
 
-const { lang, name, position, url, startDate, endDate, summary, highlights, teams } = Astro.props;
+const { lang, name, position, url, startDate, endDate, summary, teams } = Astro.props;
+
+// YYYY-MM a partir de una fecha ISO ("2023-10-02" -> "2023-10").
+const ym = (d?: string | null) => (d ? d.slice(0, 7) : "");
+const isActive = !endDate;
+const activeLabel = lang === "es" ? "ACTIVO" : "ACTIVE";
+const presentLabel = lang === "es" ? "Presente" : "Present";
+const teamsLabel = lang === "es" ? "> EQUIPOS:" : "> TEAMS:";
+
+// Chips visibles por equipo (los stacks reales son largos; el inventario completo
+// vive en la sección Tecnologías). Se muestran los primeros y se indica "+N".
+const STACK_LIMIT = 6;
 ---
 
-<article>
-  <header>
-    <h2>{position}</h2>
-    <div class="company-wrapper">
-      <Terminal />
-      <a href={url} target="_blank">{name}</a>
+<article class:list={["mission", { active: isActive }]}>
+  <header class="mission-head">
+    <div class="mission-id">
+      <h2>{position}</h2>
+      <a class="company" href={url} target="_blank" rel="noopener noreferrer">
+        {"▶ "}{name}
+      </a>
     </div>
-    <div class="period-wrapper">
-      <CalendarIcon />
-      <time>{startDate} - {endDate ? endDate : "Present"}</time>
+    <div class="mission-meta">
+      <time>{ym(startDate)} ➜</time>
+      {isActive ? <span class="glow-amber">{activeLabel}</span> : <time>{ym(endDate)}</time>}
     </div>
   </header>
-  <div class="content">
-    {summary &&
-      <p>{summary}</p>
-    }
 
-    {highlights &&
-      <div class="highlights-section">
-        <h3>{lang === "es" ? "> Logros Clave:" : "> Key Achievements:"}</h3>
-        <ul class="highlights">
-          {highlights.map((highlight: unknown) => <li>{highlightText(highlight)}</li>)}
-        </ul>
-      </div>
-    }
+  {summary && <p class="mission-summary">{summary}</p>}
 
-    {teams &&
-      <div class="teams-section">
-        <h3>{lang === "es" ? "> Equipos:" : "> Teams:"}</h3>
-        {teams.map(({ teamName, role, stack, summary }: Team) => <>
-          <h4>{"▸ "} {teamName}</h4>
-          <h6>{role} | {stack && stack.join(" • ")}</h6>
-          <p>{summary}</p>
-        </>)}
+  {teams && teams.length > 0 && (
+    <div class="teams">
+      <h3 class="teams-title">{teamsLabel}</h3>
+      <div class="teams-grid">
+        {teams.map((t) => {
+          const shown = t.stack?.slice(0, STACK_LIMIT) ?? [];
+          const extra = (t.stack?.length ?? 0) - shown.length;
+          const teamActive = !t.endDate;
+          return (
+            <article class="team">
+              <header class="team-head">
+                <h4>{"▸ "}{t.teamName}</h4>
+                {teamActive && <span class="team-dot glow-cyan" aria-label={activeLabel}>●</span>}
+              </header>
+              <div class="team-subtitle">
+                <p class="team-role">{t.role}</p>
+                <p class="team-date">
+                  {ym(t.startDate)} ➜ {t.endDate ? ym(t.endDate) : presentLabel}
+                </p>
+              </div>
+              {t.summary && <p class="team-summary">{t.summary}</p>}
+              {shown.length > 0 && (
+                <div class="team-stack">
+                  {shown.map((s) => <Chip text={s} color="var(--cyan-accent)" />)}
+                  {extra > 0 && <span class="stack-more">+{extra}</span>}
+                </div>
+              )}
+            </article>
+          );
+        })}
       </div>
-    }
-  </div>
+    </div>
+  )}
 </article>
 
 <style>
-  article {
-    /* Colors */
+  .mission {
     --card-border: var(--red-muted);
     --card-border-hover: var(--cyan-glow);
-    --bg-base-card: var(--bg-base);
-    --card-heading: var(--red-accent);
 
     max-width: 1140px;
     width: 100%;
     border: 2px solid var(--card-border);
     border-radius: 5px;
-    transition: all 0.3s ease;
-    background-color: var(--bg-base-card);
+    background-color: var(--bg-base);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
     z-index: 1;
   }
-  article:hover {
-    border: 2px solid var(--card-border-hover);
-    background-color: var(--bg-field);
-  }
-  header {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    padding: 1rem 2rem;
-    border-bottom: 2px solid var(--card-border);
-    background-color: var(--bg-raised);
-    transition: all 0.3s ease;
-  }
-  article:hover > header {
-    border-bottom: 2px solid var(--card-border-hover);
-    background-color: var(--bg-base);
-  }
-  h2 {
-    color: var(--card-heading);
-    transition: color 0.3s ease;
-  }
-  a {
-    color: var(--red-accent);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  article:hover h2, article:hover .company-wrapper, article:hover .company-wrapper a {
-    color: var(--cyan-accent);
-    transition: color 0.3s ease;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-  .company-wrapper, .period-wrapper {
+
+  /* ===== Cabecera de misión ===== */
+  .mission-head {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 2rem;
+    border-bottom: 2px solid var(--card-border);
+    background-color: var(--bg-raised);
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+  }
+  .mission-id {
+    display: flex;
+    flex-direction: column;
+  }
+  .mission-id h2 {
+    font-family: var(--font-display);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--red-glow);
     transition: color 0.3s ease;
   }
-  .company-wrapper {
-    color: var(--red-accent);
+  .company {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--red-core);
+    text-decoration: none;
   }
-  .period-wrapper {
-    color: var(--red-muted);
-    transition: color 0.3s ease;
-  }
-  time {
+  .mission-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    white-space: nowrap;
     font-family: var(--font-terminal);
     font-size: 1.05rem;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.04em;
   }
-  article:hover .period-wrapper {
-    color: var(--cyan-muted);
-    transition: color 0.3s ease;
+  .mission-meta time {
+    color: var(--red-muted);
+    font-size: 1.08rem;
   }
-  .content {
-    padding: 1rem 2rem;
+  .mission-summary {
+    padding: 1.4rem 2rem 0;
+    color: var(--cyan-core);
+  }
+  /* ===== Equipos ===== */
+  .teams {
+    padding: 1.2rem 2rem 1.6rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    color: var(--red-core);
+  }
+  .teams-title {
+    font-family: var(--font-terminal);
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--red-accent);
     transition: color 0.3s ease;
   }
-  article:hover .content {
-    color: var(--cyan-core);
-    transition: color 0.3s ease;
+  /* .mission:hover .teams-title { color: var(--cyan-accent); } */
+
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
-  .highlights-section, .teams-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .highlights {
-    list-style-type: "▸ ";
-    padding-left: 0.8rem;
+  .team {
+    border: 1px solid var(--red-muted);
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--bg-field) 60%, transparent);
+    padding: 1rem 1.1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease, scale 0.5s ease;
   }
-  .teams-section p, .teams-section h6 {
-    padding-left: 0.8rem;
+  .team-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
-  h3 {
-    font-family: var(--font-terminal);
-    color: var(--red-accent);
-    font-weight: lighter;
-    font-size: 1.4rem;
-    transition: color 0.3s ease;
+  .team-head h4 {
+    font-family: var(--font-display);
+    font-size: var(--fs-body);
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--red-glow);
+    transition: color 0.5s ease;
   }
-  article:hover h3 {
-    color: var(--cyan-accent);
-    transition: color 0.3s ease;
-  }
-  h6 {
+  .team-subtitle {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.2rem;
     color: var(--red-muted);
-    transition: color 0.3s ease;
+    transition: color 0.5s ease;
   }
-  article:hover h6 {
-    color: var(--cyan-muted);
-    transition: color 0.3s ease;
+  .team-dot { font-size: 0.7rem; line-height: 1; }
+  .team-role {
+    font-size: var(--fs-meta);
+    letter-spacing: 0.02em;
+  }
+  .team-date {
+    font-family: var(--font-terminal);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .team-summary {
+    font-size: var(--fs-body);
+    color: var(--cyan-core);
+    line-height: 1.55;
+  }
+  .team-stack {
+    margin-top: 0.2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .stack-more {
+    font-size: 0.75em;
+    font-family: var(--font-terminal);
+    letter-spacing: 0.05em;
+    color: var(--cyan-accent);
+    padding: 0.2em 0.4em;
+  }
+  .team:hover {
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 10px var(--cyan-glow);
+    background-color: color-mix(in srgb, var(--cyan-glow) 8%, transparent);
+    scale: 1.02;
+  }
+  .team:hover .team-head h4 {
+    color: var(--cyan-glow);
+  }
+  .team:hover .team-subtitle  {
+    color: var(--cyan-accent);
+  }
+
+  @media (max-width: 760px) {
+    .mission-head { flex-direction: column; }
+    .mission-meta { flex-direction: row; align-items: center; }
+    .teams-grid { grid-template-columns: 1fr; }
+    .mission-head,
+    .mission-summary,
+    .teams { padding-left: 1.2rem; padding-right: 1.2rem; }
   }
 </style>
