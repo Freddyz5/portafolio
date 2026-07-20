@@ -197,7 +197,7 @@ const styleAttr = `width:${resolvedWidth}`;
     background-color: transparent;
     border: 1px solid transparent;
     transition: background-color 0.25s ease, border-color 0.25s ease,
-      box-shadow 0.25s ease, color 0.25s ease;
+      box-shadow 0.25s ease, color 0.25s ease, text-shadow 0.25s ease;
   }
 
   /* Tono cian (interfaz) */
@@ -209,7 +209,8 @@ const styleAttr = `width:${resolvedWidth}`;
   .glitch-btn--quiet.tone-cyan:not(.is-disabled):focus-visible {
     background-color: color-mix(in srgb, var(--cyan-glow) 8%, transparent);
     border-color: var(--cyan-glow);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--cyan-glow) 30%, transparent);
+    box-shadow: 0 0 14px 4px var(--cyan-glow);
+    text-shadow: var(--text-glow-cyan);
   }
 
   /* Tono muted (rojo apagado, sin bloom → respeta el rojo escaso) */
@@ -221,6 +222,8 @@ const styleAttr = `width:${resolvedWidth}`;
   .glitch-btn--quiet.tone-muted:not(.is-disabled):focus-visible {
     background-color: color-mix(in srgb, var(--red-glow) 8%, transparent);
     border-color: var(--red-accent);
+    box-shadow: 0 0 14px 4px var(--red-glow);
+    text-shadow: var(--text-glow-red);
   }
 
   /* ---- Estado deshabilitado ---- */
