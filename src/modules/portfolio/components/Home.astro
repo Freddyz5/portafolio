@@ -13,15 +13,22 @@ const { lang, name, label } = Astro.props;
 
 <section class="home" id="home">
 	<ShipHero />
+		
+	<div class="ship-scan" aria-hidden="true"></div>
+
 	<article>
 		<h1 class="glow-red">{name.toLocaleUpperCase()}</h1>
-		<h2>{"> "}{ label}</h2>
+		<p class="hero-prompt">
+			<span class="prompt-mark">&gt;</span>
+			{label}
+			<span class="hero-cursor" aria-hidden="true"></span>
+		</p>
 		<div class="button-container">
 			<ButtonGlitch
 				id="projects-button"
 				text={lang === "es" ? "Ver proyectos >" : "View projects >"}
 				width="50%"
-				color="secondary"
+				variant="secondary"
 			/>
 			<ButtonGlitch
 				id="contact-button"
@@ -33,17 +40,33 @@ const { lang, name, label } = Astro.props;
 </section>
 
 <script>
+	// Scroll a secciones (se conservan los IDs previos)
 	const contactButton = document.getElementById("contact-button");
 	contactButton?.addEventListener("click", () => {
-		const contactSection = document.getElementById("contact");
-		contactSection?.scrollIntoView({ behavior: "smooth" });
+		document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
 	});
-	
+
 	const projectsButton = document.getElementById("projects-button");
 	projectsButton?.addEventListener("click", () => {
-		const projectsSection = document.getElementById("projects");
-		projectsSection?.scrollIntoView({ behavior: "smooth" });
+		document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
 	});
+
+	// Reloj de misión T+HH:MM:SS. Cuenta hacia arriba; congelado en reduced-motion.
+	const clockEl = document.querySelector<HTMLElement>(".hero-clock");
+	if (clockEl) {
+		const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		let total = 3 * 3600 + 47 * 60 + 12; // base 03:47:12 (igual que el diseño)
+		const pad = (n: number) => String(n).padStart(2, "0");
+		const fmt = (s: number) =>
+			`T+${pad(Math.floor(s / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+		clockEl.textContent = fmt(total);
+		if (!reduce) {
+			window.setInterval(() => {
+				total += 1;
+				clockEl.textContent = fmt(total);
+			}, 1000);
+		}
+	}
 </script>
 
 <style>
@@ -59,35 +82,97 @@ const { lang, name, label } = Astro.props;
 		text-align: center;
 		scroll-margin-top: 5em;
 	}
+	/* ===== Cuerpo del hero (columna central) ===== */
+	.hero-body {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: clamp(1rem, 3vh, 2rem);
+		padding: clamp(1.5rem, 4vh, 3rem) 1rem calc(var(--cmd-console-h) + 1rem);
+		text-align: center;
+	}
+	.ship-scan {
+		position: absolute;
+		width: 100vw;
+		top: 0;
+		height: 2px;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			color-mix(in srgb, var(--amber-glow) 50%, transparent),
+			transparent
+		);
+		pointer-events: none;
+		animation: hero-scan 7s linear infinite;
+	}
 	article {
 		width: 80vw;
 		max-width: 550px;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 0.5em;
+		padding-top: 8rem;
+		gap: 0.4em;
 	}
 	h1 {
 		font-family: var(--font-display);
 		font-size: var(--fs-display);
 		font-weight: 600;
-		/* color + glow los aporta la utilidad global .glow-red */
+		letter-spacing: 0.02em;
 	}
-	h2 {
-		font-size: var(--fs-lead);
-		font-weight: 400;
-		margin-bottom: 1.5em;
+	.hero-prompt {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4em;
+		font-family: var(--font-terminal);
+		font-size: var(--fs-title);
 		color: var(--red-core);
+		text-transform: lowercase;
 	}
+	.prompt-mark {
+		color: var(--red-glow);
+		font-family: var(--font-body);
+		font-size: var(--fs-lead);
+	}
+	.hero-cursor {
+		width: 0.3em;
+		height: 0.8em;
+		background-color: var(--amber-glow);
+		box-shadow: var(--text-glow-amber);
+		animation: hero-cursor-blink 1.1s step-end infinite;
+	}
+
+	/* ===== CTAs ===== */
 	.button-container {
 		display: flex;
 		flex-direction: row;
 		gap: 1em;
 		width: 100%;
+		padding-top: 1.5em;
 	}
-	@media (width <= 900px) {
-		.home {
-			flex-direction: column;
-		}
+	@keyframes hero-scan {
+		0% { top: 8%; opacity: 0; }
+		8% { opacity: 0.5; }
+		85% { opacity: 0.5; }
+		100% { top: 55%; opacity: 0; }
+	}
+	@keyframes hero-cursor-blink {
+		0%, 49% { opacity: 1; }
+		50%, 100% { opacity: 0; }
+	}
+
+	/* ===== Móvil: nave arriba, nombre más chico, CTAs apilados, callouts ocultos ===== */
+	@media (max-width: 700px) {
+		.callout { display: none; }
+		.button-container { flex-direction: column; width: 100%; }
+		.btn-quiet { width: 100%; }
+		h1 { font-size: 2rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.ship-scan { animation: none; opacity: 0; }
+		.hero-cursor { animation: none; }
 	}
 </style>
