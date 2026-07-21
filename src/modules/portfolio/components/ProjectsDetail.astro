@@ -38,10 +38,10 @@ const { lang, projects } = Astro.props;
     <div class="project-detail-card" data-project-id={id} style="display: none;">
       <header>
         <SquareChevronRight width={24} height={24} />
-        <h3>{name.split(" ").join("_")}</h3>
+        <h3 style={id && `view-transition-name: project-title-${id}; view-transition-class: project-morph;`}>{name.split(" ").join("_")}</h3>
       </header>
       <article>
-        <figure>
+        <figure style={id && `view-transition-name: project-img-${id}; view-transition-class: project-morph project-media;`}>
           <img
             src={image ?? "https://images.unsplash.com/photo-1688377051459-aebb99b42bff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjaXR5JTIwbmVvbnxlbnwxfHx8fDE3NjMwNzkzODd8MA&ixlib=rb-4.1.0&q=80&w=1080"}
             alt="Project Image"
@@ -53,7 +53,7 @@ const { lang, projects } = Astro.props;
         {description &&
           <div class="description-section section">
             <h4>{lang === "es" ? "> INFORME_DE_LA_MISIÓN" : "> MISSION_BRIEF"}</h4>
-            <p> {description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus ratione quo esse magnam illo quas, quae odio. Explicabo dolorum odit distinctio dicta totam dolorem libero beatae assumenda vitae! Consequatur, eligendi.</p>
+            <p>{description}</p>
           </div>
         }
 
@@ -70,7 +70,7 @@ const { lang, projects } = Astro.props;
           <div class="technologies-section section">
             <h4>{lang === "es" ? "> STACK_TECNOLÓGICO" : "> TECH_STACK"}</h4>
             <div class="stack-tags">
-              {technologies.map((tech: string) => <Chip text={tech} color="var(--red-core)" />)}
+              {technologies.map((tech: string) => <Chip text={tech} color="var(--cyan-accent)" />)}
             </div>
           </div>
         }
@@ -79,17 +79,22 @@ const { lang, projects } = Astro.props;
           <ButtonGlitch
             id="code"
             width="30%"
-            color="secondary"
+            variant="quiet"
+            tone="muted"
             icon={Github}
-            url={repo}
+            href={repo}
+            target="_blank"
             text={lang === "es" ? "Ver Código" : "View Code"}
             disabled={repo ? false : true}
           />
           <ButtonGlitch
             id="demo"
             width="30%"
+            variant="quiet"
+            tone="cyan"
             icon={Link}
-            url={url}
+            href={url}
+            target="_blank"
             text={lang === "es" ? "Ver Demo" : "View Demo"}
             disabled={url ? false : true}
           />

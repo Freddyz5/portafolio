@@ -19,6 +19,7 @@ const { lang, projects } = Astro.props;
     {projects && projects.map(({ id, name, image, summary, description, technologies, url, repo }) =>
       <ProjectsCard
         id={id}
+        lang={lang}
         name={name}
         image={image}
         summary={summary}
