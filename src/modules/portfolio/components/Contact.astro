@@ -112,8 +112,9 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
       />
       <ButtonGlitch
         type="submit"
-        text={lang === "es" ? "Enviar" : "Send"}
+        text={(lang === "es" ? "Enviar" : "Send").toUpperCase()}
       />
+      <p class="form-status" role="status" aria-live="polite"></p>
     </form>
   </article>
 </Section>
@@ -124,14 +125,43 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     const form = document.querySelector(".contact-form") as HTMLFormElement;
     if (!form) return;
 
+    const status = form.querySelector(".form-status") as HTMLElement | null;
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    const lang = document.documentElement.lang === "en" ? "en" : "es";
+
+    const T = {
+      es: {
+        sending: "Enviando…",
+        ok: "✓ Mensaje enviado",
+        err: "✕ Error al enviar. Inténtalo de nuevo.",
+      },
+      en: {
+        sending: "Sending…",
+        ok: "✓ Message sent",
+        err: "✕ Sending failed. Please try again.",
+      },
+    }[lang];
+
+    const setStatus = (text: string, state: "sending" | "ok" | "err" | "") => {
+      if (!status) return;
+      status.textContent = text;
+      status.dataset.state = state;
+    };
+    const setBusy = (busy: boolean) => {
+      if (!submitBtn) return;
+      submitBtn.disabled = busy;
+      submitBtn.classList.toggle("is-disabled", busy);
+    };
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault(); // evita redirección
 
+      setBusy(true);
+      setStatus(T.sending, "sending");
+
       const formData = new FormData(form);
       formData.append("access_key", accessKey);
-
-      const object = Object.fromEntries(formData);
-      const json = JSON.stringify(object);
+      const json = JSON.stringify(Object.fromEntries(formData));
 
       try {
         const res = await fetch("https://api.web3forms.com/submit", {
@@ -140,22 +170,23 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
             "Content-Type": "application/json",
             Accept: "application/json",
           },
-          body: json
+          body: json,
         });
 
         const data = await res.json();
-        
+
         if (data.success) {
-          alert("Mensaje enviado exitosamente!");
+          setStatus(T.ok, "ok");
           form.reset();
         } else {
           console.error("Error:", data);
-          alert("Hubo un problema al enviar el mensaje.");
+          setStatus(T.err, "err");
         }
-
       } catch (error) {
         console.error(error);
-        alert("Error inesperado.");
+        setStatus(T.err, "err");
+      } finally {
+        setBusy(false);
       }
     });
   });
@@ -174,7 +205,9 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   }
   article {
     background-color: var(--bg-base);
-    border: 3px solid var(--red-glow);
+    /* Rojo escaso: el panel baja a --red-muted; los rojos brillantes de la vista
+       quedan en el tab CONTACT_INTERFACE y en el botón ENVIAR (acción decisiva). */
+    border: 2px solid var(--red-muted);
     padding: 2rem;
     width: 60%;
     display: flex;
@@ -182,6 +215,22 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     gap: 2rem;
     border-radius: 0 0 6px 6px;
     z-index: 1;
+  }
+  /* Estado del formulario (enviando / éxito / error) */
+  .form-status {
+    min-height: 1.4em;
+    font-family: var(--font-terminal);
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+  }
+  .form-status[data-state="sending"] { color: var(--amber-glow); }
+  .form-status[data-state="ok"] {
+    color: var(--cyan-glow);
+    text-shadow: var(--text-glow-cyan);
+  }
+  .form-status[data-state="err"] {
+    color: var(--red-glow);
+    text-shadow: var(--text-glow-red);
   }
   article > p {
     font-family: var(--font-terminal);
@@ -205,7 +254,7 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   .contact-info a {
     width: 30%;
     height: 150px;
-    border: 2px solid var(--red-glow);
+    border: 1px solid var(--red-muted);
     border-radius: 5px;
     text-decoration: none;
     color: var(--red-core);
