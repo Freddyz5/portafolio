@@ -31,9 +31,7 @@ const activeLabel = lang === "es" ? "ACTIVO" : "ACTIVE";
 const presentLabel = lang === "es" ? "Presente" : "Present";
 const teamsLabel = lang === "es" ? "> EQUIPOS:" : "> TEAMS:";
 
-// Chips visibles por equipo (los stacks reales son largos; el inventario completo
-// vive en la sección Tecnologías). Se muestran los primeros y se indica "+N".
-const STACK_LIMIT = 6;
+const STACK_LIMIT = 5;
 ---
 
 <article class:list={["mission", { active: isActive }]}>
@@ -57,8 +55,9 @@ const STACK_LIMIT = 6;
       <h3 class="teams-title">{teamsLabel}</h3>
       <div class="teams-grid">
         {teams.map((t) => {
-          const shown = t.stack?.slice(0, STACK_LIMIT) ?? [];
-          const extra = (t.stack?.length ?? 0) - shown.length;
+          const stack = t.stack ?? [];
+          const shown = stack.slice(0, STACK_LIMIT);
+          const extra = stack.slice(STACK_LIMIT);
           const teamActive = !t.endDate;
           return (
             <article class="team">
@@ -73,10 +72,15 @@ const STACK_LIMIT = 6;
                 </p>
               </div>
               {t.summary && <p class="team-summary">{t.summary}</p>}
-              {shown.length > 0 && (
+              {stack.length > 0 && (
                 <div class="team-stack">
                   {shown.map((s) => <Chip text={s} color="var(--cyan-accent)" />)}
-                  {extra > 0 && <span class="stack-more">+{extra}</span>}
+                  {extra.length > 0 && <span class="stack-more">+{extra.length}</span>}
+                  {extra.length > 0 && (
+                    <div class="stack-extra">
+                      {extra.map((s) => <Chip text={s} color="var(--cyan-accent)" />)}
+                    </div>
+                  )}
                 </div>
               )}
             </article>
@@ -165,14 +169,13 @@ const STACK_LIMIT = 6;
     color: var(--red-accent);
     transition: color 0.3s ease;
   }
-  /* .mission:hover .teams-title { color: var(--cyan-accent); } */
-
   .teams-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
   .team {
+    position: relative;
     border: 1px solid var(--red-muted);
     border-radius: 4px;
     background-color: color-mix(in srgb, var(--bg-field) 60%, transparent);
@@ -233,11 +236,47 @@ const STACK_LIMIT = 6;
     color: var(--cyan-accent);
     padding: 0.2em 0.4em;
   }
+  .stack-extra {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -1px;
+    right: -1px;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0 1.1rem 0.9rem;
+    background-color: color-mix(in srgb, var(--cyan-glow) 8%, var(--bg-base));
+    border: 1px solid var(--cyan-glow);
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 6px 10px -4px var(--cyan-glow);
+  }
+  .team:hover .stack-extra {
+    display: flex;
+    animation: stack-unfold 3s ease 0.5s both;
+  }
+  .team:hover .stack-more {
+    display: none;
+  }
+  .team:hover:has(.stack-extra) {
+    border-bottom-color: transparent;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  @keyframes stack-unfold {
+    0% { clip-path: inset(0 -16px 100% -16px); }
+    100% { clip-path: inset(0 -16px -16px -16px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .team:hover .stack-extra { animation: none; }
+  }
   .team:hover {
     border-color: var(--cyan-glow);
     box-shadow: 0 0 10px var(--cyan-glow);
     background-color: color-mix(in srgb, var(--cyan-glow) 8%, transparent);
-    scale: 1.02;
+    scale: 1.03;
+    z-index: 2;
   }
   .team:hover .team-head h4 {
     color: var(--cyan-glow);
