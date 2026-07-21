@@ -205,7 +205,6 @@
 					model.traverse((obj) => {
 						const mesh = obj as THREE.Mesh;
 						if (!mesh.isMesh) return;
-						// Liberar el material original (y sus texturas: el GLB pesa ~20MB).
 						disposeMaterial(mesh.material);
 						mesh.material = bodyMat;
 
