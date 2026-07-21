@@ -30,19 +30,32 @@ const { projects } = data;
       return params.get('id');
     }
 
+    // El ir/volver aquí no cambia de documento, así que la view transition
+    // nativa no aplica: hay que pedirla a mano para que el morph sea simétrico.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function withTransition(update: () => void) {
+      if (!document.startViewTransition || prefersReducedMotion.matches) {
+        update();
+        return;
+      }
+      document.startViewTransition(update);
+    }
+
     // Función para mostrar todos los proyectos
     function showAllProjects() {
       projectsList.style.display = 'block';
       projectDetail.style.display = 'none';
-      
+
       // Ocultar todas las tarjetas de detalle
       projectCards.forEach((card: any) => {
         card.style.display = 'none';
       });
-      
-      // Actualizar URL sin recargar la página
-      const currentLang = window.location.pathname.split('/')[1];
-      window.history.pushState({}, '', `/${currentLang}/projects`);
+    }
+
+    // Quita el ?id= conservando base y lang (antes se reconstruía la ruta a
+    // mano y se perdía el prefijo /portafolio).
+    function clearProjectIdFromURL() {
+      window.history.pushState({}, '', window.location.pathname);
     }
 
     // Función para mostrar un proyecto específico
@@ -69,10 +82,13 @@ const { projects } = data;
     // Manejar el botón de volver
     backLink.addEventListener('click', (e) => {
       e.preventDefault();
-      showAllProjects();
+      clearProjectIdFromURL();
+      withTransition(showAllProjects);
     });
 
-    // Verificar si hay un ID en la URL al cargar
+    // Verificar si hay un ID en la URL al cargar. Sin envolver: en la carga
+    // inicial manda la transición entre documentos, y este cambio de display
+    // debe estar hecho antes del primer render para que el morph enganche.
     const projectId = getProjectIdFromURL();
     if (projectId) {
       showProjectDetail(projectId);
@@ -81,11 +97,13 @@ const { projects } = data;
     // Manejar navegación del navegador (botones atrás/adelante)
     window.addEventListener('popstate', () => {
       const projectId = getProjectIdFromURL();
-      if (projectId) {
-        showProjectDetail(projectId);
-      } else {
-        showAllProjects();
-      }
+      withTransition(() => {
+        if (projectId) {
+          showProjectDetail(projectId);
+        } else {
+          showAllProjects();
+        }
+      });
     });
   });
 </script>
