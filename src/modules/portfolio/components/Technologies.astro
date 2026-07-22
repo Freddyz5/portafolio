@@ -22,6 +22,7 @@ interface Props {
 
 const { lang, techBays } = Astro.props;
 const { primary, secondary } = techBays;
+const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
 ---
 
 <Section
@@ -31,7 +32,7 @@ const { primary, secondary } = techBays;
 >
   <div class="bays">
     <!-- Bahía primaria: destacada (borde rojo, chips cian grandes, etiqueta ámbar) -->
-    <article class="bay bay--primary">
+    <article class="bay bay--primary" tabindex="0" role="button" aria-label={primary.label}>
       <header>
         <h3 class="glow-red">{primary.label}</h3>
         <span class="bay-tag glow-amber">{primary.bay} · {primary.tag}</span>
@@ -40,11 +41,12 @@ const { primary, secondary } = techBays;
         {primary.items.map((t) => <Chip text={t} color="var(--cyan-glow)" />)}
       </div>
       <p class="bay-note">{primary.note}</p>
+      <span class="denied-msg" aria-live="polite" data-text={deniedLabel}></span>
     </article>
 
     <!-- Bahías secundarias: tenues -->
     {secondary.map((bay) => (
-      <article class="bay bay--secondary">
+      <article class="bay bay--secondary" tabindex="0" role="button" aria-label={bay.label}>
         <header>
           <h4>{bay.label}</h4>
           <span class="bay-code">{bay.bay}</span>
@@ -52,6 +54,7 @@ const { primary, secondary } = techBays;
         <div class="bay-chips">
           {bay.items.map((t) => <Chip text={t} color="var(--cyan-accent)" />)}
         </div>
+        <span class="denied-msg" aria-live="polite" data-text={deniedLabel}></span>
       </article>
     ))}
   </div>
@@ -71,12 +74,15 @@ const { primary, secondary } = techBays;
   }
 
   .bay {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
     padding: 1.1rem 1.2rem;
     border-radius: 5px;
     background-color: var(--bg-base);
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   .bay header {
     display: flex;
@@ -118,10 +124,25 @@ const { primary, secondary } = techBays;
     letter-spacing: 0.03em;
     color: var(--red-muted);
   }
+  /* Hover mínimo: solo intensifica su propio borde rojo — no toma prestado el
+     cian (esa señal es "hay datos", y una bahía no revela nada). Sin elevación.
+     El anillo de foco por teclado se deja al :focus-visible global (Layout.astro):
+     el borde/glow de aquí es sutil a propósito, no alcanza solo como indicador. */
+  .bay--primary:hover,
+  .bay--primary:focus-visible {
+    border-color: var(--red-glow);
+  }
 
   /* ===== Bahías secundarias ===== */
   .bay--secondary {
     border: 1px solid color-mix(in srgb, var(--red-muted) 50%, transparent);
+  }
+  /* Hover mínimo: solo borde cian + glow sutil, sin elevación ni repintado.
+     El anillo de foco por teclado lo aporta el :focus-visible global. */
+  .bay--secondary:hover,
+  .bay--secondary:focus-visible {
+    border-color: var(--cyan-glow);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--cyan-glow) 30%, transparent);
   }
   .bay--secondary h4 {
     font-family: var(--font-display);
@@ -141,6 +162,10 @@ const { primary, secondary } = techBays;
     font-size: 0.9rem;
   }
 
+  /* El shake de "acceso denegado" (.denied/.denied-msg + @keyframes
+     denied-shake) es global — ver Layout.astro — para que la foto de About
+     pueda compartir el mismo gesto. */
+
   @media (max-width: 900px) {
     .bays {
       grid-template-columns: repeat(2, 1fr);
@@ -158,3 +183,9 @@ const { primary, secondary } = techBays;
     }
   }
 </style>
+
+<script>
+  import { wireDeniedGesture } from "src/shared/utils/deniedGesture";
+
+  document.querySelectorAll<HTMLElement>(".bay").forEach(wireDeniedGesture);
+</script>
