@@ -7,33 +7,22 @@ import type { Link } from "../constants/links";
 interface Props {
 	lang: 'es' | 'en' | string;
 	links?: Link[];
+	activeId?: string;
 }
 
-const { lang, links } = Astro.props;
+const { lang, links, activeId } = Astro.props;
 
 const homeLink = links ? links.find((link) => link.id === "home") : LINKS.find((link) => link.id === "home");
 const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((link) => !link.isIcon);
 ---
 
-<nav id="navbar">
+<nav id="navbar" data-active-id={activeId}>
 	<section class="home-container">
-		<a id=`nav-${homeLink?.id}` href={homeLink?.href} class="home-link">
+		<a id=`nav-${homeLink?.id}` href={homeLink?.href} class="home-link" data-nav-id={homeLink?.id}>
 			<span class="nav-mark" aria-hidden="true">◈</span>
 			<h1>FR-3D • sistema nominal</h1>
 		</a>
 	</section>
-
-	<!-- <div class="hero-status">
-		<span class="hero-status__left">
-			<span class="chev">&gt;</span>
-			<b class="glow-cyan">FR-3D</b>
-			<span class="sys">· {sysLabel}</span>
-		</span>
-		<span class="hero-status__right">
-			<time class="hero-clock glow-amber">T+00:00:00</time>
-			<span class="rec">{recLabel}</span>
-		</span>
-	</div> -->
 
 	<section class="link-container">
 		<a id="menu" href="#menu-list" class="menu nav-link" aria-label="Menu">
@@ -46,9 +35,10 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 				menuLinks.map((link: Link) => (
 					<a
 						id={`nav-${link.id}`}
-						class="nav-link"
+						class:list={["nav-link", { active: link.id === activeId }]}
 						href={link.href}
 						data-section="nav-bar"
+						data-nav-id={link.id}
 						data-value={link.name}
 					>
 						{link.name instanceof Object ? (lang === 'es' ? link.name.es : link.name.en) : link.name}
@@ -65,15 +55,13 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 	import { LINKS } from "../constants/links";
 
 	document.addEventListener("DOMContentLoaded", () => {
-		const navlinks = document.querySelectorAll("nav a");
+		const navlinks = document.querySelectorAll<HTMLElement>("nav a");
 		const navbar = document.getElementById("navbar");
+		const pinnedId = navbar?.dataset.activeId || "";
 
-		const sections = LINKS.map((link) => {
-			return {
-				name: link.id,
-				element: document.getElementById(`${link.id}`),
-			};
-		});
+		const sections = LINKS
+			.map((link) => ({ name: link.id, element: document.getElementById(link.id) }))
+			.filter((section) => section.element !== null);
 
 		window.addEventListener("load", () => {
 			navlinks.forEach((link) => {
@@ -86,7 +74,7 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 			let sectionTop = 0;
 			let sectionBottom = 0;
 
-			sections.map((section) => {
+			sections.forEach((section) => {
 				sectionTop = section.element!.offsetTop - navbar!.offsetHeight;
 				sectionBottom = sectionTop + section.element!.offsetHeight;
 
@@ -96,12 +84,15 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 			});
 
 			navlinks.forEach((link) => {
+				const navId = link.dataset.navId;
+				if (pinnedId && navId === pinnedId) return;
+
 				link.classList.remove("active");
 
 				link.children[1] ? link.children[1].classList.remove("name-off") : "";
 
-				if (link.getAttribute("href")!.substring(1) === currentSection) {
-					link.getAttribute("href")!.substring(1) === "home"
+				if (navId === currentSection) {
+					navId === "home"
 						? link.children[1].classList.add("name-off")
 						: link.classList.add("active");
 				}

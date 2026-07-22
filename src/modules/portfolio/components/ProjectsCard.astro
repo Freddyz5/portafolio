@@ -37,7 +37,7 @@ const vtTitle = id
   : undefined;
 ---
 
-<article id={id} data-project-id={id} class="project-card" >
+<article id={id} data-project-id={id} class="project-card interactive">
   <header>
     <SquareChevronRight />
     <h5 style={vtTitle}>{name.split(" ").join("_")}</h5>
@@ -51,7 +51,7 @@ const vtTitle = id
     />
   </figure>
   <div class="content">
-    <h4><a class="card-link" href={href}>{name}</a></h4>
+    <h4 class="card-title"><a class="card-link" href={href}>{name}</a></h4>
 
     <p>{ summary ? summary  : description }</p>
 
@@ -91,7 +91,6 @@ const vtTitle = id
 <style>
   article {
     --card-border: var(--red-muted);
-    --card-title: var(--red-glow);
     --card-body: var(--red-core);
     --card-meta: var(--red-muted);
     --card-link: var(--cyan-accent);
@@ -102,8 +101,6 @@ const vtTitle = id
     background: var(--bg-base);
     border: 1px solid var(--card-border);
     border-radius: 5px;
-    transition: transform 0.3s ease, border-color 0.3s ease,
-      box-shadow 0.3s ease;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -140,7 +137,9 @@ const vtTitle = id
     font-family: var(--font-display);
     font-size: var(--fs-lead);
     font-weight: 600;
-    color: var(--card-title);
+  }
+  .card-title {
+    color: var(--red-core);
     transition: color 0.3s ease;
   }
   .card-link {
@@ -215,27 +214,12 @@ const vtTitle = id
     pointer-events: none;
     transition: color 0.3s ease;
   }
-  article:hover,
-  article:focus-within {
-    --card-border: var(--cyan-glow);
-    --card-title: var(--cyan-glow);
-    --card-body: var(--cyan-core);
-    --card-meta: var(--cyan-muted);
-    --card-link: var(--cyan-glow);
-    --chip-color: var(--cyan-accent);
-    --chip-color-hover: var(--cyan-glow);
-
-    transform: translateY(-4px);
-    box-shadow: 0 0 10px var(--cyan-glow);
-  }
+  article:hover img,
   article:focus-within img {
     transform: scale(1.04);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    article,
-    article:hover,
-    article:focus-within,
     article:hover img,
     article:focus-within img {
       transform: none;

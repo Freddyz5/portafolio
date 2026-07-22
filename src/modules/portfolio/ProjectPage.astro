@@ -21,7 +21,6 @@ const { projects } = data;
   document.addEventListener('DOMContentLoaded', () => {
     const projectsList = document.getElementById('projects') as HTMLElement;
     const projectDetail = document.getElementById('project-detail') as HTMLElement;
-    const backLink = document.getElementById('back-link') as HTMLElement;
     const projectCards = document.querySelectorAll('.project-detail-card');
 
     // Función para obtener el ID del query param
@@ -38,7 +37,19 @@ const { projects } = data;
         update();
         return;
       }
-      document.startViewTransition(update);
+      // Salvavidas: si esta página llegó por la view transition nativa entre
+      // documentos (click en una card), Chromium a veces deja startViewTransition
+      // colgado —ni corre el callback ni resuelve/rechaza sus promesas— cuando se
+      // pide una segunda transition (misma página) poco después. El cambio de
+      // contenido nunca debe depender de que la animación llegue a correr.
+      let applied = false;
+      const applyOnce = () => {
+        if (applied) return;
+        applied = true;
+        update();
+      };
+      document.startViewTransition(applyOnce);
+      window.setTimeout(applyOnce, 800);
     }
 
     // Función para mostrar todos los proyectos
@@ -79,8 +90,12 @@ const { projects } = data;
       projectCard.style.display = 'block';
     }
 
-    // Manejar el botón de volver
-    backLink.addEventListener('click', (e) => {
+    // Manejar el botón de cerrar/volver — delegado en la sección porque hay uno
+    // por project-detail-card (mismo botón .detail-close-btn que usa el dialog
+    // de Experiencia), no un solo id fijo.
+    projectDetail.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.detail-close-btn')) return;
       e.preventDefault();
       clearProjectIdFromURL();
       withTransition(showAllProjects);

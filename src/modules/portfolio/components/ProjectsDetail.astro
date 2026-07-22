@@ -27,18 +27,14 @@ const { lang, projects } = Astro.props;
 ---
 
 <section id="project-detail" style="display: none;">
-  <div class="back-link-container">
-    <a href="#" id="back-link" class="back-link">
-      ← {lang === 'es' ? 'Volver a proyectos' : 'Back to projects'}
-    </a>
-    <div/>
-  </div>
-
   {projects && projects.map(({ id, name, image, description, highlights, technologies, url, repo }) => (
     <div class="project-detail-card" data-project-id={id} style="display: none;">
       <header>
         <SquareChevronRight width={24} height={24} />
         <h3 style={id && `view-transition-name: project-title-${id}; view-transition-class: project-morph;`}>{name.split(" ").join("_")}</h3>
+        <button type="button" class="detail-close-btn">
+          {lang === "es" ? "✕ Cerrar" : "✕ Close"}
+        </button>
       </header>
       <article>
         <figure style={id && `view-transition-name: project-img-${id}; view-transition-class: project-morph project-media;`}>
@@ -114,28 +110,6 @@ const { lang, projects } = Astro.props;
     padding: 2rem 6rem;
     gap: 2rem;
   }
-  .back-link-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .back-link {
-    padding: 0.2em 0.4em;
-		color: var(--red-core);
-		text-decoration: none;
-		font-weight: 500;
-		border-radius: 5px;
-		border: 1px solid var(--red-core);
-		transition: 300ms;
-  }
-  .back-link:hover {
-		color: var(--cyan-core);
-		border: 1px solid var(--cyan-glow);
-		background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
-		box-shadow: 0px 0px 10px 0px var(--cyan-glow);
-		scale: 1.05;
-		transition: 300ms;
-	}
   header {
     width: 100%;
     display: flex;
@@ -150,6 +124,7 @@ const { lang, projects } = Astro.props;
   header h3 {
     font-family: var(--font-display);
     letter-spacing: 0.06em;
+    flex: 1;
   }
   article {
     width: 100%;
