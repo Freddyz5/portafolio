@@ -2,12 +2,14 @@
 import Chip from "./Chip.astro";
 
 interface Team {
+  teamId: string;
   teamName: string;
   role: string;
   startDate?: string;
   endDate?: string | null;
   stack: string[];
   summary: string;
+  highlights?: unknown[];
 }
 
 interface Props {
@@ -59,10 +61,18 @@ const STACK_LIMIT = 5;
           const shown = stack.slice(0, STACK_LIMIT);
           const extra = stack.slice(STACK_LIMIT);
           const teamActive = !t.endDate;
+          const titleId = `team-title-${t.teamId}`;
           return (
-            <article class="team">
+            <article
+              class="team interactive"
+              data-team-id={t.teamId}
+              role="button"
+              tabindex="0"
+              aria-haspopup="dialog"
+              aria-labelledby={titleId}
+            >
               <header class="team-head">
-                <h4>{"▸ "}{t.teamName}</h4>
+                <h4 id={titleId} class="card-title">{"▸ "}{t.teamName}</h4>
                 {teamActive && <span class="team-dot glow-cyan" aria-label={activeLabel}>●</span>}
               </header>
               <div class="team-subtitle">
@@ -76,11 +86,6 @@ const STACK_LIMIT = 5;
                 <div class="team-stack">
                   {shown.map((s) => <Chip text={s} color="var(--cyan-accent)" />)}
                   {extra.length > 0 && <span class="stack-more">+{extra.length}</span>}
-                  {extra.length > 0 && (
-                    <div class="stack-extra">
-                      {extra.map((s) => <Chip text={s} color="var(--cyan-accent)" />)}
-                    </div>
-                  )}
                 </div>
               )}
             </article>
@@ -174,16 +179,23 @@ const STACK_LIMIT = 5;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
+  /* Selector de elemento sin clase: queda por debajo, en especificidad, de la
+     regla global `.interactive:hover` (2 clases) para que esta pueda pisar el
+     border-color en hover/foco (mismo truco que ProjectsCard.astro, paso A).
+     También alcanza a `.mission`, pero su propio border de clase (más
+     específico) sigue ganando ahí sin cambio visual. */
+  article {
+    border: 1px solid var(--red-muted);
+  }
   .team {
     position: relative;
-    border: 1px solid var(--red-muted);
     border-radius: 4px;
     background-color: color-mix(in srgb, var(--bg-field) 60%, transparent);
     padding: 1rem 1.1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    transition: border-color 0.5s ease, box-shadow 0.5s ease, background-color 0.5s ease, scale 0.5s ease;
+    cursor: pointer;
   }
   .team-head {
     display: flex;
@@ -196,8 +208,10 @@ const STACK_LIMIT = 5;
     font-size: var(--fs-body);
     font-weight: 500;
     letter-spacing: 0.03em;
-    color: var(--red-glow);
-    transition: color 0.5s ease;
+  }
+  .card-title {
+    color: var(--red-core);
+    transition: color 0.3s ease;
   }
   .team-subtitle {
     display: flex;
@@ -205,7 +219,6 @@ const STACK_LIMIT = 5;
     align-items: center;
     gap: 0.2rem;
     color: var(--red-muted);
-    transition: color 0.5s ease;
   }
   .team-dot { font-size: 0.7rem; line-height: 1; }
   .team-role {
@@ -236,55 +249,6 @@ const STACK_LIMIT = 5;
     color: var(--cyan-accent);
     padding: 0.2em 0.4em;
   }
-  .stack-extra {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: -1px;
-    right: -1px;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    align-items: center;
-    padding: 0 1.1rem 0.9rem;
-    background-color: color-mix(in srgb, var(--cyan-glow) 8%, var(--bg-base));
-    border: 1px solid var(--cyan-glow);
-    border-top: none;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 6px 10px -4px var(--cyan-glow);
-  }
-  .team:hover .stack-extra {
-    display: flex;
-    animation: stack-unfold 3s ease 0.5s both;
-  }
-  .team:hover .stack-more {
-    display: none;
-  }
-  .team:hover:has(.stack-extra) {
-    border-bottom-color: transparent;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  @keyframes stack-unfold {
-    0% { clip-path: inset(0 -16px 100% -16px); }
-    100% { clip-path: inset(0 -16px -16px -16px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .team:hover .stack-extra { animation: none; }
-  }
-  .team:hover {
-    border-color: var(--cyan-glow);
-    box-shadow: 0 0 10px var(--cyan-glow);
-    background-color: color-mix(in srgb, var(--cyan-glow) 8%, transparent);
-    scale: 1.03;
-    z-index: 2;
-  }
-  .team:hover .team-head h4 {
-    color: var(--cyan-glow);
-  }
-  .team:hover .team-subtitle  {
-    color: var(--cyan-accent);
-  }
-
   @media (max-width: 760px) {
     .mission-head { flex-direction: column; }
     .mission-meta { flex-direction: row; align-items: center; }
