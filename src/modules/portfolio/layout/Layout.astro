@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-mono/400-italic.css';
 import '@fontsource/vt323/400.css';
 
 import NavBar from './components/NavBar.astro';
+import CommandBar from './components/CommandBar.astro';
 import Footer from './components/Footer.astro';
 import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
@@ -24,7 +25,7 @@ const { title, image, summary, url, lang, links } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
     <meta charset="UTF-8" />
     <title>{title}</title>
@@ -48,11 +49,12 @@ const { title, image, summary, url, lang, links } = Astro.props;
   </head>
 
 	<body id="body">
+		<NavBar lang={lang} links={links} />
 		<MobileWarning lang={lang} />
 		<div id="mouse" />
-		<NavBar lang={lang} links={links} />
 		<slot />
 		<Footer lang={lang} />
+		<CommandBar lang={lang} />
 	</body>
 </html>
 
@@ -101,6 +103,10 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		--bg-field: #080404;
 		--bg-base: #151111;
 		--bg-raised: #1F1616;
+		--bg-band: #0B0707;  /* banda alterna (HLCS 2a): entre --bg-field y --bg-base */
+
+		/* Altura reservada por la consola de comandos (cerrada, decorativa) */
+		--cmd-console-h: 30px;
 
 		/* Auxiliares fuera del esquema red/cyan/bg — valores originales (ver inventario) */
 		--cream: #fff7ed;
@@ -141,6 +147,7 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		color: var(--red-core);
 		font-size: var(--fs-body);
 		line-height: 1.6;
+		padding-bottom: var(--cmd-console-h);
   }
 
 	* {
@@ -157,15 +164,74 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		object-position: center center;
 	}
 
+	/* ===== View transitions entre documentos =====
+		Nativo, sin router SPA: la navegación sigue siendo carga completa, así que
+		los scripts con DOMContentLoaded siguen funcionando igual. En navegadores
+		sin soporte simplemente no hay animación (navegación instantánea).
+
+		OJO: en `astro dev` NO se ven. Vite sirve ~23 módulos sin empaquetar y la
+		página nueva tarda demasiado en pintar, así que Chrome descarta la
+		transición y navega en seco. Para probarlas: build + `astro preview`. */
+	@view-transition {
+		navigation: auto;
+	}
+
+	/* --- Perillas de la animación ---------------------------------------
+		root  = fundido del resto de la página (fondo, texto, todo lo no nombrado).
+		morph = la imagen/título que crecen de la tarjeta al detalle.
+		Son independientes: subir la duración de root NO ralentiza el morph. */
+	:root {
+		--vt-root-duration: 0.45s;
+		--vt-morph-duration: 0.6s;
+		/* Arranca rápido y frena al final: es lo que da la sensación de fluidez. */
+		--vt-morph-ease: cubic-bezier(0.2, 0, 0, 1);
+	}
+
+	/* Fundido base entre páginas. */
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: var(--vt-root-duration);
+		animation-timing-function: ease;
+	}
+
+	/* El morph en sí: -group anima tamaño y posición (el "agrandarse"). */
+	::view-transition-group(.project-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+	/* El cruce entre la imagen vieja y la nueva, al mismo ritmo que el -group;
+	   si dura menos, la nueva imagen queda estirada esperando a que acabe. */
+	::view-transition-old(.project-morph),
+	::view-transition-new(.project-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+	/* Solo en la imagen: mantiene el encuadre mientras cambia de tamaño, en vez
+	   de deformarse al pasar de 200px a 500px de alto. */
+	::view-transition-old(.project-media),
+	::view-transition-new(.project-media) {
+		height: 100%;
+		object-fit: cover;
+	}
+
 	/* ===== Utilidades de glow de fósforo (por rol) ===== */
 	.glow-red   { color: var(--red-glow);   text-shadow: var(--text-glow-red); }
 	.glow-cyan  { color: var(--cyan-glow);  text-shadow: var(--text-glow-cyan); }
 	.glow-amber { color: var(--amber-glow); text-shadow: var(--text-glow-amber); }
 
+	/* ===== Foco de teclado visible (a11y) =====
+		Cian = acento de interfaz. Solo con navegación por teclado (:focus-visible),
+		nunca en click. Los componentes con foco propio (inputs holográficos) lo refinan. */
+	:focus-visible {
+		outline: 2px solid var(--cyan-glow);
+		outline-offset: 2px;
+		border-radius: 4px;
+	}
+
 	/* ===== Overlay CRT global: scanlines + viñeta + flicker =====
-	   Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
-	   legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
-	   solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
+		Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
+		legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
+		solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
 	body::before,
 	body::after {
 		content: "";
@@ -211,6 +277,12 @@ const { title, image, summary, url, lang, links } = Astro.props;
     /* Sin parpadeo; las scanlines/viñeta quedan estáticas y sutiles. */
     body::after {
       animation: none;
+    }
+    /* Corte seco entre páginas en vez del morph. */
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
     }
   }
 	
