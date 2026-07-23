@@ -14,15 +14,20 @@ interface Props {
 }
 
 const { lang, summary, name, image } = Astro.props;
+
+const cvHref = `${import.meta.env.BASE_URL}/${lang}/cv`;
+
+const nameSlug = name.toLocaleUpperCase();
+const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
 ---
 <Section
   id="about"
   title={lang === "es" ? "Acerca de mí" : "About me"}
   subTittle={lang === "es" ? "REGISTRO_PERSONAL" : "PERSONAL_RECORD" }
   styles={{
-    backgroundColor: "var(--bg-field)",
+    backgroundColor: "var(--bg-band)",
     height: "800px",
-    boxShadow: "0 0 50px 20px var(--bg-field)"
+    boxShadow: "0 0 50px 20px var(--bg-band)"
   }}
 >
   <article>
@@ -34,17 +39,21 @@ const { lang, summary, name, image } = Astro.props;
           id="resume-btn"
           text={lang === "es" ? "Currículum" : "Resume"}
           width="50%"
-          color="secondary"
+          variant="secondary"
+          href={cvHref}
         />
         <ButtonGlitch
           id="contact-btn"
           text={lang === "es" ? "Contacto" : "Contact"}
+          href="#contact"
+          variant="quiet"
+          tone="muted"
           width="50%"
         />
       </div>
     </div>
 
-    <figure>
+    <figure id="about-photo" role="button" tabindex="0" aria-label={name}>
       <img
         class="picture normal"
         src={image.url1}
@@ -57,24 +66,11 @@ const { lang, summary, name, image } = Astro.props;
         alt={image.alt}
         loading="lazy"
       />
-      <p>{name}</p>
+      <figcaption>{nameSlug}</figcaption>
+      <span class="denied-msg" aria-live="polite" data-text={deniedLabel}></span>
     </figure>
   </article>
 </Section>
-
-<script>
-  const BASE_URL = import.meta.env.BASE_URL;
-  console.log(BASE_URL);
-  const lang = document.documentElement.getAttribute('data-lang') || 'es';
-  const resumeBtn = document.getElementById("resume-btn");
-  const contactBtn = document.getElementById("contact-btn");
-  resumeBtn?.addEventListener("click", () => {
-    window.location.href = `${BASE_URL}/${lang}/cv`;
-  });
-  contactBtn?.addEventListener("click", () => {
-    window.location.href = "#contact";
-  });
-</script>
 
 <style>
   article {
@@ -96,8 +92,8 @@ const { lang, summary, name, image } = Astro.props;
   }
   .summary-wrapper p {
     height: 60%;
-    overflow: scroll;
-    color: var(--red-core);
+    overflow: auto;
+    color: var(--cyan-core);
   }
   .buttons-wrapper {
     width: 100%;
@@ -150,11 +146,21 @@ const { lang, summary, name, image } = Astro.props;
     object-fit: cover;
     transition: all 2s ease;
   }
-  figure p {
+  figcaption {
     position: absolute;
-    bottom: 5px;
+    bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
+    font-family: var(--font-terminal);
+    font-size: 1.05rem;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    color: var(--red-core);
+    transition: color 2s ease;
+  }
+
+  figure:hover figcaption {
+    color: var(--cyan-glow);
   }
 
   .pixel {
@@ -182,4 +188,34 @@ const { lang, summary, name, image } = Astro.props;
         transparent
     );
   }
+  @media (max-width: 900px) {
+    article {
+      flex-direction: column;
+      height: auto;
+      gap: 2.5rem;
+      align-items: center;
+    }
+    .summary-wrapper {
+      width: 100%;
+      height: auto;
+    }
+    .summary-wrapper p {
+      height: auto;
+    }
+    figure {
+      width: min(90vw, 450px);
+    }
+  }
+  @media (max-width: 480px) {
+    .buttons-wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
+
+<script>
+  import { wireDeniedGesture } from "src/shared/utils/deniedGesture";
+
+  const photo = document.getElementById("about-photo");
+  if (photo) wireDeniedGesture(photo);
+</script>

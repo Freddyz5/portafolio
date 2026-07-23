@@ -63,7 +63,7 @@
   "works": [
     {
       "id": "work-initGrammers",
-      "name": "Init Grammers",
+      "name": {"es": "Init Grammers - Consultora de Software", "en": "Init Grammers - Software Consultancy"},
       "position": {
         "es": "Desarrollador Full Stack",
         "en": "Full Stack Developer"
@@ -81,8 +81,8 @@
           "teamId": "team-mediaValue",
           "teamName": "Media Value",
           "role": {
-            "es": "Desarrollador Frontend → Full Stack",
-            "en": "Frontend → Full Stack Developer"
+            "es": "Desarrollador Frontend ➜ Full Stack",
+            "en": "Frontend ➜ Full Stack Developer"
           },
           "startDate": "2023-10",
           "endDate": "2026-02",
@@ -715,6 +715,55 @@
       ]
     }
   ],
+  "techBays": {
+    "primary": {
+      "bay": "BAHÍA_01",
+      "label": { "es": "NÚCLEO PRINCIPAL", "en": "MAIN CORE" },
+      "tag": { "es": "PRIMARIA", "en": "PRIMARY" },
+      "note": {
+        "es": "Stack de trabajo diario · ~3 años en producción",
+        "en": "Daily working stack · ~3 years in production"
+      },
+      "items": ["TypeScript", "React", "Next.js", "Node.js", "GraphQL", "PostgreSQL"]
+    },
+    "secondary": [
+      {
+        "bay": "B_02",
+        "label": { "es": "FRONTEND+", "en": "FRONTEND+" },
+        "items": ["Astro", "Tailwind CSS", "Material UI", "Zustand", "Redux Toolkit", "TanStack Query", "SWR"]
+      },
+      {
+        "bay": "B_03",
+        "label": { "es": "BACKEND+", "en": "BACKEND+" },
+        "items": ["Apollo Server", "GraphQL Yoga", "Hono", "Express", "REST APIs", "Stripe"]
+      },
+      {
+        "bay": "B_04",
+        "label": { "es": "DATOS", "en": "DATA" },
+        "items": ["Prisma", "Drizzle ORM", "Neon"]
+      },
+      {
+        "bay": "B_05",
+        "label": { "es": "ARQUITECTURA", "en": "ARCHITECTURE" },
+        "items": [{ "es": "Arq. Hexagonal", "en": "Hexagonal Arch." }, "Domain Events", "Monorepos", "Turborepo"]
+      },
+      {
+        "bay": "B_06",
+        "label": { "es": "MOBILE", "en": "MOBILE" },
+        "items": ["React Native", "Expo"]
+      },
+      {
+        "bay": "B_07",
+        "label": { "es": "TESTING", "en": "TESTING" },
+        "items": ["Maestro", "E2E Testing"]
+      },
+      {
+        "bay": "B_08",
+        "label": { "es": "HERRAMIENTAS", "en": "TOOLS" },
+        "items": ["Git", "GitHub", "Vercel", "Agile / Scrum"]
+      }
+    ]
+  },
   "languages": [
     {
       "id": "lang-es",

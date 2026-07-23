@@ -15,7 +15,7 @@ const designSystemLabel = lang === 'es' ? 'Sistema de diseño' : 'Design system'
 <footer>
 	<figure>
 		<p>Freddy</p>
-		<Logo class="logo-footer"/>
+		<span class="nav-mark logo-footer" aria-hidden="true">◈</span>
 		<p>Tacuri</p>
 	</figure>
 	<p>
@@ -83,6 +83,14 @@ const designSystemLabel = lang === 'es' ? 'Sistema de diseño' : 'Design system'
 		gap: 1em;
 		margin: 0.5em;
 	}
+	.nav-mark {
+		font-family: var(--font-display);
+		font-size: 1.25rem;
+		line-height: 1;
+		color: var(--red-glow);
+		filter: drop-shadow(0 0 0.4rem var(--red-accent));
+		transition: 0.3s;
+	}
 	svg {
 		width: 25px;
 		height: 25px;
@@ -93,12 +101,13 @@ const designSystemLabel = lang === 'es' ? 'Sistema de diseño' : 'Design system'
 	.logo-footer {
 		z-index: 2;
 		transition: 0.3s ease;
+		cursor: pointer;
 	}
 	.logo-footer:hover {
 		stroke: var(--cyan-glow);
 		color: var(--cyan-glow);
 		filter: drop-shadow(0 0 0.5rem var(--cyan-accent));
-		transform: rotate(30deg);
+		transform: rotate(45deg);
 		scale: 1.1;
 		transition: 0.3s ease;
 	}

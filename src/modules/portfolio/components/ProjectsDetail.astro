@@ -27,21 +27,17 @@ const { lang, projects } = Astro.props;
 ---
 
 <section id="project-detail" style="display: none;">
-  <div class="back-link-container">
-    <a href="#" id="back-link" class="back-link">
-      ← {lang === 'es' ? 'Volver a proyectos' : 'Back to projects'}
-    </a>
-    <div/>
-  </div>
-
   {projects && projects.map(({ id, name, image, description, highlights, technologies, url, repo }) => (
     <div class="project-detail-card" data-project-id={id} style="display: none;">
       <header>
         <SquareChevronRight width={24} height={24} />
-        <h3>{name.split(" ").join("_")}</h3>
+        <h3 style={id && `view-transition-name: project-title-${id}; view-transition-class: project-morph;`}>{name.split(" ").join("_")}</h3>
+        <button type="button" class="detail-close-btn">
+          {lang === "es" ? "✕ Cerrar" : "✕ Close"}
+        </button>
       </header>
       <article>
-        <figure>
+        <figure style={id && `view-transition-name: project-img-${id}; view-transition-class: project-morph project-media;`}>
           <img
             src={image ?? "https://images.unsplash.com/photo-1688377051459-aebb99b42bff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBjaXR5JTIwbmVvbnxlbnwxfHx8fDE3NjMwNzkzODd8MA&ixlib=rb-4.1.0&q=80&w=1080"}
             alt="Project Image"
@@ -53,7 +49,7 @@ const { lang, projects } = Astro.props;
         {description &&
           <div class="description-section section">
             <h4>{lang === "es" ? "> INFORME_DE_LA_MISIÓN" : "> MISSION_BRIEF"}</h4>
-            <p> {description} Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus ratione quo esse magnam illo quas, quae odio. Explicabo dolorum odit distinctio dicta totam dolorem libero beatae assumenda vitae! Consequatur, eligendi.</p>
+            <p>{description}</p>
           </div>
         }
 
@@ -70,7 +66,7 @@ const { lang, projects } = Astro.props;
           <div class="technologies-section section">
             <h4>{lang === "es" ? "> STACK_TECNOLÓGICO" : "> TECH_STACK"}</h4>
             <div class="stack-tags">
-              {technologies.map((tech: string) => <Chip text={tech} color="var(--red-core)" />)}
+              {technologies.map((tech: string) => <Chip text={tech} color="var(--cyan-accent)" />)}
             </div>
           </div>
         }
@@ -79,17 +75,22 @@ const { lang, projects } = Astro.props;
           <ButtonGlitch
             id="code"
             width="30%"
-            color="secondary"
+            variant="quiet"
+            tone="muted"
             icon={Github}
-            url={repo}
+            href={repo}
+            target="_blank"
             text={lang === "es" ? "Ver Código" : "View Code"}
             disabled={repo ? false : true}
           />
           <ButtonGlitch
             id="demo"
             width="30%"
+            variant="quiet"
+            tone="cyan"
             icon={Link}
-            url={url}
+            href={url}
+            target="_blank"
             text={lang === "es" ? "Ver Demo" : "View Demo"}
             disabled={url ? false : true}
           />
@@ -109,28 +110,6 @@ const { lang, projects } = Astro.props;
     padding: 2rem 6rem;
     gap: 2rem;
   }
-  .back-link-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .back-link {
-    padding: 0.2em 0.4em;
-		color: var(--red-core);
-		text-decoration: none;
-		font-weight: 500;
-		border-radius: 5px;
-		border: 1px solid var(--red-core);
-		transition: 300ms;
-  }
-  .back-link:hover {
-		color: var(--cyan-core);
-		border: 1px solid var(--cyan-glow);
-		background: color-mix(in srgb, var(--cyan-glow) 70%, transparent);
-		box-shadow: 0px 0px 10px 0px var(--cyan-glow);
-		scale: 1.05;
-		transition: 300ms;
-	}
   header {
     width: 100%;
     display: flex;
@@ -145,6 +124,7 @@ const { lang, projects } = Astro.props;
   header h3 {
     font-family: var(--font-display);
     letter-spacing: 0.06em;
+    flex: 1;
   }
   article {
     width: 100%;

@@ -21,7 +21,6 @@ const { projects } = data;
   document.addEventListener('DOMContentLoaded', () => {
     const projectsList = document.getElementById('projects') as HTMLElement;
     const projectDetail = document.getElementById('project-detail') as HTMLElement;
-    const backLink = document.getElementById('back-link') as HTMLElement;
     const projectCards = document.querySelectorAll('.project-detail-card');
 
     // Función para obtener el ID del query param
@@ -30,19 +29,44 @@ const { projects } = data;
       return params.get('id');
     }
 
+    // El ir/volver aquí no cambia de documento, así que la view transition
+    // nativa no aplica: hay que pedirla a mano para que el morph sea simétrico.
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function withTransition(update: () => void) {
+      if (!document.startViewTransition || prefersReducedMotion.matches) {
+        update();
+        return;
+      }
+      // Salvavidas: si esta página llegó por la view transition nativa entre
+      // documentos (click en una card), Chromium a veces deja startViewTransition
+      // colgado —ni corre el callback ni resuelve/rechaza sus promesas— cuando se
+      // pide una segunda transition (misma página) poco después. El cambio de
+      // contenido nunca debe depender de que la animación llegue a correr.
+      let applied = false;
+      const applyOnce = () => {
+        if (applied) return;
+        applied = true;
+        update();
+      };
+      document.startViewTransition(applyOnce);
+      window.setTimeout(applyOnce, 800);
+    }
+
     // Función para mostrar todos los proyectos
     function showAllProjects() {
       projectsList.style.display = 'block';
       projectDetail.style.display = 'none';
-      
+
       // Ocultar todas las tarjetas de detalle
       projectCards.forEach((card: any) => {
         card.style.display = 'none';
       });
-      
-      // Actualizar URL sin recargar la página
-      const currentLang = window.location.pathname.split('/')[1];
-      window.history.pushState({}, '', `/${currentLang}/projects`);
+    }
+
+    // Quita el ?id= conservando base y lang (antes se reconstruía la ruta a
+    // mano y se perdía el prefijo /portafolio).
+    function clearProjectIdFromURL() {
+      window.history.pushState({}, '', window.location.pathname);
     }
 
     // Función para mostrar un proyecto específico
@@ -66,13 +90,20 @@ const { projects } = data;
       projectCard.style.display = 'block';
     }
 
-    // Manejar el botón de volver
-    backLink.addEventListener('click', (e) => {
+    // Manejar el botón de cerrar/volver — delegado en la sección porque hay uno
+    // por project-detail-card (mismo botón .detail-close-btn que usa el dialog
+    // de Experiencia), no un solo id fijo.
+    projectDetail.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.detail-close-btn')) return;
       e.preventDefault();
-      showAllProjects();
+      clearProjectIdFromURL();
+      withTransition(showAllProjects);
     });
 
-    // Verificar si hay un ID en la URL al cargar
+    // Verificar si hay un ID en la URL al cargar. Sin envolver: en la carga
+    // inicial manda la transición entre documentos, y este cambio de display
+    // debe estar hecho antes del primer render para que el morph enganche.
     const projectId = getProjectIdFromURL();
     if (projectId) {
       showProjectDetail(projectId);
@@ -81,11 +112,13 @@ const { projects } = data;
     // Manejar navegación del navegador (botones atrás/adelante)
     window.addEventListener('popstate', () => {
       const projectId = getProjectIdFromURL();
-      if (projectId) {
-        showProjectDetail(projectId);
-      } else {
-        showAllProjects();
-      }
+      withTransition(() => {
+        if (projectId) {
+          showProjectDetail(projectId);
+        } else {
+          showAllProjects();
+        }
+      });
     });
   });
 </script>

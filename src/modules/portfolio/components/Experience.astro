@@ -1,5 +1,6 @@
 ---
 import ExperienceCard from './ExperienceCard.astro';
+import ExperienceDetail from './ExperienceDetail.astro';
 import Section from './Section.astro';
 
 interface Props {
@@ -30,6 +31,7 @@ const { lang, works } = Astro.props;
       />
     )}
   </div>
+  <ExperienceDetail lang={lang} works={works} />
 </Section>
 
 <style>

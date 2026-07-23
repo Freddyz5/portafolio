@@ -7,6 +7,7 @@ import '@fontsource/ibm-plex-mono/400-italic.css';
 import '@fontsource/vt323/400.css';
 
 import NavBar from './components/NavBar.astro';
+import CommandBar from './components/CommandBar.astro';
 import Footer from './components/Footer.astro';
 import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
@@ -18,13 +19,14 @@ interface Props {
   url: string;
 	lang: string;
 	links?: Link[];
+	activeId?: string;
 }
 
-const { title, image, summary, url, lang, links } = Astro.props;
+const { title, image, summary, url, lang, links, activeId } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
 	<head>
     <meta charset="UTF-8" />
     <title>{title}</title>
@@ -48,11 +50,12 @@ const { title, image, summary, url, lang, links } = Astro.props;
   </head>
 
 	<body id="body">
+		<NavBar lang={lang} links={links} activeId={activeId} />
 		<MobileWarning lang={lang} />
 		<div id="mouse" />
-		<NavBar lang={lang} links={links} />
 		<slot />
 		<Footer lang={lang} />
+		<CommandBar lang={lang} />
 	</body>
 </html>
 
@@ -101,6 +104,10 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		--bg-field: #080404;
 		--bg-base: #151111;
 		--bg-raised: #1F1616;
+		--bg-band: #0B0707;  /* banda alterna (HLCS 2a): entre --bg-field y --bg-base */
+
+		/* Altura reservada por la consola de comandos (cerrada, decorativa) */
+		--cmd-console-h: 30px;
 
 		/* Auxiliares fuera del esquema red/cyan/bg — valores originales (ver inventario) */
 		--cream: #fff7ed;
@@ -141,6 +148,7 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		color: var(--red-core);
 		font-size: var(--fs-body);
 		line-height: 1.6;
+		padding-bottom: var(--cmd-console-h);
   }
 
 	* {
@@ -157,15 +165,179 @@ const { title, image, summary, url, lang, links } = Astro.props;
 		object-position: center center;
 	}
 
+	/* ===== View transitions entre documentos =====
+		Nativo, sin router SPA: la navegación sigue siendo carga completa, así que
+		los scripts con DOMContentLoaded siguen funcionando igual. En navegadores
+		sin soporte simplemente no hay animación (navegación instantánea).
+
+		OJO: en `astro dev` NO se ven. Vite sirve ~23 módulos sin empaquetar y la
+		página nueva tarda demasiado en pintar, así que Chrome descarta la
+		transición y navega en seco. Para probarlas: build + `astro preview`. */
+	@view-transition {
+		navigation: auto;
+	}
+
+	/* --- Perillas de la animación ---------------------------------------
+		root  = fundido del resto de la página (fondo, texto, todo lo no nombrado).
+		morph = la imagen/título que crecen de la tarjeta al detalle.
+		Son independientes: subir la duración de root NO ralentiza el morph. */
+	:root {
+		--vt-root-duration: 0.45s;
+		--vt-morph-duration: 0.6s;
+		/* Arranca rápido y frena al final: es lo que da la sensación de fluidez. */
+		--vt-morph-ease: cubic-bezier(0.2, 0, 0, 1);
+	}
+
+	/* Fundido base entre páginas. */
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation-duration: var(--vt-root-duration);
+		animation-timing-function: ease;
+	}
+
+	/* El morph en sí: -group anima tamaño y posición (el "agrandarse"). */
+	::view-transition-group(.project-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+	/* El cruce entre la imagen vieja y la nueva, al mismo ritmo que el -group;
+	   si dura menos, la nueva imagen queda estirada esperando a que acabe. */
+	::view-transition-old(.project-morph),
+	::view-transition-new(.project-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+	/* Solo en la imagen: mantiene el encuadre mientras cambia de tamaño, en vez
+	   de deformarse al pasar de 200px a 500px de alto. */
+	::view-transition-old(.project-media),
+	::view-transition-new(.project-media) {
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Misma familia de morph que Proyectos, pero en la misma página: un .team de
+	   Experiencia que crece hasta el <dialog> centrado (paso B de interacción).
+	   El nombre lo asigna ExperienceDetail.astro por JS (es dinámico, no hay un
+	   id fijo por pareja como en project-morph). */
+	::view-transition-group(.team-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+	::view-transition-old(.team-morph),
+	::view-transition-new(.team-morph) {
+		animation-duration: var(--vt-morph-duration);
+		animation-timing-function: var(--vt-morph-ease);
+	}
+
 	/* ===== Utilidades de glow de fósforo (por rol) ===== */
 	.glow-red   { color: var(--red-glow);   text-shadow: var(--text-glow-red); }
 	.glow-cyan  { color: var(--cyan-glow);  text-shadow: var(--text-glow-cyan); }
 	.glow-amber { color: var(--amber-glow); text-shadow: var(--text-glow-amber); }
 
+	/* ===== Lenguaje de hover base reutilizable (paso A de interacción) =====
+		.interactive = card/panel clicable: eleva + ilumina borde y glow cian en
+		hover y en foco de teclado. .card-title = el único hijo que se enciende;
+		cuerpo, meta y chips no cambian. Ver DESIGN_SYSTEM.md · 08 Interacción.
+		:has(:focus-visible) cubre cards cuyo elemento clicable es un hijo anidado
+		(p. ej. un <a> que cubre la card vía ::after, como en Proyectos) — mismo
+		patrón que ya usa Proyectos para su anillo de foco. Experiencia y
+		Tecnologías reusan estas dos clases sin redefinirlas. */
+	.interactive {
+		transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+	}
+	.interactive:hover,
+	.interactive:focus-visible,
+	.interactive:has(:focus-visible) {
+		transform: translateY(-4px);
+		border-color: var(--cyan-glow);
+		box-shadow: 0 0 10px var(--cyan-glow);
+		outline: none;
+	}
+	.interactive:hover .card-title,
+	.interactive:focus-visible .card-title,
+	.interactive:has(:focus-visible) .card-title {
+		color: var(--cyan-glow);
+	}
+
+	/* ===== Botón de cierre reutilizable (vistas de detalle: Proyectos, Experiencia) =====
+		Mismo lenguaje visual en toda vista de detalle: texto simple sobre la barra
+		de cabecera roja, sin icono. Nace en el dialog de Experiencia (paso B) y se
+		promueve aquí para que Proyectos lo comparta sin duplicar CSS. */
+	.detail-close-btn {
+		font-family: var(--font-body);
+		font-size: 0.85rem;
+		color: var(--bg-field);
+		background: none;
+		border: 1px solid var(--bg-field);
+		border-radius: 4px;
+		padding: 0.3em 0.6em;
+		cursor: pointer;
+		transition: background-color 0.2s ease;
+	}
+	.detail-close-btn:hover,
+	.detail-close-btn:focus-visible {
+		background-color: color-mix(in srgb, var(--bg-field) 20%, transparent);
+		outline: none;
+	}
+
+	/* ===== Gesto de "acceso denegado" reutilizable (Tecnologías, paso C; y
+		cualquier elemento clicable sin nada que revelar, como la foto de About) =====
+		Estado transitorio disparado por JS (ver src/shared/utils/deniedGesture.ts):
+		debe ganarle a cualquier border-color de hover local sin depender de una
+		carrera de especificidad con el scoping de Astro (ya nos mordió más de una
+		vez) — de ahí el !important puntual, justificado porque es un flash
+		momentáneo, no un estado de diseño permanente. */
+	@keyframes denied-shake {
+		0%, 100% { transform: translateX(0); }
+		20% { transform: translateX(-4px); }
+		40% { transform: translateX(4px); }
+		60% { transform: translateX(-3px); }
+		80% { transform: translateX(3px); }
+	}
+	.denied {
+		animation: denied-shake 0.35s ease;
+		border-color: var(--red-glow) !important;
+	}
+	.denied-msg {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+		text-align: center;
+		pointer-events: none;
+		font-family: var(--font-terminal);
+		font-size: 1.15rem;
+		letter-spacing: 0.05em;
+		color: var(--red-glow);
+		background-color: color-mix(in srgb, var(--bg-field) 88%, transparent);
+		border-radius: inherit;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+	.denied-msg.show {
+		opacity: 1;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.denied { animation: none; }
+		.denied-msg { transition: none; }
+	}
+
+	/* ===== Foco de teclado visible (a11y) =====
+		Cian = acento de interfaz. Solo con navegación por teclado (:focus-visible),
+		nunca en click. Los componentes con foco propio (inputs holográficos) lo refinan. */
+	:focus-visible {
+		outline: 2px solid var(--cyan-glow);
+		outline-offset: 2px;
+		border-radius: 4px;
+	}
+
 	/* ===== Overlay CRT global: scanlines + viñeta + flicker =====
-	   Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
-	   legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
-	   solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
+		Fijo, por encima del contenido, nunca captura clicks. El cuerpo se mantiene
+		legible: las scanlines usan multiply (casi invisibles sobre el fondo oscuro,
+		solo cortan el texto/fósforo brillante) y la viñeta solo oscurece los bordes. */
 	body::before,
 	body::after {
 		content: "";
@@ -211,6 +383,18 @@ const { title, image, summary, url, lang, links } = Astro.props;
     /* Sin parpadeo; las scanlines/viñeta quedan estáticas y sutiles. */
     body::after {
       animation: none;
+    }
+    /* Elevación fuera; los cambios de color del hover base se mantienen. */
+    .interactive:hover,
+    .interactive:focus-visible,
+    .interactive:has(:focus-visible) {
+      transform: none;
+    }
+    /* Corte seco entre páginas en vez del morph. */
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
     }
   }
 	
