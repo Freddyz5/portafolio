@@ -62,8 +62,6 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     <p>{">"} {lang === "es" ? "ENVIAR MENSAJE" : "SEND MESSAGE"}</p>
 
     <form class="contact-form">
-    <!-- <form class="contact-form" action="https://api.web3forms.com/submit" method="POST">
-      <input type="hidden" name="access_key" value="f7108cef-5c2e-47ca-9f49-981de47c8bea"> -->
       <div class="two-inputs">
         <InputGlitch
           input={{
@@ -245,14 +243,19 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
   }
   .username {
     font-size: 0.85rem;
+    max-width: 100%;
+    padding: 0 0.75rem;
+    text-align: center;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .contact-info {
     display: flex;
     justify-content: space-between;
-    gap: 2rem;
+    gap: 1rem;
   }
   .contact-info a {
-    width: 30%;
+    width: 35%;
     height: 150px;
     border: 1px solid var(--red-muted);
     border-radius: 5px;
