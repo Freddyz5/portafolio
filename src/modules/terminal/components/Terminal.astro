@@ -140,13 +140,51 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
       logEl.scrollTop = logEl.scrollHeight;
     };
 
-    // Navega a una sección: scroll suave si el id existe; si no, home + ancla.
+    // Animación de "apertura de programa": añade .booting a la sección. Es
+    // idempotente y se limpia en animationend, con watchdog de respaldo por si
+    // la animación nunca dispara animationend.
+    const bootSection = (el: HTMLElement) => {
+      if (el.classList.contains('booting')) return;
+      el.classList.add('booting');
+      let watchdog = 0;
+      const cleanup = () => {
+        el.classList.remove('booting');
+        el.removeEventListener('animationend', onEnd);
+        window.clearTimeout(watchdog);
+      };
+      const onEnd = (e: AnimationEvent) => {
+        if (e.animationName === 'fr3d-boot-sweep') cleanup();
+      };
+      el.addEventListener('animationend', onEnd);
+      watchdog = window.setTimeout(cleanup, 1400);
+    };
+
+    // Dispara el boot al terminar el scroll suave (scrollend), con fallback por
+    // si no hay scrollend o la sección ya estaba a la vista (no hay scroll).
+    const bootAfterScroll = (el: HTMLElement) => {
+      let done = false;
+      const trigger = () => {
+        if (done) return;
+        done = true;
+        window.removeEventListener('scrollend', trigger);
+        bootSection(el);
+      };
+      window.addEventListener('scrollend', trigger);
+      window.setTimeout(trigger, 700);
+    };
+
+    // Navega a una sección: scroll suave si el id existe (+ boot); si no, pasa el
+    // flag por sessionStorage y navega al ancla para que el destino lo reproduzca.
     const goSection = (id: string) => {
       const el = document.getElementById(id);
       if (el) {
         el.scrollIntoView({ behavior: 'smooth' });
         history.replaceState(null, '', `#${id}`);
+        bootAfterScroll(el);
       } else {
+        try {
+          sessionStorage.setItem('fr3d:boot', id);
+        } catch {}
         window.location.href = `${base}/${lang}/#${id}`;
       }
     };
@@ -315,6 +353,21 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     });
 
     renderPrompt(); // prompt inicial
+
+    // Si venimos de un `open` cross-página, reproducir el boot en el destino.
+    // Se borra el flag YA (antes de animar) para no repetirlo al refrescar o
+    // volver con el botón atrás. Doble rAF para no competir con la view
+    // transition entre documentos (@view-transition navigation: auto).
+    try {
+      const bootId = sessionStorage.getItem('fr3d:boot');
+      if (bootId) {
+        sessionStorage.removeItem('fr3d:boot');
+        const target = document.getElementById(bootId);
+        if (target) {
+          requestAnimationFrame(() => requestAnimationFrame(() => bootSection(target)));
+        }
+      }
+    } catch {}
 
     /* ----- Ergonomía de shell: historial, Tab, Ctrl+L, Ctrl+C ----------- */
 

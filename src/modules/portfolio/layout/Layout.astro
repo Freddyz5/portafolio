@@ -378,6 +378,60 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
 		96% { opacity: 0.6; }
 	}
 
+	/* ===== Animación de "apertura de programa" (exclusiva de la terminal) =====
+		La terminal añade .booting a una sección al ejecutar `open`: barrido ámbar
+		descendente + revelado escalonado de los hijos directos. Se quita en
+		animationend (con watchdog en el JS). El estado final es el natural
+		(opacity/transform terminan en su valor normal), así que si la animación no
+		corre —o hay reduced-motion— la sección queda legible igual: nunca depende
+		del JS para volver a verse (el bug de visibilidad que ya mordió en el hero). */
+	@keyframes fr3d-boot-sweep {
+		0% { top: -35%; opacity: 0; }
+		12% { opacity: 1; }
+		100% { top: 100%; opacity: 0; }
+	}
+	@keyframes fr3d-boot-reveal {
+		from { opacity: 0; transform: translateY(14px); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+	.booting {
+		position: relative;
+	}
+	.booting::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: -35%;
+		height: 35%;
+		z-index: 5;
+		pointer-events: none;
+		background: linear-gradient(
+			to bottom,
+			transparent,
+			color-mix(in srgb, var(--amber-glow) 55%, transparent),
+			transparent
+		);
+		mix-blend-mode: screen;
+		animation: fr3d-boot-sweep 1s ease-in-out forwards;
+	}
+	.booting > * {
+		animation: fr3d-boot-reveal 0.45s ease both;
+	}
+	.booting > *:nth-child(1) { animation-delay: 0.05s; }
+	.booting > *:nth-child(2) { animation-delay: 0.11s; }
+	.booting > *:nth-child(3) { animation-delay: 0.17s; }
+	.booting > *:nth-child(4) { animation-delay: 0.23s; }
+	.booting > *:nth-child(5) { animation-delay: 0.29s; }
+	.booting > *:nth-child(6) { animation-delay: 0.35s; }
+	.booting > *:nth-child(n + 7) { animation-delay: 0.4s; }
+
+	@media (prefers-reduced-motion: reduce) {
+		/* Salto directo al estado final: sin barrido ni revelado. */
+		.booting::after { animation: none; display: none; }
+		.booting > * { animation: none; }
+	}
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
