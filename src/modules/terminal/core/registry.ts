@@ -18,6 +18,8 @@ export interface ShellEffects {
   openSection(id: string): void;
   /** Recarga la página en el idioma opuesto (comando `lang`). */
   toggleLang(): void;
+  /** Alterna entre barra acoplada y pantalla completa (comando `fullscreen`). */
+  toggleFullscreen(): void;
 }
 
 export interface ShellContext {

@@ -94,6 +94,16 @@ export const history: Command = {
   },
 };
 
+export const fullscreen: Command = {
+  name: 'fullscreen',
+  summary: { es: 'Alterna pantalla completa', en: 'Toggle fullscreen' },
+  aliases: ['max'],
+  run: (_input, ctx) => {
+    ctx.effects.toggleFullscreen();
+    return ok([]);
+  },
+};
+
 /* ---- Easter eggs (hidden: no aparecen en `help`) ------------------------- */
 
 export const sudo: Command = {

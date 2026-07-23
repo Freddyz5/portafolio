@@ -3,7 +3,7 @@
 */
 
 import type { Command } from '../core/registry';
-import { clear, echo, help, history, konami, sudo, whoami } from './system';
+import { clear, echo, fullscreen, help, history, konami, sudo, whoami } from './system';
 import { cat, cd, ls, pwd, tree } from './fs';
 import { lang, open } from './open';
 
@@ -20,6 +20,7 @@ export const COMMANDS: Command[] = [
   tree,
   open,
   lang,
+  fullscreen,
   // Easter eggs (hidden).
   sudo,
   konami,
