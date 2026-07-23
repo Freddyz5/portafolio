@@ -82,6 +82,7 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   import { execute } from '../core/execute';
   import { COMMANDS } from '../commands';
   import { buildPrompt } from '../constants/PROMPT';
+  import { isHidden, resolveNode, resolvePath } from '../fs/resolve';
   import type { CommandResult, Line, Tone } from '../core/output';
   import type { DirNode } from '../fs/types';
 
@@ -138,6 +139,11 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     };
 
     const ctx: ShellContext = { state, fs, registry, lang, effects };
+
+    // Estado de ergonomía de shell (historial, autocompletado).
+    let historyIndex = state.history.length; // índice en state.history; length = borrador
+    let draft = ''; // línea en construcción, guardada al empezar a navegar el historial
+    let tabStuck = false; // Tab previo sin progreso → el siguiente lista opciones
 
     const TONE_CLASS: Record<Tone, string> = {
       default: 'tone-default',
@@ -223,11 +229,128 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
       echoCommand(raw, prompt);
       const result = await execute(raw, ctx);
       if (result) renderResult(result);
+      historyIndex = state.history.length; // ↑ arranca desde el más reciente
+      draft = '';
+      tabStuck = false;
       renderPrompt(); // refleja el nuevo cwd si `cd` lo cambió
       scrollToBottom();
     });
 
     renderPrompt(); // prompt inicial
+
+    /* ----- Ergonomía de shell: historial, Tab, Ctrl+L, Ctrl+C ----------- */
+
+    const moveCursorToEnd = () => {
+      const len = input.value.length;
+      input.setSelectionRange(len, len);
+    };
+
+    const commonPrefix = (arr: string[]): string => {
+      if (arr.length === 0) return '';
+      let p = arr[0];
+      for (const s of arr) while (!s.startsWith(p)) p = p.slice(0, -1);
+      return p;
+    };
+
+    // Candidatos de ruta para el token actual, relativos al cwd.
+    const pathCandidates = (token: string): { dirPart: string; names: string[] } => {
+      const slash = token.lastIndexOf('/');
+      const dirPart = slash >= 0 ? token.slice(0, slash + 1) : '';
+      const namePart = slash >= 0 ? token.slice(slash + 1) : token;
+      const basePath = resolvePath(dirPart || '.', state.cwd, state.env.HOME);
+      const node = resolveNode(fs, basePath);
+      if (!node || node.type !== 'dir') return { dirPart, names: [] };
+      const names = node.children
+        .filter((c) => (namePart.startsWith('.') ? true : !isHidden(c.name)))
+        .filter((c) => c.name.startsWith(namePart))
+        .map((c) => c.name + (c.type === 'dir' ? '/' : ''));
+      return { dirPart, names };
+    };
+
+    const setToken = (tokens: string[], i: number, value: string, after: string) => {
+      tokens[i] = value;
+      input.value = tokens.join(' ') + after;
+      const caret = tokens.join(' ').length;
+      input.setSelectionRange(caret, caret);
+    };
+
+    // Tab: primera palabra → comandos; resto → entradas del directorio.
+    const handleTab = () => {
+      const value = input.value;
+      const pos = input.selectionStart ?? value.length;
+      const after = value.slice(pos);
+      const tokens = value.slice(0, pos).split(' ');
+      const ti = tokens.length - 1;
+      const token = tokens[ti];
+
+      let candidates: string[];
+      if (ti === 0) {
+        candidates = registry.names().filter((n) => n.startsWith(token));
+      } else {
+        const { dirPart, names } = pathCandidates(token);
+        candidates = names.map((n) => dirPart + n);
+      }
+      if (candidates.length === 0) return;
+
+      if (candidates.length === 1) {
+        const done = candidates[0];
+        setToken(tokens, ti, done.endsWith('/') ? done : done + ' ', after);
+        tabStuck = false;
+        return;
+      }
+
+      const prefix = commonPrefix(candidates);
+      if (prefix.length > token.length) {
+        setToken(tokens, ti, prefix, after);
+        tabStuck = false;
+      } else if (tabStuck) {
+        // Segundo Tab sin progreso: lista de opciones (solo basenames).
+        const labels = candidates.map((c) => {
+          const isDir = c.endsWith('/');
+          const base = c.replace(/\/$/, '').split('/').pop() ?? c;
+          return isDir ? base + '/' : base;
+        });
+        appendLine(labels.map((d, i) => ({ text: (i ? '  ' : '') + d, tone: 'data' as const })));
+        scrollToBottom();
+        tabStuck = false;
+      } else {
+        tabStuck = true;
+      }
+    };
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') tabStuck = false;
+
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (state.history.length === 0) return;
+        if (historyIndex === state.history.length) draft = input.value;
+        historyIndex = Math.max(0, historyIndex - 1);
+        input.value = state.history[historyIndex];
+        moveCursorToEnd();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (historyIndex === state.history.length) return;
+        historyIndex += 1;
+        input.value = historyIndex === state.history.length ? draft : state.history[historyIndex];
+        moveCursorToEnd();
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        handleTab();
+      } else if (e.ctrlKey && (e.key === 'l' || e.key === 'L')) {
+        e.preventDefault();
+        effects.clear();
+      } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        const [top, bot] = buildPrompt(state);
+        appendLine(top);
+        appendLine([...bot, { text: ' ' + input.value + '^C', tone: 'dim' }]);
+        input.value = '';
+        historyIndex = state.history.length;
+        draft = '';
+        scrollToBottom();
+      }
+    });
 
     // `/` o `` ` `` enfocan la barra, salvo que ya se esté escribiendo en otro
     // campo (p. ej. el formulario de contacto). Esc la desenfoca.
