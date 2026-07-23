@@ -1,18 +1,13 @@
 ---
-/**
- * ShipHero — nave 3D del hero renderizada como wireframe de fósforo rojo.
- *
- * Sustituye al antiguo logo SVG (que arrancaba en opacity:0, dependía del hover
- * y se centraba con margin-top negativo). Este componente es decorativo
- * (aria-hidden): el contenido accesible del hero vive en Home.astro.
- *
- * El GLB se coloca en public/models/nave.glb y se sirve respetando el base path
- * (`/portafolio/`). Three corre SOLO en cliente: va dentro de un script de
- * Astro, que se transpila con esbuild y nunca se ejecuta en SSR.
- */
+interface Props {
+  lang?: 'es' | 'en' | string;
+  extraSeconds?: number;
+}
+
+const { lang = 'es', extraSeconds = 0.5 } = Astro.props;
 ---
 
-<div class="ship-hero" aria-hidden="true">
+<div class="ship-hero" aria-hidden="true" data-lang={lang} data-extra-seconds={extraSeconds}>
 	<canvas class="ship-hero__canvas"></canvas>
 	<!-- Pantalla de carga a pantalla completa: aire de "arranque del sistema" -->
 	<div class="ship-hero__fallback" data-state="loading">
@@ -44,6 +39,8 @@
 	// null => canvas transparente (deja ver el fondo oscuro del sitio y el blob
 	// cian del cursor). Un hex (p.ej. 0x151111) pinta un fondo opaco.
 	const BACKGROUND: number | null = null;
+
+	const MSG_INTERVAL_MS = 100; // tiempo que cada mensaje del boot queda visible antes de rotar
 	/* ================================================================= */
 
 	// Ruta del GLB respetando el base path, tolerante a la barra final de BASE_URL.
@@ -61,11 +58,66 @@
 			"(prefers-reduced-motion: reduce)"
 		).matches;
 
-		const setFallback = (state: "loading" | "error" | "ready", text = "") => {
+		const isEs = root.dataset.lang !== "en";
+		const extraMs = Math.max(0, Number(root.dataset.extraSeconds) || 0) * 1000;
+
+		const lines = isEs
+			? [
+					"INICIANDO SISTEMA…",
+					// "FR-3D CORE // hardcode labs",
+					"> montando sistema de archivos ..",
+					"> montando sistema de archivos ....",
+					"> montando sistema de archivos ......",
+					"> montando sistema de archivos ...... ok",
+					// "> calibrando fósforo CRT ..",
+					// "> calibrando fósforo CRT ....",
+					// "> calibrando fósforo CRT ......",
+					// "> calibrando fósforo CRT ...... ok",
+					"> sistema listo. BIENVENIDO.",
+			]
+			: [
+					"INITIALIZING SYSTEM…",
+					// "FR-3D CORE // hardcode labs",
+					"> mounting filesystem ..",
+					"> mounting filesystem ....",
+					"> mounting filesystem ......",
+					"> mounting filesystem ...... ok",
+					// "> calibrating CRT phosphor ..",
+					// "> calibrating CRT phosphor ....",
+					// "> calibrating CRT phosphor ......",
+					// "> calibrating CRT phosphor ...... ok",
+					"> system ready. WELCOME.",
+			];
+
+		const setState = (state: "loading" | "error" | "ready") => {
 			fallback?.setAttribute("data-state", state);
-			if (msg) msg.textContent = text;
 		};
-		setFallback("loading", "INICIANDO SISTEMA…");
+
+		let msgIndex = 0;
+		let msgIntervalId = 0;
+		const showMessage = (i: number) => {
+			msgIndex = i;
+			if (msg) msg.textContent = lines[i];
+		};
+		const stopRotation = () => {
+			if (msgIntervalId) {
+				window.clearInterval(msgIntervalId);
+				msgIntervalId = 0;
+			}
+		};
+		const startRotation = () => {
+			showMessage(0);
+			msgIntervalId = window.setInterval(() => {
+				if (msgIndex >= lines.length - 1) {
+					stopRotation();
+					return;
+				}
+				showMessage(msgIndex + 1);
+			}, MSG_INTERVAL_MS);
+		};
+
+		setState("loading");
+		startRotation();
 
 		// Recursos a liberar en el cleanup.
 		const geometries: THREE.BufferGeometry[] = [];
@@ -78,13 +130,28 @@
 		let dismissTimer = 0;
 
 		// Oculta la pantalla de carga (fade-out) y desbloquea el sitio.
-		const dismissBoot = () => fallback?.setAttribute("data-state", "ready");
+		const dismissBoot = () => {
+			stopRotation();
+			document.removeEventListener("keydown", onKey);
+			setState("ready");
+		};
 		// En error NO dejamos el boot a pantalla completa bloqueando la página:
 		// mostramos el aviso un instante y luego lo ocultamos.
 		const failBoot = (text: string) => {
-			setFallback("error", text);
+			stopRotation();
+			setState("error");
+			if (msg) msg.textContent = text;
 			dismissTimer = window.setTimeout(dismissBoot, 1600);
 		};
+
+		// Único atajo para saltar: Escape (sin botón físico visible).
+		const onKey = (e: KeyboardEvent) => {
+			if (e.key !== "Escape") return;
+			e.preventDefault();
+			clearTimeout(dismissTimer);
+			dismissBoot();
+		};
+		document.addEventListener("keydown", onKey);
 
 		try {
 			renderer = new THREE.WebGLRenderer({
@@ -236,7 +303,10 @@
 					camera.lookAt(0, 0, 0);
 
 					applySize();
-					setFallback("ready");
+					if (fill) fill.style.width = "100%";
+					// La carga real ya terminó: `extraSeconds` es la pausa antes de
+					// ocultar la pantalla (0 = sin pausa, oculta de inmediato).
+					dismissTimer = window.setTimeout(dismissBoot, extraMs);
 
 					if (prefersReduced) render(); // render estático
 					else animate();
@@ -244,7 +314,6 @@
 				(evt) => {
 					if (evt.total > 0) {
 						const pct = Math.round((evt.loaded / evt.total) * 100);
-						setFallback("loading", `CARGANDO SISTEMA… ${pct}%`);
 						if (fill) fill.style.width = `${pct}%`;
 					}
 				},
@@ -264,6 +333,8 @@
 				disposed = true;
 				cancelAnimationFrame(rafId);
 				clearTimeout(dismissTimer);
+				stopRotation();
+				document.removeEventListener("keydown", onKey);
 				canvas.removeEventListener("pointerenter", onEnter);
 				canvas.removeEventListener("pointerleave", onLeave);
 				ro?.disconnect();
