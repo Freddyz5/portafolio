@@ -1,3 +1,30 @@
+# [1.11.0](https://github.com/Freddyz5/portafolio/compare/v1.10.0...v1.11.0) (2026-07-23)
+
+
+### Bug Fixes
+
+* **About:** replace client nav handlers with proper links ([a089fa3](https://github.com/Freddyz5/portafolio/commit/a089fa3f12bed9ffde2891c89be5f9fd0516cb63))
+
+
+### Features
+
+* add denied gesture utility and apply to about profile photo ([46b0356](https://github.com/Freddyz5/portafolio/commit/46b035651058f068cdad93b45ec1cb0f590f46b8))
+* add interactive team experience detail modal ([a1d2678](https://github.com/Freddyz5/portafolio/commit/a1d2678591671cae5ada22b0a380326118c2db45))
+* **ButtonGlitch:** add new variants and fix link handling ([42e0eda](https://github.com/Freddyz5/portafolio/commit/42e0eda5548c4e0facd3ccb2e3f7ed240fc9e10d))
+* **contact-form:** add inline form status feedback ([b3f91fb](https://github.com/Freddyz5/portafolio/commit/b3f91fb97b15c5a940737e01c5599528366175bd))
+* **design-system:** add interaction section ([6a32ea5](https://github.com/Freddyz5/portafolio/commit/6a32ea5440a43fef54a80e3cfdbe77d068c73380))
+* **experience-card:** add hover tech stack popup ([ef4c72e](https://github.com/Freddyz5/portafolio/commit/ef4c72e6142d79df5108bc6ca283eed230a1b517))
+* **experience-card:** add team grid & tech chips ([57c8d50](https://github.com/Freddyz5/portafolio/commit/57c8d50cf9d6b79820662f2a4a13667a50f47e01))
+* **portfolio layout:** add command bar and layout improvements ([0d117aa](https://github.com/Freddyz5/portafolio/commit/0d117aa2f45a8fd29b013eb5db9a3cd7da1ee877))
+* **portfolio projects:** add view transitions and improve project card UX ([6a1f0bb](https://github.com/Freddyz5/portafolio/commit/6a1f0bb6bac2fc546d72d2ea7fdd9cca13ede895))
+* **portfolio-home:** add terminal-style hero UI and live mission clock ([2ac4d46](https://github.com/Freddyz5/portafolio/commit/2ac4d462e74887f24a8b5b758d53831303ba63c8))
+* **portfolio:** add new Technologies Astro component ([acf967b](https://github.com/Freddyz5/portafolio/commit/acf967b5b216628e58f6400d49465d9fab77c296))
+* **portfolio:** add technologies section ([763b443](https://github.com/Freddyz5/portafolio/commit/763b44353c3faeb0041bc07ddc382a2446ff17be))
+* **portfolio:** add view transitions ([3d18af2](https://github.com/Freddyz5/portafolio/commit/3d18af21f177c19a47c2ffb39e53f6178ea47b0c))
+* **projects:** improve projects page, fix view transitions, add styles ([0fedc9e](https://github.com/Freddyz5/portafolio/commit/0fedc9e98f27b9f881e12006be3501afe9892601))
+* **shiphero:** add i18n, configurable delay and escape shortcut ([3a4e864](https://github.com/Freddyz5/portafolio/commit/3a4e864547a47732f243d3381b1d3283cf6a6bad))
+* **technologies:** improve accessibility and interactivity of tech bays ([5e917ab](https://github.com/Freddyz5/portafolio/commit/5e917aba12edbb353280cb2fe794a2032a279a0b))
+
 # [1.10.0](https://github.com/Freddyz5/portafolio/compare/v1.9.0...v1.10.0) (2026-07-17)
 
 
