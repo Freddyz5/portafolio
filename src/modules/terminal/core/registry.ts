@@ -16,6 +16,8 @@ export interface ShellEffects {
   open(url: string): void;
   navigate(path: string): void;
   openSection(id: string): void;
+  /** Recarga la página en el idioma opuesto (comando `lang`). */
+  toggleLang(): void;
 }
 
 export interface ShellContext {

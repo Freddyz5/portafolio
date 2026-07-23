@@ -6,7 +6,7 @@
 
 import type { Command } from '../core/registry';
 import type { Line } from '../core/output';
-import { blank, line, ok, seg } from '../core/output';
+import { blank, fail, line, ok, seg } from '../core/output';
 import { t } from '../core/i18n';
 
 export const help: Command = {
@@ -92,4 +92,29 @@ export const history: Command = {
     ]);
     return ok(lines);
   },
+};
+
+/* ---- Easter eggs (hidden: no aparecen en `help`) ------------------------- */
+
+export const sudo: Command = {
+  name: 'sudo',
+  summary: { es: '', en: '' },
+  hidden: true,
+  run: (_input, ctx) =>
+    fail(
+      t(
+        {
+          es: 'Permiso denegado: aquí mandas tú de otra forma :)',
+          en: 'Permission denied: you already run this show :)',
+        },
+        ctx.lang,
+      ),
+    ),
+};
+
+export const konami: Command = {
+  name: 'konami',
+  summary: { es: '', en: '' },
+  hidden: true,
+  run: () => ok([line('↑ ↑ ↓ ↓ ← → ← → B A', 'accent')]),
 };

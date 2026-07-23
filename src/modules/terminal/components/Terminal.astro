@@ -1,0 +1,364 @@
+---
+/*
+  Terminal FR-3D — barra de comandos con filesystem virtual. Capa OPCIONAL de
+  mejora progresiva (sustituye a CommandBar.astro).
+
+  Contrato de la barra acoplada:
+  - Sin JS no aparece (atributo `hidden`); el sitio navega con scroll/click/teclado.
+  - Ninguna información real es exclusiva de la terminal: todo destino de `open`
+    está también en el nav, el footer y los botones. Solo el sabor (motd, VFS,
+    easter eggs) es exclusivo.
+  - No captura el foco por defecto ni interfiere con el scroll. Se enfoca con `/`
+    o `` ` `` (o click) y se sale con `Esc`. Sin focus trap.
+
+  El VFS se construye en BUILD TIME (frontmatter) para que al cliente solo viaje
+  el árbol ya recortado y resuelto al idioma de la página, nunca el resume.json
+  maestro completo.
+*/
+import resume from '../../../constants/resume.json';
+import { separateLanguages } from '../../../shared/utils/languageSeparator';
+import { buildTree } from '../fs/build';
+
+interface Props {
+  lang: 'es' | 'en' | string;
+}
+
+const lang = (Astro.props.lang === 'en' ? 'en' : 'es') as 'es' | 'en';
+const vfs = buildTree(separateLanguages(resume, lang), lang);
+
+const BASE_URL = import.meta.env.BASE_URL;
+const isEs = lang === 'es';
+
+const inputAria = isEs
+  ? 'Barra de comandos opcional. Escribe help y pulsa Enter para ver los comandos.'
+  : 'Optional command bar. Type help and press Enter to list commands.';
+const placeholder = isEs
+  ? 'Escribe help para ver la lista de comandos'
+  : 'Write help to see command list';
+const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
+const label = 'freddytacuri at';
+---
+
+<aside
+  id="fr3d-cmd"
+  class="cmdbar"
+  data-lang={isEs ? 'es' : 'en'}
+  data-base={BASE_URL}
+  aria-label={isEs ? 'Barra de comandos (opcional)' : 'Command bar (optional)'}
+  hidden
+>
+  <div class="cmdbar__log" id="fr3d-cmd-log" role="log" aria-live="polite"></div>
+  <form class="cmdbar__form" id="fr3d-cmd-form" autocomplete="off">
+    <label class="cmdbar__prompt" for="fr3d-cmd-input">
+      <span class="cmdbar__badge">{label}</span>
+      <span aria-hidden="true" class="glow-amber">FR-3D&nbsp;&gt;</span>
+    </label>
+    <input
+      id="fr3d-cmd-input"
+      class="cmdbar__input"
+      type="text"
+      name="cmd"
+      spellcheck="false"
+      autocapitalize="off"
+      autocorrect="off"
+      aria-label={inputAria}
+      placeholder={placeholder}
+    />
+    <span class="cmdbar__hint" aria-hidden="true">{hint}</span>
+  </form>
+</aside>
+
+<script
+  type="application/json"
+  id="fr3d-vfs"
+  is:inline
+  set:html={JSON.stringify(vfs).replace(/</g, '\\u003c')}
+/>
+
+<script>
+  import { createState } from '../core/state';
+  import { Registry } from '../core/registry';
+  import type { ShellContext, ShellEffects } from '../core/registry';
+  import { execute } from '../core/execute';
+  import { COMMANDS } from '../commands';
+  import type { CommandResult, Line, Tone } from '../core/output';
+  import type { DirNode } from '../fs/types';
+
+  const bar = document.getElementById('fr3d-cmd');
+  const vfsTag = document.getElementById('fr3d-vfs');
+  const form = document.getElementById('fr3d-cmd-form') as HTMLFormElement | null;
+  const input = document.getElementById('fr3d-cmd-input') as HTMLInputElement | null;
+  const logEl = document.getElementById('fr3d-cmd-log');
+
+  if (bar && vfsTag && form && input && logEl) {
+    const lang = (bar.dataset.lang === 'en' ? 'en' : 'es') as 'es' | 'en';
+    const base = bar.dataset.base || '';
+
+    // Mejora progresiva: la barra solo aparece con JS.
+    bar.hidden = false;
+
+    const fs = JSON.parse(vfsTag.textContent || '{}') as DirNode;
+    const state = createState(lang);
+    const registry = new Registry();
+    COMMANDS.forEach((c) => registry.register(c));
+
+    const scrollToBottom = () => {
+      logEl.scrollTop = logEl.scrollHeight;
+    };
+
+    // Navega a una sección: scroll suave si el id existe; si no, home + ancla.
+    const goSection = (id: string) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        history.replaceState(null, '', `#${id}`);
+      } else {
+        window.location.href = `${base}/${lang}/#${id}`;
+      }
+    };
+
+    const effects: ShellEffects = {
+      clear: () => logEl.replaceChildren(),
+      open: (url) => {
+        window.open(url, '_blank', 'noopener');
+      },
+      navigate: (path) => {
+        window.location.href = `${base}/${lang}/${path}`;
+      },
+      openSection: (id) => goSection(id),
+      toggleLang: () => {
+        const path = window.location.pathname;
+        window.location.href = path.includes('/es/')
+          ? path.replace('/es/', '/en/')
+          : path.replace('/en/', '/es/');
+      },
+    };
+
+    const ctx: ShellContext = { state, fs, registry, lang, effects };
+
+    const TONE_CLASS: Record<Tone, string> = {
+      default: 'tone-default',
+      dim: 'tone-dim',
+      data: 'tone-data',
+      accent: 'tone-accent',
+      alert: 'tone-alert',
+      ok: 'tone-ok',
+    };
+
+    // Decodifica el href de un segmento enlazado y lo enruta por effects, de
+    // modo que "ver completo en el sitio" converge con el comando `open`.
+    const runHref = (href: string) => {
+      const idx = href.indexOf(':');
+      const scheme = href.slice(0, idx);
+      const value = href.slice(idx + 1);
+      if (scheme === 'section') effects.openSection(value);
+      else if (scheme === 'page') effects.navigate(value);
+      else if (scheme === 'link') effects.open(value);
+    };
+
+    // Render con textContent / createElement — nunca innerHTML con datos.
+    const appendLine = (lineData: Line) => {
+      const div = document.createElement('div');
+      div.className = 'cmdbar__line';
+      if (lineData.length === 0) {
+        div.appendChild(document.createTextNode(' '));
+      } else {
+        for (const s of lineData) {
+          const tone = TONE_CLASS[s.tone ?? 'default'];
+          if (s.href) {
+            const a = document.createElement('a');
+            a.className = `cmdbar__seg ${tone} cmdbar__link`;
+            a.href = '#';
+            a.textContent = s.text;
+            const target = s.href;
+            a.addEventListener('click', (e) => {
+              e.preventDefault();
+              runHref(target);
+            });
+            div.appendChild(a);
+          } else {
+            const span = document.createElement('span');
+            span.className = `cmdbar__seg ${tone}`;
+            span.textContent = s.text;
+            div.appendChild(span);
+          }
+        }
+      }
+      logEl.appendChild(div);
+    };
+
+    const echoCommand = (raw: string) => {
+      appendLine([
+        { text: 'λ', tone: 'accent' },
+        { text: ' ' + raw, tone: 'default' },
+      ]);
+    };
+
+    const renderResult = (result: CommandResult) => {
+      for (const l of result.lines) appendLine(l);
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const raw = input.value;
+      input.value = '';
+      if (!raw.trim()) return;
+      echoCommand(raw);
+      const result = await execute(raw, ctx);
+      if (result) renderResult(result);
+      scrollToBottom();
+    });
+
+    // `/` o `` ` `` enfocan la barra, salvo que ya se esté escribiendo en otro
+    // campo (p. ej. el formulario de contacto). Esc la desenfoca.
+    document.addEventListener('keydown', (e) => {
+      const active = document.activeElement as HTMLElement | null;
+      const typing =
+        !!active &&
+        (active.tagName === 'INPUT' ||
+          active.tagName === 'TEXTAREA' ||
+          active.isContentEditable);
+
+      if ((e.key === '/' || e.key === '`') && !typing) {
+        e.preventDefault();
+        input.focus();
+      } else if (e.key === 'Escape' && active === input) {
+        input.blur();
+      }
+    });
+  }
+</script>
+
+<style>
+  .cmdbar {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900; /* sobre el nav (3); bajo CRT (1000) y modales */
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-terminal);
+    pointer-events: none;
+  }
+  .cmdbar[hidden] {
+    display: none;
+  }
+
+  .cmdbar__log {
+    pointer-events: auto;
+    max-height: 32vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+    padding: 0 0.6em;
+    font-size: clamp(0.9rem, 2.6vw, 1.1rem);
+    line-height: 1.35;
+    background-color: color-mix(in srgb, var(--amber-glow) 20%, transparent);
+    backdrop-filter: blur(10px);
+  }
+  .cmdbar__log:empty {
+    display: none;
+  }
+  .cmdbar__line {
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: color-mix(in srgb, var(--bg-base) 82%, transparent);
+    padding: 0.05em 0.4em;
+    border-radius: 2px;
+  }
+
+  /* Mapeo Tone → token HLCS (se refina en el PASO 7). */
+  .tone-default {
+    color: var(--red-core);
+  }
+  .tone-dim {
+    color: color-mix(in srgb, var(--red-core) 55%, transparent);
+  }
+  .tone-data {
+    color: var(--cyan-glow);
+  }
+  .tone-accent {
+    color: var(--amber-glow);
+  }
+  .tone-alert {
+    color: var(--red-glow);
+  }
+  .tone-ok {
+    color: var(--cyan-accent);
+  }
+  .cmdbar__link {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .cmdbar__link:hover,
+  .cmdbar__link:focus-visible {
+    text-shadow: var(--text-glow-cyan);
+    outline: none;
+  }
+
+  .cmdbar__form {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.4em 0.7em;
+    background-color: color-mix(in srgb, var(--bg-base) 90%, transparent);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid color-mix(in srgb, var(--red-muted) 45%, transparent);
+  }
+  .cmdbar__prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+    white-space: nowrap;
+    cursor: text;
+  }
+  .cmdbar__badge {
+    font-family: var(--font-body);
+    font-size: 0.62em;
+    letter-spacing: 0.12em;
+    text-transform: lowercase;
+    color: color-mix(in srgb, var(--red-core) 65%, transparent);
+    padding: 0.15em 0.5em;
+    border-radius: 3px;
+  }
+  .cmdbar__input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    color: var(--amber-core);
+    font-family: var(--font-terminal);
+    font-size: clamp(1rem, 3vw, 1.25rem);
+    caret-color: var(--amber-glow);
+    outline: none;
+  }
+  .cmdbar__input::placeholder {
+    color: color-mix(in srgb, var(--red-core) 45%, transparent);
+  }
+  .cmdbar__input:focus-visible {
+    outline: none;
+  }
+  .cmdbar__form:focus-within {
+    border-color: var(--amber-glow);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--amber-glow) 35%, transparent);
+  }
+  .cmdbar__hint {
+    font-family: var(--font-body);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--red-core) 50%, transparent);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 560px) {
+    .cmdbar__badge,
+    .cmdbar__hint {
+      display: none;
+    }
+  }
+</style>
