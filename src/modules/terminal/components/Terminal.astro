@@ -195,9 +195,13 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
       }
     };
 
-    const appendLine = (lineData: Line) => {
+    // a11y: el log es aria-live="polite". Para no leer 20 líneas de `tree`,
+    // el eco y todo salvo la primera línea útil del resultado van aria-hidden;
+    // así solo se anuncia esa primera línea (constraint #4: el log sigue polite).
+    const appendLine = (lineData: Line, ariaHidden = false) => {
       const div = document.createElement('div');
       div.className = 'cmdbar__line';
+      if (ariaHidden) div.setAttribute('aria-hidden', 'true');
       fillSegments(div, lineData);
       logEl.appendChild(div);
     };
@@ -211,13 +215,21 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     };
 
     // Eco en el log: conserva el prompt activo al ejecutar + el comando.
+    // aria-hidden: el usuario acaba de teclearlo, no hace falta releerlo.
     const echoCommand = (raw: string, prompt: [Line, Line]) => {
-      appendLine(prompt[0]);
-      appendLine([...prompt[1], { text: ' ' + raw, tone: 'default' }]);
+      appendLine(prompt[0], true);
+      appendLine([...prompt[1], { text: ' ' + raw, tone: 'default' }], true);
     };
 
+    // Anuncia solo la primera línea útil; el resto va aria-hidden.
     const renderResult = (result: CommandResult) => {
-      for (const l of result.lines) appendLine(l);
+      let announced = false;
+      for (const l of result.lines) {
+        const empty = l.every((s) => s.text.trim() === '');
+        const hide = announced || empty;
+        appendLine(l, hide);
+        if (!hide) announced = true;
+      }
     };
 
     form.addEventListener('submit', async (e) => {
@@ -343,8 +355,8 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
       } else if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
         e.preventDefault();
         const [top, bot] = buildPrompt(state);
-        appendLine(top);
-        appendLine([...bot, { text: ' ' + input.value + '^C', tone: 'dim' }]);
+        appendLine(top, true);
+        appendLine([...bot, { text: ' ' + input.value + '^C', tone: 'dim' }], true);
         input.value = '';
         historyIndex = state.history.length;
         draft = '';
@@ -396,10 +408,13 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     display: flex;
     flex-direction: column;
     gap: 0.15em;
-    padding: 0 0.6em;
-    font-size: clamp(0.9rem, 2.6vw, 1.1rem);
-    line-height: 1.35;
-    background-color: color-mix(in srgb, var(--amber-glow) 20%, transparent);
+    padding: 0.4em 0.6em;
+    /* Output en IBM Plex Mono por legibilidad; el prompt y el input siguen en
+       VT323 (--font-terminal) para el sabor terminal. */
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 2.4vw, 1rem);
+    line-height: 1.4;
+    background-color: color-mix(in srgb, var(--bg-field) 78%, transparent);
     backdrop-filter: blur(10px);
   }
   .cmdbar__log:empty {
@@ -408,12 +423,9 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   .cmdbar__line {
     white-space: pre-wrap;
     word-break: break-word;
-    background: color-mix(in srgb, var(--bg-base) 82%, transparent);
-    padding: 0.05em 0.4em;
-    border-radius: 2px;
   }
 
-  /* Mapeo Tone → token HLCS (se refina en el PASO 7). */
+  /* Mapeo Tone → token HLCS (tabla del PASO 1). Solo `alert` lleva glow. */
   .tone-default {
     color: var(--red-core);
   }
@@ -428,6 +440,7 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   }
   .tone-alert {
     color: var(--red-glow);
+    text-shadow: var(--text-glow-red);
   }
   .tone-ok {
     color: var(--cyan-accent);
@@ -479,6 +492,10 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     font-family: var(--font-terminal);
     font-size: clamp(1rem, 3vw, 1.25rem);
     caret-color: var(--amber-glow);
+    /* Cursor de bloque en ámbar donde el navegador lo soporta (progresivo);
+       si no, cae a la barra parpadeante nativa, también en ámbar. El parpadeo
+       lo controla el navegador/SO, que ya respeta prefers-reduced-motion. */
+    caret-shape: block;
     outline: none;
   }
   .cmdbar__input::placeholder {
