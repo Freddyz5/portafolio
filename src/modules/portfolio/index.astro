@@ -3,6 +3,7 @@ import Home from './components/Home.astro';
 import About from './components/About.astro';
 import Experience from './components/Experience.astro';
 import Projects from './components/Projects.astro';
+import Technologies from './components/Technologies.astro';
 import Contact from './components/Contact.astro';
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 const lang = Astro.url.pathname.includes("/es/") ? "es" : "en";
 
 const { data } = Astro.props;
-const { basics, works, projects, education, certificates, skills, languages } = data;
+const { basics, works, projects, techBays } = data;
 ---
 
 <main>
@@ -20,5 +21,6 @@ const { basics, works, projects, education, certificates, skills, languages } = 
   <About lang={lang} summary={basics.summary} name={basics.name} image={basics.image} />
   <Experience lang={lang} works={works} />
   <Projects lang={lang} projects={projects} />
+  <Technologies lang={lang} techBays={techBays} />
   <Contact lang={lang} basics={basics} />
 </main>

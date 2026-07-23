@@ -46,6 +46,12 @@ export const PROJECT_LINKS: Array<Link> = [
     isIcon: false
   },
   {
+    id: 'projects',
+    name: { es: 'Proyectos', en: 'Projects' },
+    href: '',
+    isIcon: false
+  },
+  {
     id: 'contact',
     name: { es: 'Contacto', en: 'Contact' },
     href: '',

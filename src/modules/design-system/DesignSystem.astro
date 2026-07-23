@@ -176,6 +176,52 @@ const t = {
       ? 'El carácter > abre una línea; la etiqueta en mayúsculas nombra el registro.'
       : 'The > character opens a line; the uppercase label names the register.',
   },
+  interaction: {
+    heading: es ? 'Interacción' : 'Interaction',
+    lead: es
+      ? 'El lenguaje de hover base —reutilizable, no un repintado— y la jerarquía de 3 niveles que gobierna el click en cada sección.'
+      : 'The base hover language — reusable, not a repaint — and the 3-level hierarchy that governs click in each section.',
+    hoverHeading: es ? 'Hover base' : 'Base hover',
+    hoverBody: es
+      ? 'Las clases reales .interactive y .card-title. Al pasar el mouse (o tabular hasta el botón) la card se eleva, borde y glow pasan a cian, y solo el título se enciende — cuerpo y meta se quedan quietos.'
+      : 'The real .interactive and .card-title classes. On hover (or Tab to the button) the card lifts, border and glow turn cyan, and only the title ignites — body and meta stay put.',
+    demoTitle: es ? 'Card_de_muestra' : 'Sample_card',
+    demoBody: es
+      ? 'Este párrafo no cambia de color en hover — solo el título de arriba.'
+      : 'This paragraph does not change color on hover — only the title above.',
+    demoHint: es ? '> pasa el mouse o tabula hasta el botón' : '> hover or Tab to the button',
+    hierarchyHeading: es ? 'Jerarquía de 3 niveles' : '3-level hierarchy',
+    hierarchyLead: es
+      ? 'El hover es igual en todas partes; el click escala con la información detrás del elemento.'
+      : 'Hover is the same everywhere; click scales with the information behind the element.',
+    hoverLabel: 'Hover',
+    clickLabel: 'Click',
+    levels: [
+      {
+        level: es ? 'Alto' : 'High',
+        section: es ? 'Proyectos' : 'Projects',
+        hover: es ? 'resaltar' : 'highlight',
+        click: es ? 'View Transition a página de detalle' : 'View Transition to a detail page',
+      },
+      {
+        level: es ? 'Medio' : 'Medium',
+        section: es ? 'Experiencia' : 'Experience',
+        hover: es ? 'resaltar' : 'highlight',
+        click: es ? 'morph al centro' : 'morph to center',
+      },
+      {
+        level: es ? 'Bajo' : 'Low',
+        section: es ? 'Tecnologías' : 'Technologies',
+        hover: es ? 'resaltar + shake al click' : 'highlight + shake on click',
+        click: es ? 'nada que revelar' : 'nothing to reveal',
+      },
+    ],
+    shakeHeading: es ? 'Shake de "acceso denegado"' : '"Access denied" shake',
+    shakeBody: es
+      ? 'Gesto para un click sin destino (Tecnologías, paso C): la bahía se sacude, como una clave incorrecta.'
+      : 'A gesture for a click with no destination (Technologies, step C): the bay shakes, like a wrong password.',
+    shakeButton: es ? 'INTENTAR_ACCESO' : 'ATTEMPT_ACCESS',
+  },
   footerNote: es
     ? 'Fuente escrita: DESIGN_SYSTEM.md · Esta página se sincroniza sola con los tokens del sitio.'
     : 'Written source: DESIGN_SYSTEM.md · This page stays in sync with the site tokens on its own.',
@@ -344,22 +390,61 @@ const t = {
     </ol>
   </section>
 
-  <!-- 9 · Componentes -->
+  <!-- 9 · Interacción -->
+  <section class="ds-section" aria-labelledby="ds-interaction">
+    <h2 id="ds-interaction" class="ds-h2">{t.interaction.heading}</h2>
+    <p class="ds-lead">{t.interaction.lead}</p>
+
+    <div class="ds-interaction-block">
+      <h3 class="ds-h3">{t.interaction.hoverHeading}</h3>
+      <p>{t.interaction.hoverBody}</p>
+      <article class="ds-demo-card interactive">
+        <p class="ds-meta">{t.interaction.demoHint}</p>
+        <button type="button" class="card-title">{t.interaction.demoTitle}</button>
+        <p>{t.interaction.demoBody}</p>
+      </article>
+    </div>
+
+    <div class="ds-interaction-block">
+      <h3 class="ds-h3">{t.interaction.hierarchyHeading}</h3>
+      <p>{t.interaction.hierarchyLead}</p>
+      <ul class="ds-levels" role="list">
+        {t.interaction.levels.map((lv) => (
+          <li class="ds-level">
+            <div class="ds-level-head">
+              <span class="ds-level-tag glow-cyan">{lv.level}</span>
+              <span class="ds-level-section">{lv.section}</span>
+            </div>
+            <span class="ds-level-detail"><strong>{t.interaction.hoverLabel}:</strong> {lv.hover}</span>
+            <span class="ds-level-detail"><strong>{t.interaction.clickLabel}:</strong> {lv.click}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="ds-interaction-block">
+      <h3 class="ds-h3">{t.interaction.shakeHeading}</h3>
+      <p>{t.interaction.shakeBody}</p>
+      <button type="button" id="ds-shake-trigger" class="ds-bay">{t.interaction.shakeButton}</button>
+    </div>
+  </section>
+
+  <!-- 10 · Componentes -->
   <section class="ds-section" aria-labelledby="ds-components">
     <h2 id="ds-components" class="ds-h2">{t.components.heading}</h2>
     <p class="ds-lead">{t.components.lead}</p>
 
     <div class="ds-buttons">
       <div class="ds-button-cell">
-        <ButtonGlitch text="INICIAR" color="primary" width="auto" />
+        <ButtonGlitch text="INICIAR" variant="primary" width="auto" />
         <span class="ds-meta">{t.components.primary}</span>
       </div>
       <div class="ds-button-cell">
-        <ButtonGlitch text="CONSULTAR" color="secondary" width="auto" />
+        <ButtonGlitch text="CONSULTAR" variant="secondary" width="auto" />
         <span class="ds-meta">{t.components.secondary}</span>
       </div>
       <div class="ds-button-cell">
-        <ButtonGlitch text="BLOQUEADO" color="primary" width="auto" disabled={true} />
+        <ButtonGlitch text="BLOQUEADO" variant="primary" width="auto" disabled={true} />
         <span class="ds-meta">{t.components.disabled}</span>
       </div>
     </div>
@@ -417,6 +502,13 @@ const t = {
       toggle.setAttribute('aria-pressed', String(!off));
       if (label) label.textContent = off ? toggle.dataset.off ?? '' : toggle.dataset.on ?? '';
     });
+  }
+
+  // Shake de "acceso denegado" (demo) — mismo patrón que reusará Tecnologías (paso C).
+  const bay = document.getElementById('ds-shake-trigger');
+  if (bay) {
+    bay.addEventListener('click', () => bay.classList.add('denied'));
+    bay.addEventListener('animationend', () => bay.classList.remove('denied'));
   }
 </script>
 
@@ -751,6 +843,107 @@ const t = {
     font-family: var(--font-terminal);
     font-size: var(--fs-lead);
     flex: 0 0 auto;
+  }
+
+  /* ---- Interacción ---- */
+  .ds-interaction-block { margin-bottom: 2rem; }
+  .ds-interaction-block p { color: color-mix(in srgb, var(--red-core) 85%, transparent); max-width: 62ch; }
+
+  /* Card de muestra: usa las clases reales .interactive / .card-title del sitio
+     (definidas en Layout.astro); aquí solo se da forma visual a la card. El
+     borde va en un selector de elemento sin clase (article, igual que en
+     ProjectsCard) para que quede por debajo, en especificidad, de la regla
+     global `.interactive:hover` y esta pueda pisarlo en hover/foco. No afecta
+     a los <article class="ds-card"> de "Principio rector": su propio
+     border-color de clase (más específico) sigue ganando ahí. */
+  .ds-demo-card {
+    position: relative;
+    max-width: 340px;
+    background: var(--bg-raised);
+    border-radius: 8px;
+    padding: 1.1rem 1.25rem;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  article { border: 1px solid var(--red-muted); }
+  .ds-demo-card p { margin: 0; max-width: none; }
+  /* .card-title es la convención global que .interactive enciende en hover/foco;
+     aquí se da su color y tipografía de reposo, igual que hace cada componente. */
+  .card-title {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    color: var(--red-core);
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .ds-levels { list-style: none; display: grid; gap: 0.85rem; margin-top: 1rem; }
+  .ds-level {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    background: var(--bg-raised);
+    padding: 0.85rem 1.1rem;
+    border-radius: 8px;
+  }
+  .ds-level-head { display: flex; align-items: baseline; gap: 0.6rem; }
+  .ds-level-tag {
+    font-family: var(--font-terminal);
+    font-size: var(--fs-lead);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ds-level-section {
+    font-family: var(--font-display);
+    color: var(--red-core);
+    font-weight: 600;
+  }
+  .ds-level-detail {
+    font-size: var(--fs-meta);
+    color: color-mix(in srgb, var(--red-core) 80%, transparent);
+  }
+  .ds-level-detail strong { color: var(--cyan-accent); }
+
+  .ds-bay {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: var(--fs-body);
+    letter-spacing: 0.08em;
+    color: var(--cyan-glow);
+    background: var(--bg-raised);
+    border: 2px solid var(--cyan-glow);
+    border-radius: 8px;
+    padding: 0.7em 1.2em;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ds-bay:hover,
+  .ds-bay:focus-visible {
+    box-shadow: 0 0 14px var(--cyan-accent);
+    outline: none;
+  }
+  .ds-bay.denied {
+    animation: ds-denied-shake 0.35s ease;
+    border-color: var(--red-glow);
+  }
+  @keyframes ds-denied-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ds-bay.denied { animation: none; }
   }
 
   /* ---- Componentes ---- */
