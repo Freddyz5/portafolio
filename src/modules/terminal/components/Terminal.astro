@@ -36,7 +36,6 @@ const placeholder = isEs
   ? 'Escribe help para ver la lista de comandos'
   : 'Write help to see command list';
 const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
-const label = 'freddytacuri at';
 ---
 
 <aside
@@ -49,22 +48,23 @@ const label = 'freddytacuri at';
 >
   <div class="cmdbar__log" id="fr3d-cmd-log" role="log" aria-live="polite"></div>
   <form class="cmdbar__form" id="fr3d-cmd-form" autocomplete="off">
-    <label class="cmdbar__prompt" for="fr3d-cmd-input">
-      <span class="cmdbar__badge">{label}</span>
-      <span aria-hidden="true" class="glow-amber">FR-3D&nbsp;&gt;</span>
-    </label>
-    <input
-      id="fr3d-cmd-input"
-      class="cmdbar__input"
-      type="text"
-      name="cmd"
-      spellcheck="false"
-      autocapitalize="off"
-      autocorrect="off"
-      aria-label={inputAria}
-      placeholder={placeholder}
-    />
-    <span class="cmdbar__hint" aria-hidden="true">{hint}</span>
+    <div class="cmdbar__prompt-top" id="fr3d-prompt-top" aria-hidden="true"></div>
+    <div class="cmdbar__prompt-line">
+      <label class="cmdbar__prompt" id="fr3d-prompt-bot" for="fr3d-cmd-input" aria-hidden="true"
+      ></label>
+      <input
+        id="fr3d-cmd-input"
+        class="cmdbar__input"
+        type="text"
+        name="cmd"
+        spellcheck="false"
+        autocapitalize="off"
+        autocorrect="off"
+        aria-label={inputAria}
+        placeholder={placeholder}
+      />
+      <span class="cmdbar__hint" aria-hidden="true">{hint}</span>
+    </div>
   </form>
 </aside>
 
@@ -81,6 +81,7 @@ const label = 'freddytacuri at';
   import type { ShellContext, ShellEffects } from '../core/registry';
   import { execute } from '../core/execute';
   import { COMMANDS } from '../commands';
+  import { buildPrompt } from '../constants/PROMPT';
   import type { CommandResult, Line, Tone } from '../core/output';
   import type { DirNode } from '../fs/types';
 
@@ -89,8 +90,10 @@ const label = 'freddytacuri at';
   const form = document.getElementById('fr3d-cmd-form') as HTMLFormElement | null;
   const input = document.getElementById('fr3d-cmd-input') as HTMLInputElement | null;
   const logEl = document.getElementById('fr3d-cmd-log');
+  const promptTop = document.getElementById('fr3d-prompt-top');
+  const promptBot = document.getElementById('fr3d-prompt-bot');
 
-  if (bar && vfsTag && form && input && logEl) {
+  if (bar && vfsTag && form && input && logEl && promptTop && promptBot) {
     const lang = (bar.dataset.lang === 'en' ? 'en' : 'es') as 'es' | 'en';
     const base = bar.dataset.base || '';
 
@@ -156,42 +159,55 @@ const label = 'freddytacuri at';
       else if (scheme === 'link') effects.open(value);
     };
 
+    // Rellena un elemento con los segmentos de una línea.
     // Render con textContent / createElement — nunca innerHTML con datos.
+    const fillSegments = (el: HTMLElement, segments: Line) => {
+      el.replaceChildren();
+      if (segments.length === 0) {
+        el.appendChild(document.createTextNode(' '));
+        return;
+      }
+      for (const s of segments) {
+        const tone = TONE_CLASS[s.tone ?? 'default'];
+        if (s.href) {
+          const a = document.createElement('a');
+          a.className = `cmdbar__seg ${tone} cmdbar__link`;
+          a.href = '#';
+          a.textContent = s.text;
+          const target = s.href;
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            runHref(target);
+          });
+          el.appendChild(a);
+        } else {
+          const span = document.createElement('span');
+          span.className = `cmdbar__seg ${tone}`;
+          span.textContent = s.text;
+          el.appendChild(span);
+        }
+      }
+    };
+
     const appendLine = (lineData: Line) => {
       const div = document.createElement('div');
       div.className = 'cmdbar__line';
-      if (lineData.length === 0) {
-        div.appendChild(document.createTextNode(' '));
-      } else {
-        for (const s of lineData) {
-          const tone = TONE_CLASS[s.tone ?? 'default'];
-          if (s.href) {
-            const a = document.createElement('a');
-            a.className = `cmdbar__seg ${tone} cmdbar__link`;
-            a.href = '#';
-            a.textContent = s.text;
-            const target = s.href;
-            a.addEventListener('click', (e) => {
-              e.preventDefault();
-              runHref(target);
-            });
-            div.appendChild(a);
-          } else {
-            const span = document.createElement('span');
-            span.className = `cmdbar__seg ${tone}`;
-            span.textContent = s.text;
-            div.appendChild(span);
-          }
-        }
-      }
+      fillSegments(div, lineData);
       logEl.appendChild(div);
     };
 
-    const echoCommand = (raw: string) => {
-      appendLine([
-        { text: 'λ', tone: 'accent' },
-        { text: ' ' + raw, tone: 'default' },
-      ]);
+    // Prompt de la barra: se construye desde state y se re-renderiza tras cada
+    // comando para que `cd` lo actualice solo.
+    const renderPrompt = () => {
+      const [top, bot] = buildPrompt(state);
+      fillSegments(promptTop, top);
+      fillSegments(promptBot, bot);
+    };
+
+    // Eco en el log: conserva el prompt activo al ejecutar + el comando.
+    const echoCommand = (raw: string, prompt: [Line, Line]) => {
+      appendLine(prompt[0]);
+      appendLine([...prompt[1], { text: ' ' + raw, tone: 'default' }]);
     };
 
     const renderResult = (result: CommandResult) => {
@@ -203,11 +219,15 @@ const label = 'freddytacuri at';
       const raw = input.value;
       input.value = '';
       if (!raw.trim()) return;
-      echoCommand(raw);
+      const prompt = buildPrompt(state); // prompt activo (cwd previo al comando)
+      echoCommand(raw, prompt);
       const result = await execute(raw, ctx);
       if (result) renderResult(result);
+      renderPrompt(); // refleja el nuevo cwd si `cd` lo cambió
       scrollToBottom();
     });
+
+    renderPrompt(); // prompt inicial
 
     // `/` o `` ` `` enfocan la barra, salvo que ya se esté escribiendo en otro
     // campo (p. ej. el formulario de contacto). Esc la desenfoca.
@@ -302,29 +322,31 @@ const label = 'freddytacuri at';
   .cmdbar__form {
     pointer-events: auto;
     display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.4em 0.7em;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.1em;
+    padding: 0.35em 0.7em;
     background-color: color-mix(in srgb, var(--bg-base) 90%, transparent);
     backdrop-filter: blur(10px);
     border-top: 1px solid color-mix(in srgb, var(--red-muted) 45%, transparent);
   }
+  .cmdbar__prompt-top {
+    font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cmdbar__prompt-line {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
   .cmdbar__prompt {
     display: flex;
     align-items: center;
-    gap: 0.5em;
     font-size: clamp(0.95rem, 2.8vw, 1.15rem);
     white-space: nowrap;
     cursor: text;
-  }
-  .cmdbar__badge {
-    font-family: var(--font-body);
-    font-size: 0.62em;
-    letter-spacing: 0.12em;
-    text-transform: lowercase;
-    color: color-mix(in srgb, var(--red-core) 65%, transparent);
-    padding: 0.15em 0.5em;
-    border-radius: 3px;
   }
   .cmdbar__input {
     flex: 1;
@@ -356,7 +378,6 @@ const label = 'freddytacuri at';
   }
 
   @media (max-width: 560px) {
-    .cmdbar__badge,
     .cmdbar__hint {
       display: none;
     }
