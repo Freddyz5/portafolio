@@ -249,13 +249,17 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     let draft = ''; // línea en construcción, guardada al empezar a navegar el historial
     let tabStuck = false; // Tab previo sin progreso → el siguiente lista opciones
 
-    const TONE_CLASS: Record<Tone, string> = {
-      default: 'tone-default',
-      dim: 'tone-dim',
-      data: 'tone-data',
-      accent: 'tone-accent',
-      alert: 'tone-alert',
-      ok: 'tone-ok',
+    // El color se aplica INLINE, no por clase CSS: los <span>/<a>/<div> se crean
+    // en JS y no llevan el atributo de scope de Astro, así que las clases .tone-*
+    // scopeadas nunca les aplicarían (todo saldría en --red-core). Inline es a
+    // prueba de scoping. Mapea cada Tone a su token (tabla del PASO 1).
+    const TONE_COLOR: Record<Tone, string> = {
+      default: 'var(--red-core)',
+      dim: 'color-mix(in srgb, var(--red-core) 55%, transparent)',
+      data: 'var(--cyan-glow)',
+      accent: 'var(--amber-glow)',
+      alert: 'var(--red-glow)',
+      ok: 'var(--cyan-accent)',
     };
 
     // Decodifica el href de un segmento enlazado y lo enruta por effects, de
@@ -278,24 +282,24 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
         return;
       }
       for (const s of segments) {
-        const tone = TONE_CLASS[s.tone ?? 'default'];
+        const tone = s.tone ?? 'default';
+        const node = document.createElement(s.href ? 'a' : 'span');
+        node.className = 'cmdbar__seg';
+        node.textContent = s.text;
+        node.style.color = TONE_COLOR[tone];
+        if (tone === 'alert') node.style.textShadow = 'var(--text-glow-red)';
         if (s.href) {
-          const a = document.createElement('a');
-          a.className = `cmdbar__seg ${tone} cmdbar__link`;
+          const a = node as HTMLAnchorElement;
           a.href = '#';
-          a.textContent = s.text;
+          a.style.textDecoration = 'underline';
+          a.style.cursor = 'pointer';
           const target = s.href;
           a.addEventListener('click', (e) => {
             e.preventDefault();
             runHref(target);
           });
-          el.appendChild(a);
-        } else {
-          const span = document.createElement('span');
-          span.className = `cmdbar__seg ${tone}`;
-          span.textContent = s.text;
-          el.appendChild(span);
         }
+        el.appendChild(node);
       }
     };
 
@@ -305,6 +309,8 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     const appendLine = (lineData: Line, ariaHidden = false) => {
       const div = document.createElement('div');
       div.className = 'cmdbar__line';
+      div.style.whiteSpace = 'pre-wrap';
+      div.style.wordBreak = 'break-word';
       if (ariaHidden) div.setAttribute('aria-hidden', 'true');
       fillSegments(div, lineData);
       logEl.appendChild(div);
@@ -550,40 +556,10 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   .cmdbar__log:empty {
     display: none;
   }
-  .cmdbar__line {
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-
-  /* Mapeo Tone → token HLCS (tabla del PASO 1). Solo `alert` lleva glow. */
-  .tone-default {
-    color: var(--red-core);
-  }
-  .tone-dim {
-    color: color-mix(in srgb, var(--red-core) 55%, transparent);
-  }
-  .tone-data {
-    color: var(--cyan-glow);
-  }
-  .tone-accent {
-    color: var(--amber-glow);
-  }
-  .tone-alert {
-    color: var(--red-glow);
-    text-shadow: var(--text-glow-red);
-  }
-  .tone-ok {
-    color: var(--cyan-accent);
-  }
-  .cmdbar__link {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-  .cmdbar__link:hover,
-  .cmdbar__link:focus-visible {
-    text-shadow: var(--text-glow-cyan);
-    outline: none;
-  }
+  /* El color de cada segmento (tono) y el ajuste de línea del log se aplican
+     INLINE desde el JS (ver fillSegments/appendLine): esos elementos se crean en
+     cliente y no reciben el scope de Astro, así que reglas .tone-* scopeadas no
+     les aplicarían. No añadir aquí colores de tono: no tendrían efecto. */
 
   .cmdbar__form {
     pointer-events: auto;
@@ -602,10 +578,28 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* La línea del input (╰─λ + input + pista) está PLEGADA mientras la terminal
+     no tiene foco: solo se ve la línea superior (╭─ usuario at host in ruta).
+     Al enfocar (clic en el prompt, `/` o `` ` ``) se despliega hacia arriba y
+     revela el input; al salir del foco se pliega de nuevo. */
   .cmdbar__prompt-line {
     display: flex;
     align-items: center;
     gap: 0.4em;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+  }
+  .cmdbar__form:focus-within .cmdbar__prompt-line {
+    max-height: 3em;
+    opacity: 1;
+  }
+  /* En pantalla completa el input siempre visible (el foco queda atrapado en el
+     dialog, y aunque se clique un enlace del log no debe plegarse). */
+  .cmdbar-dialog .cmdbar__prompt-line {
+    max-height: 3em;
+    opacity: 1;
   }
   .cmdbar__prompt {
     display: flex;
@@ -617,11 +611,6 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   .cmdbar__input {
     flex: 1;
     min-width: 0;
-    /* Colapsado y oculto mientras la terminal no tiene el foco; se revela al
-       enfocar (ver .cmdbar__form:focus-within). El prompt queda visible como
-       superficie clicable para enfocarlo. */
-    max-width: 0;
-    opacity: 0;
     background: transparent;
     color: var(--amber-core);
     font-family: var(--font-terminal);
@@ -632,7 +621,6 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
        lo controla el navegador/SO, que ya respeta prefers-reduced-motion. */
     caret-shape: block;
     outline: none;
-    transition: max-width 0.35s ease, opacity 0.3s ease;
   }
   .cmdbar__input::placeholder {
     color: color-mix(in srgb, var(--red-core) 45%, transparent);
@@ -644,14 +632,6 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     border-color: var(--amber-glow);
     box-shadow: 0 0 12px color-mix(in srgb, var(--amber-glow) 35%, transparent);
   }
-  /* Revelado del input al enfocar: se abre y aparece; la pista se desvanece. */
-  .cmdbar__form:focus-within .cmdbar__input {
-    max-width: 100%;
-    opacity: 1;
-  }
-  .cmdbar__form:focus-within .cmdbar__hint {
-    opacity: 0;
-  }
   .cmdbar__hint {
     font-family: var(--font-body);
     font-size: 0.62rem;
@@ -659,11 +639,9 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     text-transform: uppercase;
     color: color-mix(in srgb, var(--red-core) 50%, transparent);
     white-space: nowrap;
-    transition: opacity 0.3s ease;
   }
   @media (prefers-reduced-motion: reduce) {
-    .cmdbar__input,
-    .cmdbar__hint {
+    .cmdbar__prompt-line {
       transition: none;
     }
   }

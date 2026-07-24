@@ -106,10 +106,10 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
 		--bg-raised: #1F1616;
 		--bg-band: #0B0707;  /* banda alterna (HLCS 2a): entre --bg-field y --bg-base */
 
-		/* Altura reservada por la consola de comandos acoplada.
-		   El prompt segmentado ocupa dos líneas (ver Terminal.astro), así que la
-		   reserva anterior de 30px se quedaba corta y tapaba el final de las secciones. */
-		--cmd-console-h: 66px;
+		/* Altura reservada por la consola de comandos acoplada EN REPOSO: sin foco
+		   solo se ve la línea superior del prompt (la línea del input se despliega
+		   al enfocar, creciendo hacia arriba sobre el contenido de forma temporal). */
+		--cmd-console-h: 40px;
 
 		/* Auxiliares fuera del esquema red/cyan/bg — valores originales (ver inventario) */
 		--cream: #fff7ed;
