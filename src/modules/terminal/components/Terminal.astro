@@ -26,8 +26,17 @@
   maestro completo.
 */
 import resume from "../../../constants/resume.json";
+import pkg from "../../../../package.json";
 import { separateLanguages } from "../../../shared/utils/languageSeparator";
 import { buildTree } from "../fs/build";
+
+// Nombres de las dependencias REALES del proyecto, extraídos en build time para
+// que `install <dep>` responda "ya está instalado". Solo viajan los nombres al
+// cliente, nunca el package.json entero.
+const installPackages = [
+	...Object.keys((pkg as { dependencies?: Record<string, string> }).dependencies ?? {}),
+	...Object.keys((pkg as { devDependencies?: Record<string, string> }).devDependencies ?? {}),
+];
 
 interface Props {
 	lang: "es" | "en" | string;
@@ -53,6 +62,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	class="cmdbar"
 	data-lang={isEs ? "es" : "en"}
 	data-base={BASE_URL}
+	data-packages={JSON.stringify(installPackages)}
 	aria-label={isEs ? "Barra de comandos (opcional)" : "Command bar (optional)"}
 	hidden>
 	<div class="cmdbar__shell" id="fr3d-shell">
@@ -147,6 +157,12 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	) {
 		const lang = (bar.dataset.lang === "en" ? "en" : "es") as "es" | "en";
 		const base = bar.dataset.base || "";
+		// Nombres de dependencias reales (build time) para el comando `install`.
+		let packages: string[] = [];
+		try {
+			const parsed = JSON.parse(bar.dataset.packages || "[]");
+			if (Array.isArray(parsed)) packages = parsed.filter((p) => typeof p === "string");
+		} catch {}
 
 		// Mejora progresiva: la barra solo aparece con JS.
 		bar.hidden = false;
@@ -327,7 +343,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			taskSignal: () => (taskController ??= new AbortController()).signal,
 		};
 
-		const ctx: ShellContext = { state, fs, registry, lang, effects };
+		const ctx: ShellContext = { state, fs, registry, lang, effects, packages };
 
 		// Estado de ergonomía de shell (historial, autocompletado).
 		let historyIndex = state.history.length; // índice en state.history; length = borrador

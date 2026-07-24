@@ -40,6 +40,12 @@ export interface ShellContext {
   registry: Registry;
   lang: Lang;
   effects: ShellEffects;
+  /**
+   * Nombres de las dependencias reales del proyecto, extraídos de package.json
+   * en build time (ver Terminal.astro). Los consume `install` para responder
+   * "ya está instalado" a un paquete que de verdad está en el árbol.
+   */
+  packages: string[];
 }
 
 export interface Command {

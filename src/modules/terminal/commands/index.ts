@@ -6,6 +6,7 @@ import type { Command } from '../core/registry';
 import { clear, echo, fullscreen, help, history, konami, sudo, whoami } from './system';
 import { cat, cd, ls, pwd, tree } from './fs';
 import { lang, open } from './open';
+import { install } from './install';
 import { demo } from './__demo';
 
 export const COMMANDS: Command[] = [
@@ -22,6 +23,8 @@ export const COMMANDS: Command[] = [
   open,
   lang,
   fullscreen,
+  // Comando simulado (hidden).
+  install,
   // Easter eggs (hidden).
   sudo,
   konami,
