@@ -167,6 +167,32 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		// Mejora progresiva: la barra solo aparece con JS.
 		bar.hidden = false;
 
+		// Guiño para quien abre la consola del navegador (devs, reclutadores
+		// técnicos): FR-3D saluda y planta un hilo del que tirar, sin listar los
+		// comandos ocultos — el mérito del hallazgo sigue siendo del visitante.
+		// Guardado en window para no repetirlo si el script corriera dos veces.
+		const w = window as typeof window & { __fr3dMotd?: boolean };
+		if (!w.__fr3dMotd) {
+			w.__fr3dMotd = true;
+			const [headline, tip] =
+				lang === "es"
+					? [
+							"Núcleo de a bordo en línea.",
+							"No todo lo que sé cabe en `help`. Los curiosos prueban a instalar algo.",
+						]
+					: [
+							"Onboard core online.",
+							"Not everything I know fits in `help`. The curious try installing something.",
+						];
+			const mono =
+				"font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;";
+			console.log(
+				`%cFR-3D>%c ${headline}\n       ${tip}`,
+				`color:#FFB000;font-weight:700;${mono}`,
+				`color:#FFB000;line-height:1.7;${mono}`,
+			);
+		}
+
 		const fs = JSON.parse(vfsTag.textContent || "{}") as DirNode;
 		const state = createState(lang);
 		const registry = new Registry();
