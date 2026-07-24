@@ -43,6 +43,20 @@ export const help: Command = {
         'dim',
       ),
     );
+    // Guiño: algunos comandos no salen en esta lista (hidden). Se insinúa sin
+    // nombrarlos — el mérito del hallazgo es de quien explora.
+    lines.push(
+      line(
+        t(
+          {
+            es: '…y algún que otro comando no aparece en esta lista.',
+            en: '…and the odd command does not show up in this list.',
+          },
+          ctx.lang,
+        ),
+        'dim',
+      ),
+    );
     return ok(lines);
   },
 };
