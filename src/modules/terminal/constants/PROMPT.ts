@@ -15,15 +15,18 @@ import { shortenPath } from '../core/state';
 
 export function buildPrompt(state: ShellState): [Line, Line] {
   const path = shortenPath(state.cwd, state.env.HOME);
+  // Colores agrupados por significado: cian = tú y tu ubicación (usuario en
+  // cian brillante, ruta en cian medio); ámbar = la máquina (host y el prompt
+  // λ); dim = el andamiaje (cajas y conectores). Coherente, no alarmante.
   return [
     [
       seg('╭─ ', 'dim'),
-      seg(state.env.USER, 'alert'),
+      seg(state.env.USER, 'data'), // cian brillante
       seg(' at ', 'dim'),
-      seg(state.env.HOST, 'accent'),
+      seg(state.env.HOST, 'accent'), // ámbar
       seg(' in ', 'dim'),
-      seg(path, 'data'),
+      seg(path, 'ok'), // cian medio
     ],
-    [seg('╰─', 'dim'), seg('λ', 'accent')],
+    [seg('╰─', 'dim'), seg('λ', 'accent')], // λ en ámbar
   ];
 }

@@ -352,6 +352,12 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
       scrollToBottom();
     });
 
+    // Clic en cualquier parte del prompt acoplado enfoca el input (colapsado
+    // hasta enfocar, así que su área de clic propia es mínima sin esto).
+    form.addEventListener('click', (e) => {
+      if (!(e.target as HTMLElement).closest('a')) input.focus();
+    });
+
     renderPrompt(); // prompt inicial
 
     // Si venimos de un `open` cross-página, reproducir el boot en el destino.
@@ -534,11 +540,10 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     flex-direction: column;
     gap: 0.15em;
     padding: 0.4em 0.6em;
-    /* Output en IBM Plex Mono por legibilidad; el prompt y el input siguen en
-       VT323 (--font-terminal) para el sabor terminal. */
-    font-family: var(--font-body);
-    font-size: clamp(0.85rem, 2.4vw, 1rem);
-    line-height: 1.4;
+    /* Historial en la misma tipografía que el input (VT323) para coherencia. */
+    font-family: var(--font-terminal);
+    font-size: clamp(1rem, 2.6vw, 1.2rem);
+    line-height: 1.3;
     background-color: color-mix(in srgb, var(--bg-field) 78%, transparent);
     backdrop-filter: blur(10px);
   }
@@ -612,6 +617,11 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
   .cmdbar__input {
     flex: 1;
     min-width: 0;
+    /* Colapsado y oculto mientras la terminal no tiene el foco; se revela al
+       enfocar (ver .cmdbar__form:focus-within). El prompt queda visible como
+       superficie clicable para enfocarlo. */
+    max-width: 0;
+    opacity: 0;
     background: transparent;
     color: var(--amber-core);
     font-family: var(--font-terminal);
@@ -622,6 +632,7 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
        lo controla el navegador/SO, que ya respeta prefers-reduced-motion. */
     caret-shape: block;
     outline: none;
+    transition: max-width 0.35s ease, opacity 0.3s ease;
   }
   .cmdbar__input::placeholder {
     color: color-mix(in srgb, var(--red-core) 45%, transparent);
@@ -633,6 +644,14 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     border-color: var(--amber-glow);
     box-shadow: 0 0 12px color-mix(in srgb, var(--amber-glow) 35%, transparent);
   }
+  /* Revelado del input al enfocar: se abre y aparece; la pista se desvanece. */
+  .cmdbar__form:focus-within .cmdbar__input {
+    max-width: 100%;
+    opacity: 1;
+  }
+  .cmdbar__form:focus-within .cmdbar__hint {
+    opacity: 0;
+  }
   .cmdbar__hint {
     font-family: var(--font-body);
     font-size: 0.62rem;
@@ -640,6 +659,13 @@ const hint = isEs ? '/ enfocar · esc cerrar' : '/ focus · esc close';
     text-transform: uppercase;
     color: color-mix(in srgb, var(--red-core) 50%, transparent);
     white-space: nowrap;
+    transition: opacity 0.3s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cmdbar__input,
+    .cmdbar__hint {
+      transition: none;
+    }
   }
 
   .cmdbar__shell {
