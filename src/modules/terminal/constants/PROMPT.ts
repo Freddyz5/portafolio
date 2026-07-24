@@ -27,6 +27,6 @@ export function buildPrompt(state: ShellState): [Line, Line] {
       seg(' in ', 'dim'),
       seg(path, 'ok'), // cian medio
     ],
-    [seg('╰─', 'dim'), seg('λ', 'accent')], // λ en ámbar
+    [seg('╰─', 'dim'), seg('◈', 'data')], // λ en ámbar
   ];
 }
