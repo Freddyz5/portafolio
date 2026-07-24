@@ -6,6 +6,7 @@ import type { Command } from '../core/registry';
 import { clear, echo, fullscreen, help, history, konami, sudo, whoami } from './system';
 import { cat, cd, ls, pwd, tree } from './fs';
 import { lang, open } from './open';
+import { demo } from './__demo';
 
 export const COMMANDS: Command[] = [
   help,
@@ -24,4 +25,6 @@ export const COMMANDS: Command[] = [
   // Easter eggs (hidden).
   sudo,
   konami,
+  // Comando de humo del motor de tareas (hidden).
+  demo,
 ];

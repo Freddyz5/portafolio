@@ -10,6 +10,11 @@
     easter eggs) es exclusivo.
   - No captura el foco por defecto ni interfiere con el scroll. Se enfoca con `/`
     o `` ` `` (o click) y se sale con `Esc`. Sin focus trap.
+  - Jerarquía de `Esc` (3 niveles): tarea en curso → aborta la tarea; pantalla
+    completa → vuelve a acoplado; acoplado y enfocado → desenfoca el input.
+  - Tareas asíncronas (comandos con salida progresiva, p. ej. `install`): corren
+    contra un TerminalSink que reescribe líneas en vivo. Mientras una corre, el
+    input queda `disabled` (una tarea a la vez) y Ctrl+C / Esc la abortan.
   - EXCEPCIÓN — pantalla completa (Ctrl+` o comando `fullscreen`): la terminal
     cubre el viewport y SÍ se comporta como modal (<dialog> + showModal: role
     dialog, aria-modal, focus trap, foco devuelto al salir). Es la conducta
@@ -103,6 +108,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	import { createState } from "../core/state";
 	import { Registry } from "../core/registry";
 	import type { ShellContext, ShellEffects } from "../core/registry";
+	import type { TerminalSink, LineHandle } from "../core/sink";
 	import { execute } from "../core/execute";
 	import { COMMANDS } from "../commands";
 	import { buildPrompt } from "../constants/PROMPT";
@@ -236,8 +242,69 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		// en vez de cerrar del todo (mismo patrón que ExperienceDetail.astro).
 		dialog.addEventListener("cancel", (e) => {
 			e.preventDefault();
+			// Jerarquía de Esc: una tarea en curso se aborta antes que salir de
+			// pantalla completa.
+			if (taskRunning) {
+				abortTask();
+				return;
+			}
 			exitFullscreen();
 		});
+
+		/* ----- Motor de tareas: sink, estado ocupado y cancelación --------- */
+
+		// Placeholder original del input (localizado en el frontmatter), para
+		// restaurarlo al salir del estado ocupado.
+		const defaultPlaceholder = input.placeholder;
+
+		// Una tarea a la vez. La terminal es dueña del AbortController; se renueva
+		// por comando (ver submit) y lo abortan Ctrl+C / Esc. `taskRunning` refleja
+		// busy() y decide si Ctrl+C aborta una tarea o solo limpia el input.
+		let taskController: AbortController | null = null;
+		let taskRunning = false;
+
+		// Bloquea/libera el input mientras corre una tarea. Las teclas pulsadas
+		// durante la ejecución se descartan (input disabled), no se encolan.
+		const setBusy = (running: boolean) => {
+			taskRunning = running;
+			input.disabled = running;
+			shell.setAttribute("aria-busy", running ? "true" : "false");
+			form.dataset.busy = running ? "true" : "false";
+			if (running) {
+				input.value = "";
+				input.placeholder = lang === "es" ? "trabajando…" : "working…";
+			} else {
+				input.placeholder = defaultPlaceholder;
+			}
+		};
+
+		// El sink que consume el runner: reutiliza appendLine/fillSegments. El
+		// handle de una línea es el <div> que appendLine devuelve; sobrevive al
+		// movimiento del shell entre acoplado y <dialog> (es una referencia a nodo).
+		const taskSink: TerminalSink = {
+			write: (lineData, announce = false) => {
+				const el = appendLine(lineData, !announce);
+				scrollToBottom();
+				return el as LineHandle;
+			},
+			// Siempre vía fillSegments: reasignar textContent dejaría la línea sin
+			// tono (el color es inline) y saldría en --red-core sin avisar.
+			update: (handle, lineData) => fillSegments(handle as HTMLElement, lineData),
+			busy: (running) => setBusy(running),
+			reducedMotion: () =>
+				window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+		};
+
+		// Aborta la tarea en curso y deja rastro (^C), como la interrupción normal.
+		// El runner libera el input en su `finally` poco después.
+		const abortTask = () => {
+			if (!taskRunning || !taskController) return;
+			taskController.abort();
+			const [top, bot] = buildPrompt(state);
+			appendLine(top, true);
+			appendLine([...bot, { text: " ^C", tone: "dim" }], true);
+			scrollToBottom();
+		};
 
 		const effects: ShellEffects = {
 			clear: () => logEl.replaceChildren(),
@@ -255,6 +322,9 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 					: path.replace("/en/", "/es/");
 			},
 			toggleFullscreen: () => toggleFullscreen(),
+			task: taskSink,
+			// La señal se renueva por comando en el submit; lazy por seguridad.
+			taskSignal: () => (taskController ??= new AbortController()).signal,
 		};
 
 		const ctx: ShellContext = { state, fs, registry, lang, effects };
@@ -321,7 +391,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		// a11y: el log es aria-live="polite". Para no leer 20 líneas de `tree`,
 		// el eco y todo salvo la primera línea útil del resultado van aria-hidden;
 		// así solo se anuncia esa primera línea (constraint #4: el log sigue polite).
-		const appendLine = (lineData: Line, ariaHidden = false) => {
+		const appendLine = (lineData: Line, ariaHidden = false): HTMLDivElement => {
 			const div = document.createElement("div");
 			div.className = "cmdbar__line";
 			div.style.whiteSpace = "pre-wrap";
@@ -329,6 +399,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			if (ariaHidden) div.setAttribute("aria-hidden", "true");
 			fillSegments(div, lineData);
 			logEl.appendChild(div);
+			return div;
 		};
 
 		// Prompt de la barra: se construye desde state y se re-renderiza tras cada
@@ -364,8 +435,17 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			if (!raw.trim()) return;
 			const prompt = buildPrompt(state); // prompt activo (cwd previo al comando)
 			echoCommand(raw, prompt);
+			// Señal fresca por comando: si el comando lanza una tarea, Ctrl+C / Esc
+			// abortan ESTA ejecución. Los comandos síncronos la ignoran.
+			taskController = new AbortController();
+			const wasFocused = document.activeElement === input;
 			const result = await execute(raw, ctx);
 			if (result) renderResult(result);
+			// Si el usuario seguía en el input tras una tarea, devuélvele el foco (el
+			// input `disabled` lo pierde); si se fue a otro sitio, no se lo robamos.
+			if (wasFocused && !input.disabled && document.activeElement !== input) {
+				input.focus();
+			}
 			historyIndex = state.history.length; // ↑ arranca desde el más reciente
 			draft = "";
 			tabStuck = false;
@@ -543,6 +623,22 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 					active.tagName === "TEXTAREA" ||
 					active.isContentEditable);
 
+			// Tarea en curso: el input está disabled, así que su propio manejador de
+			// Ctrl+C no dispara; se atienden aquí. Esc en pantalla completa lo cubre
+			// el `cancel` del dialog. Ctrl+` (pantalla completa) sigue permitido.
+			if (taskRunning) {
+				if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+					e.preventDefault();
+					abortTask();
+					return;
+				}
+				if (e.key === "Escape" && !isFullscreen) {
+					e.preventDefault();
+					abortTask();
+					return;
+				}
+			}
+
 			if (e.ctrlKey && e.key === "`") {
 				e.preventDefault();
 				toggleFullscreen();
@@ -641,9 +737,19 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	}
 	/* En pantalla completa el input siempre visible (el foco queda atrapado en el
      dialog, y aunque se clique un enlace del log no debe plegarse). */
-	.cmdbar-dialog .cmdbar__prompt-line {
+	.cmdbar-dialog .cmdbar__prompt-line,
+	/* Mientras corre una tarea el input está disabled (no puede tener foco), pero
+     se despliega igual para mostrar el estado "trabajando…". */
+	.cmdbar__form[data-busy="true"] .cmdbar__prompt-line {
 		max-height: 3em;
 		opacity: 1;
+	}
+	.cmdbar__form[data-busy="true"] .cmdbar__prompt {
+		opacity: 0.6;
+	}
+	.cmdbar__input:disabled {
+		cursor: progress;
+		opacity: 0.7;
 	}
 	.cmdbar__prompt {
 		display: flex;
