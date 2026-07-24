@@ -1,0 +1,750 @@
+---
+/*
+  Terminal FR-3D — barra de comandos con filesystem virtual. Capa OPCIONAL de
+  mejora progresiva (sustituye a CommandBar.astro).
+
+  Contrato de la barra acoplada:
+  - Sin JS no aparece (atributo `hidden`); el sitio navega con scroll/click/teclado.
+  - Ninguna información real es exclusiva de la terminal: todo destino de `open`
+    está también en el nav, el footer y los botones. Solo el sabor (motd, VFS,
+    easter eggs) es exclusivo.
+  - No captura el foco por defecto ni interfiere con el scroll. Se enfoca con `/`
+    o `` ` `` (o click) y se sale con `Esc`. Sin focus trap.
+  - EXCEPCIÓN — pantalla completa (Ctrl+` o comando `fullscreen`): la terminal
+    cubre el viewport y SÍ se comporta como modal (<dialog> + showModal: role
+    dialog, aria-modal, focus trap, foco devuelto al salir). Es la conducta
+    correcta para un overlay a pantalla completa y la invoca el usuario a
+    propósito, a diferencia de la barra acoplada.
+
+  El VFS se construye en BUILD TIME (frontmatter) para que al cliente solo viaje
+  el árbol ya recortado y resuelto al idioma de la página, nunca el resume.json
+  maestro completo.
+*/
+import resume from "../../../constants/resume.json";
+import { separateLanguages } from "../../../shared/utils/languageSeparator";
+import { buildTree } from "../fs/build";
+
+interface Props {
+	lang: "es" | "en" | string;
+}
+
+const lang = (Astro.props.lang === "en" ? "en" : "es") as "es" | "en";
+const vfs = buildTree(separateLanguages(resume, lang), lang);
+
+const BASE_URL = import.meta.env.BASE_URL;
+const isEs = lang === "es";
+
+const inputAria = isEs
+	? "Barra de comandos opcional. Escribe help y pulsa Enter para ver los comandos."
+	: "Optional command bar. Type help and press Enter to list commands.";
+const placeholder = isEs
+	? "Escribe help para ver la lista de comandos"
+	: "Write help to see command list";
+const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] close";
+---
+
+<aside
+	id="fr3d-cmd"
+	class="cmdbar"
+	data-lang={isEs ? "es" : "en"}
+	data-base={BASE_URL}
+	aria-label={isEs ? "Barra de comandos (opcional)" : "Command bar (optional)"}
+	hidden>
+	<div class="cmdbar__shell" id="fr3d-shell">
+		<div class="cmdbar__log" id="fr3d-cmd-log" role="log" aria-live="polite">
+		</div>
+		<form class="cmdbar__form" id="fr3d-cmd-form" autocomplete="off">
+      <div class="cmdbar__prompt-hint">
+        <span class="cmdbar__hint" aria-hidden="true">{hint}</span>
+        <div class="cmdbar__prompt-top" id="fr3d-prompt-top" aria-hidden="true" />
+      </div>
+			
+			<div class="cmdbar__prompt-line">
+				<label
+					class="cmdbar__prompt"
+					id="fr3d-prompt-bot"
+					for="fr3d-cmd-input"
+					aria-hidden="true"></label>
+				<input
+					id="fr3d-cmd-input"
+					class="cmdbar__input"
+					type="text"
+					name="cmd"
+					spellcheck="false"
+					autocapitalize="off"
+					autocorrect="off"
+					aria-label={inputAria}
+					placeholder={placeholder}
+				/>
+				<!-- <span class="cmdbar__hint" aria-hidden="true">{hint}</span> -->
+			</div>
+		</form>
+	</div>
+</aside>
+
+<dialog
+	id="fr3d-dialog"
+	class="cmdbar-dialog"
+	aria-modal="true"
+	aria-label={isEs
+		? "Terminal FR-3D (pantalla completa)"
+		: "FR-3D terminal (fullscreen)"}>
+	<div class="cmdbar-dialog__viewport" id="fr3d-dialog-viewport"></div>
+</dialog>
+
+<script
+	type="application/json"
+	id="fr3d-vfs"
+	is:inline
+	set:html={JSON.stringify(vfs).replace(/</g, "\\u003c")}
+/>
+
+<script>
+	import { createState } from "../core/state";
+	import { Registry } from "../core/registry";
+	import type { ShellContext, ShellEffects } from "../core/registry";
+	import { execute } from "../core/execute";
+	import { COMMANDS } from "../commands";
+	import { buildPrompt } from "../constants/PROMPT";
+	import { isHidden, resolveNode, resolvePath } from "../fs/resolve";
+	import type { CommandResult, Line, Tone } from "../core/output";
+	import type { DirNode } from "../fs/types";
+
+	const bar = document.getElementById("fr3d-cmd");
+	const vfsTag = document.getElementById("fr3d-vfs");
+	const form = document.getElementById(
+		"fr3d-cmd-form",
+	) as HTMLFormElement | null;
+	const input = document.getElementById(
+		"fr3d-cmd-input",
+	) as HTMLInputElement | null;
+	const logEl = document.getElementById("fr3d-cmd-log");
+	const promptTop = document.getElementById("fr3d-prompt-top");
+	const promptBot = document.getElementById("fr3d-prompt-bot");
+	const shell = document.getElementById("fr3d-shell");
+	const dialog = document.getElementById(
+		"fr3d-dialog",
+	) as HTMLDialogElement | null;
+	const dialogViewport = document.getElementById("fr3d-dialog-viewport");
+
+	if (
+		bar &&
+		vfsTag &&
+		form &&
+		input &&
+		logEl &&
+		promptTop &&
+		promptBot &&
+		shell &&
+		dialog &&
+		dialogViewport
+	) {
+		const lang = (bar.dataset.lang === "en" ? "en" : "es") as "es" | "en";
+		const base = bar.dataset.base || "";
+
+		// Mejora progresiva: la barra solo aparece con JS.
+		bar.hidden = false;
+
+		const fs = JSON.parse(vfsTag.textContent || "{}") as DirNode;
+		const state = createState(lang);
+		const registry = new Registry();
+		COMMANDS.forEach((c) => registry.register(c));
+
+		const scrollToBottom = () => {
+			logEl.scrollTop = logEl.scrollHeight;
+		};
+
+		// Animación de "apertura de programa": añade .booting a la sección. Es
+		// idempotente y se limpia en animationend, con watchdog de respaldo por si
+		// la animación nunca dispara animationend.
+		const bootSection = (el: HTMLElement) => {
+			if (el.classList.contains("booting")) return;
+			el.classList.add("booting");
+			let watchdog = 0;
+			const cleanup = () => {
+				el.classList.remove("booting");
+				el.removeEventListener("animationend", onEnd);
+				window.clearTimeout(watchdog);
+			};
+			const onEnd = (e: AnimationEvent) => {
+				if (e.animationName === "fr3d-boot-sweep") cleanup();
+			};
+			el.addEventListener("animationend", onEnd);
+			watchdog = window.setTimeout(cleanup, 1400);
+		};
+
+		// Dispara el boot al terminar el scroll suave (scrollend), con fallback por
+		// si no hay scrollend o la sección ya estaba a la vista (no hay scroll).
+		const bootAfterScroll = (el: HTMLElement) => {
+			let done = false;
+			const trigger = () => {
+				if (done) return;
+				done = true;
+				window.removeEventListener("scrollend", trigger);
+				bootSection(el);
+			};
+			window.addEventListener("scrollend", trigger);
+			window.setTimeout(trigger, 700);
+		};
+
+		// Navega a una sección: scroll suave si el id existe (+ boot); si no, pasa el
+		// flag por sessionStorage y navega al ancla para que el destino lo reproduzca.
+		const goSection = (id: string) => {
+			const el = document.getElementById(id);
+			if (el) {
+				el.scrollIntoView({ behavior: "smooth" });
+				history.replaceState(null, "", `#${id}`);
+				bootAfterScroll(el);
+			} else {
+				try {
+					sessionStorage.setItem("fr3d:boot", id);
+				} catch {}
+				window.location.href = `${base}/${lang}/#${id}`;
+			}
+		};
+
+		// Pantalla completa: mueve el shell (log + form) a un <dialog> y usa
+		// showModal() para tener focus trap, ::backdrop y Esc nativos. Es la ÚNICA
+		// excepción al contrato de "no capturar el foco": un overlay a pantalla
+		// completa DEBE comportarse como modal, y lo invoca el usuario a propósito.
+		let isFullscreen = false;
+		let lastActiveBeforeFs: HTMLElement | null = null;
+
+		const enterFullscreen = () => {
+			if (isFullscreen) return;
+			lastActiveBeforeFs = document.activeElement as HTMLElement | null;
+			dialogViewport.appendChild(shell);
+			dialog.showModal();
+			isFullscreen = true;
+			// No autoenfocar en móvil: dispararía el teclado virtual sin pedirlo.
+			if (!window.matchMedia("(pointer: coarse)").matches) input.focus();
+			scrollToBottom();
+		};
+
+		const exitFullscreen = () => {
+			if (!isFullscreen) return;
+			bar.appendChild(shell);
+			dialog.close();
+			isFullscreen = false;
+			(lastActiveBeforeFs ?? input).focus();
+		};
+
+		const toggleFullscreen = () =>
+			isFullscreen ? exitFullscreen() : enterFullscreen();
+
+		// Esc en el modal dispara `cancel`: lo interceptamos para volver a acoplado
+		// en vez de cerrar del todo (mismo patrón que ExperienceDetail.astro).
+		dialog.addEventListener("cancel", (e) => {
+			e.preventDefault();
+			exitFullscreen();
+		});
+
+		const effects: ShellEffects = {
+			clear: () => logEl.replaceChildren(),
+			open: (url) => {
+				window.open(url, "_blank", "noopener");
+			},
+			navigate: (path) => {
+				window.location.href = `${base}/${lang}/${path}`;
+			},
+			openSection: (id) => goSection(id),
+			toggleLang: () => {
+				const path = window.location.pathname;
+				window.location.href = path.includes("/es/")
+					? path.replace("/es/", "/en/")
+					: path.replace("/en/", "/es/");
+			},
+			toggleFullscreen: () => toggleFullscreen(),
+		};
+
+		const ctx: ShellContext = { state, fs, registry, lang, effects };
+
+		// Estado de ergonomía de shell (historial, autocompletado).
+		let historyIndex = state.history.length; // índice en state.history; length = borrador
+		let draft = ""; // línea en construcción, guardada al empezar a navegar el historial
+		let tabStuck = false; // Tab previo sin progreso → el siguiente lista opciones
+
+		// El color se aplica INLINE, no por clase CSS: los <span>/<a>/<div> se crean
+		// en JS y no llevan el atributo de scope de Astro, así que las clases .tone-*
+		// scopeadas nunca les aplicarían (todo saldría en --red-core). Inline es a
+		// prueba de scoping. Mapea cada Tone a su token (tabla del PASO 1).
+		const TONE_COLOR: Record<Tone, string> = {
+			default: "var(--red-core)",
+			dim: "color-mix(in srgb, var(--red-core) 55%, transparent)",
+			data: "var(--cyan-glow)",
+			accent: "var(--amber-glow)",
+			alert: "var(--red-glow)",
+			ok: "var(--cyan-accent)",
+		};
+
+		// Decodifica el href de un segmento enlazado y lo enruta por effects, de
+		// modo que "ver completo en el sitio" converge con el comando `open`.
+		const runHref = (href: string) => {
+			const idx = href.indexOf(":");
+			const scheme = href.slice(0, idx);
+			const value = href.slice(idx + 1);
+			if (scheme === "section") effects.openSection(value);
+			else if (scheme === "page") effects.navigate(value);
+			else if (scheme === "link") effects.open(value);
+		};
+
+		// Rellena un elemento con los segmentos de una línea.
+		// Render con textContent / createElement — nunca innerHTML con datos.
+		const fillSegments = (el: HTMLElement, segments: Line) => {
+			el.replaceChildren();
+			if (segments.length === 0) {
+				el.appendChild(document.createTextNode(" "));
+				return;
+			}
+			for (const s of segments) {
+				const tone = s.tone ?? "default";
+				const node = document.createElement(s.href ? "a" : "span");
+				node.className = "cmdbar__seg";
+				node.textContent = s.text;
+				node.style.color = TONE_COLOR[tone];
+				if (tone === "alert") node.style.textShadow = "var(--text-glow-red)";
+				if (s.href) {
+					const a = node as HTMLAnchorElement;
+					a.href = "#";
+					a.style.textDecoration = "underline";
+					a.style.cursor = "pointer";
+					const target = s.href;
+					a.addEventListener("click", (e) => {
+						e.preventDefault();
+						runHref(target);
+					});
+				}
+				el.appendChild(node);
+			}
+		};
+
+		// a11y: el log es aria-live="polite". Para no leer 20 líneas de `tree`,
+		// el eco y todo salvo la primera línea útil del resultado van aria-hidden;
+		// así solo se anuncia esa primera línea (constraint #4: el log sigue polite).
+		const appendLine = (lineData: Line, ariaHidden = false) => {
+			const div = document.createElement("div");
+			div.className = "cmdbar__line";
+			div.style.whiteSpace = "pre-wrap";
+			div.style.wordBreak = "break-word";
+			if (ariaHidden) div.setAttribute("aria-hidden", "true");
+			fillSegments(div, lineData);
+			logEl.appendChild(div);
+		};
+
+		// Prompt de la barra: se construye desde state y se re-renderiza tras cada
+		// comando para que `cd` lo actualice solo.
+		const renderPrompt = () => {
+			const [top, bot] = buildPrompt(state);
+			fillSegments(promptTop, top);
+			fillSegments(promptBot, bot);
+		};
+
+		// Eco en el log: conserva el prompt activo al ejecutar + el comando.
+		// aria-hidden: el usuario acaba de teclearlo, no hace falta releerlo.
+		const echoCommand = (raw: string, prompt: [Line, Line]) => {
+			appendLine(prompt[0], true);
+			appendLine([...prompt[1], { text: " " + raw, tone: "default" }], true);
+		};
+
+		// Anuncia solo la primera línea útil; el resto va aria-hidden.
+		const renderResult = (result: CommandResult) => {
+			let announced = false;
+			for (const l of result.lines) {
+				const empty = l.every((s) => s.text.trim() === "");
+				const hide = announced || empty;
+				appendLine(l, hide);
+				if (!hide) announced = true;
+			}
+		};
+
+		form.addEventListener("submit", async (e) => {
+			e.preventDefault();
+			const raw = input.value;
+			input.value = "";
+			if (!raw.trim()) return;
+			const prompt = buildPrompt(state); // prompt activo (cwd previo al comando)
+			echoCommand(raw, prompt);
+			const result = await execute(raw, ctx);
+			if (result) renderResult(result);
+			historyIndex = state.history.length; // ↑ arranca desde el más reciente
+			draft = "";
+			tabStuck = false;
+			renderPrompt(); // refleja el nuevo cwd si `cd` lo cambió
+			scrollToBottom();
+		});
+
+		// Clic en cualquier parte del prompt acoplado enfoca el input (colapsado
+		// hasta enfocar, así que su área de clic propia es mínima sin esto).
+		form.addEventListener("click", (e) => {
+			if (!(e.target as HTMLElement).closest("a")) input.focus();
+		});
+
+		renderPrompt(); // prompt inicial
+
+		// Si venimos de un `open` cross-página, reproducir el boot en el destino.
+		// Se borra el flag YA (antes de animar) para no repetirlo al refrescar o
+		// volver con el botón atrás. Doble rAF para no competir con la view
+		// transition entre documentos (@view-transition navigation: auto).
+		try {
+			const bootId = sessionStorage.getItem("fr3d:boot");
+			if (bootId) {
+				sessionStorage.removeItem("fr3d:boot");
+				const target = document.getElementById(bootId);
+				if (target) {
+					requestAnimationFrame(() =>
+						requestAnimationFrame(() => bootSection(target)),
+					);
+				}
+			}
+		} catch {}
+
+		/* ----- Ergonomía de shell: historial, Tab, Ctrl+L, Ctrl+C ----------- */
+
+		const moveCursorToEnd = () => {
+			const len = input.value.length;
+			input.setSelectionRange(len, len);
+		};
+
+		const commonPrefix = (arr: string[]): string => {
+			if (arr.length === 0) return "";
+			let p = arr[0];
+			for (const s of arr) while (!s.startsWith(p)) p = p.slice(0, -1);
+			return p;
+		};
+
+		// Candidatos de ruta para el token actual, relativos al cwd.
+		const pathCandidates = (
+			token: string,
+		): { dirPart: string; names: string[] } => {
+			const slash = token.lastIndexOf("/");
+			const dirPart = slash >= 0 ? token.slice(0, slash + 1) : "";
+			const namePart = slash >= 0 ? token.slice(slash + 1) : token;
+			const basePath = resolvePath(dirPart || ".", state.cwd, state.env.HOME);
+			const node = resolveNode(fs, basePath);
+			if (!node || node.type !== "dir") return { dirPart, names: [] };
+			const names = node.children
+				.filter((c) => (namePart.startsWith(".") ? true : !isHidden(c.name)))
+				.filter((c) => c.name.startsWith(namePart))
+				.map((c) => c.name + (c.type === "dir" ? "/" : ""));
+			return { dirPart, names };
+		};
+
+		const setToken = (
+			tokens: string[],
+			i: number,
+			value: string,
+			after: string,
+		) => {
+			tokens[i] = value;
+			input.value = tokens.join(" ") + after;
+			const caret = tokens.join(" ").length;
+			input.setSelectionRange(caret, caret);
+		};
+
+		// Tab: primera palabra → comandos; resto → entradas del directorio.
+		const handleTab = () => {
+			const value = input.value;
+			const pos = input.selectionStart ?? value.length;
+			const after = value.slice(pos);
+			const tokens = value.slice(0, pos).split(" ");
+			const ti = tokens.length - 1;
+			const token = tokens[ti];
+
+			let candidates: string[];
+			if (ti === 0) {
+				candidates = registry.names().filter((n) => n.startsWith(token));
+			} else {
+				const { dirPart, names } = pathCandidates(token);
+				candidates = names.map((n) => dirPart + n);
+			}
+			if (candidates.length === 0) return;
+
+			if (candidates.length === 1) {
+				const done = candidates[0];
+				setToken(tokens, ti, done.endsWith("/") ? done : done + " ", after);
+				tabStuck = false;
+				return;
+			}
+
+			const prefix = commonPrefix(candidates);
+			if (prefix.length > token.length) {
+				setToken(tokens, ti, prefix, after);
+				tabStuck = false;
+			} else if (tabStuck) {
+				// Segundo Tab sin progreso: lista de opciones (solo basenames).
+				const labels = candidates.map((c) => {
+					const isDir = c.endsWith("/");
+					const base = c.replace(/\/$/, "").split("/").pop() ?? c;
+					return isDir ? base + "/" : base;
+				});
+				appendLine(
+					labels.map((d, i) => ({
+						text: (i ? "  " : "") + d,
+						tone: "data" as const,
+					})),
+				);
+				scrollToBottom();
+				tabStuck = false;
+			} else {
+				tabStuck = true;
+			}
+		};
+
+		input.addEventListener("keydown", (e) => {
+			if (e.key !== "Tab") tabStuck = false;
+
+			if (e.key === "ArrowUp") {
+				e.preventDefault();
+				if (state.history.length === 0) return;
+				if (historyIndex === state.history.length) draft = input.value;
+				historyIndex = Math.max(0, historyIndex - 1);
+				input.value = state.history[historyIndex];
+				moveCursorToEnd();
+			} else if (e.key === "ArrowDown") {
+				e.preventDefault();
+				if (historyIndex === state.history.length) return;
+				historyIndex += 1;
+				input.value =
+					historyIndex === state.history.length
+						? draft
+						: state.history[historyIndex];
+				moveCursorToEnd();
+			} else if (e.key === "Tab") {
+				e.preventDefault();
+				handleTab();
+			} else if (e.ctrlKey && (e.key === "l" || e.key === "L")) {
+				e.preventDefault();
+				effects.clear();
+			} else if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+				e.preventDefault();
+				const [top, bot] = buildPrompt(state);
+				appendLine(top, true);
+				appendLine(
+					[...bot, { text: " " + input.value + "^C", tone: "dim" }],
+					true,
+				);
+				input.value = "";
+				historyIndex = state.history.length;
+				draft = "";
+				scrollToBottom();
+			}
+		});
+
+		// Atajos globales:
+		// - Ctrl+`  alterna acoplado ↔ pantalla completa.
+		// - `/` o `` ` `` enfocan la barra (salvo que ya se escriba en otro campo).
+		// - Esc: en pantalla completa → acoplado (vía `cancel` del dialog);
+		//        acoplado y enfocado → desenfoca.
+		document.addEventListener("keydown", (e) => {
+			const active = document.activeElement as HTMLElement | null;
+			const typing =
+				!!active &&
+				(active.tagName === "INPUT" ||
+					active.tagName === "TEXTAREA" ||
+					active.isContentEditable);
+
+			if (e.ctrlKey && e.key === "`") {
+				e.preventDefault();
+				toggleFullscreen();
+			} else if ((e.key === "/" || e.key === "`") && !typing) {
+				e.preventDefault();
+				input.focus();
+			} else if (e.key === "Escape" && !isFullscreen && active === input) {
+				input.blur();
+			}
+		});
+	}
+</script>
+
+<style>
+	.cmdbar {
+		position: fixed;
+		width: 100%;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 900; /* sobre el nav (3); bajo CRT (1000) y modales */
+		display: flex;
+		flex-direction: column;
+		font-family: var(--font-terminal);
+		pointer-events: none;
+	}
+	.cmdbar[hidden] {
+		display: none;
+	}
+
+	.cmdbar__log {
+		pointer-events: auto;
+		max-height: 32vh;
+		overflow-y: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 0.15em;
+		padding: 0.4em 0.6em;
+		/* Historial en la misma tipografía que el input (VT323) para coherencia. */
+		font-family: var(--font-terminal);
+		font-size: clamp(1rem, 2.6vw, 1.2rem);
+		line-height: 1.3;
+		background-color: color-mix(in srgb, var(--bg-field) 78%, transparent);
+		backdrop-filter: blur(10px);
+	}
+	.cmdbar__log:empty {
+		display: none;
+	}
+	/* El color de cada segmento (tono) y el ajuste de línea del log se aplican
+     INLINE desde el JS (ver fillSegments/appendLine): esos elementos se crean en
+     cliente y no reciben el scope de Astro, así que reglas .tone-* scopeadas no
+     les aplicarían. No añadir aquí colores de tono: no tendrían efecto. */
+
+	.cmdbar__form {
+		pointer-events: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.1em;
+		padding: 0.35em 0.7em;
+		background-color: color-mix(in srgb, var(--bg-base) 90%, transparent);
+		backdrop-filter: blur(10px);
+		border-top: 1px solid color-mix(in srgb, var(--red-muted) 45%, transparent);
+	}
+  .cmdbar__prompt-hint {
+    width: 100%;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+  }
+	.cmdbar__prompt-top {
+		font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	/* La línea del input (╰─λ + input + pista) está PLEGADA mientras la terminal
+     no tiene foco: solo se ve la línea superior (╭─ usuario at host in ruta).
+     Al enfocar (clic en el prompt, `/` o `` ` ``) se despliega hacia arriba y
+     revela el input; al salir del foco se pliega de nuevo. */
+	.cmdbar__prompt-line {
+		display: flex;
+		align-items: center;
+		gap: 0.4em;
+		max-height: 0;
+		opacity: 0;
+		overflow: hidden;
+		transition:
+			max-height 0.3s ease,
+			opacity 0.25s ease;
+	}
+	.cmdbar__form:focus-within .cmdbar__prompt-line {
+		max-height: 3em;
+		opacity: 1;
+	}
+	/* En pantalla completa el input siempre visible (el foco queda atrapado en el
+     dialog, y aunque se clique un enlace del log no debe plegarse). */
+	.cmdbar-dialog .cmdbar__prompt-line {
+		max-height: 3em;
+		opacity: 1;
+	}
+	.cmdbar__prompt {
+		display: flex;
+		align-items: center;
+		font-size: clamp(0.95rem, 2.8vw, 1.15rem);
+		white-space: nowrap;
+		cursor: text;
+	}
+	.cmdbar__input {
+		flex: 1;
+		min-width: 0;
+		background: transparent;
+		color: var(--amber-core);
+		font-family: var(--font-terminal);
+		font-size: clamp(1rem, 3vw, 1.25rem);
+		caret-color: var(--amber-glow);
+		/* Cursor de bloque en ámbar donde el navegador lo soporta (progresivo);
+       si no, cae a la barra parpadeante nativa, también en ámbar. El parpadeo
+       lo controla el navegador/SO, que ya respeta prefers-reduced-motion. */
+		caret-shape: block;
+		outline: none;
+	}
+	.cmdbar__input::placeholder {
+		color: color-mix(in srgb, var(--red-core) 45%, transparent);
+	}
+	.cmdbar__input:focus-visible {
+		outline: none;
+	}
+	.cmdbar__form:focus-within {
+		border-color: var(--amber-glow);
+		box-shadow: 0 0 12px color-mix(in srgb, var(--amber-glow) 35%, transparent);
+	}
+	.cmdbar__hint {
+		font-family: var(--font-body);
+		font-size: 0.62rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: color-mix(in srgb, var(--red-core) 50%, transparent);
+		white-space: nowrap;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cmdbar__prompt-line {
+			transition: none;
+		}
+	}
+
+	.cmdbar__shell {
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		pointer-events: auto;
+		font-family: var(--font-terminal);
+	}
+
+	/* ===== Pantalla completa (100dvh, no 100vh, por el teclado virtual) =====
+     El shell (log + form) se MUEVE aquí por JS y se abre con showModal(): el
+     <dialog> aporta focus trap, ::backdrop y Esc nativos. */
+	.cmdbar-dialog {
+		width: 100vw;
+		max-width: 100vw;
+		height: 100dvh;
+		max-height: 100dvh;
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: color-mix(in srgb, var(--bg-field) 96%, transparent);
+		color: var(--red-core);
+	}
+	.cmdbar-dialog::backdrop {
+		background: color-mix(in srgb, var(--bg-field) 85%, transparent);
+		backdrop-filter: blur(4px);
+	}
+	.cmdbar-dialog[open] {
+		display: flex;
+		flex-direction: column;
+	}
+	.cmdbar-dialog__viewport {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		min-height: 0;
+	}
+	/* En pantalla completa el shell y el log llenan el alto disponible; el log
+     sube su tope (tree / genera ~20 líneas y 32vh se queda corto). */
+	.cmdbar-dialog .cmdbar__shell {
+		flex: 1 1 auto;
+		height: 100%;
+	}
+	.cmdbar-dialog .cmdbar__log {
+		max-height: none;
+		flex: 1 1 auto;
+		min-height: 0;
+		background: transparent;
+	}
+	.cmdbar-dialog .cmdbar__log:empty {
+		display: flex;
+	}
+
+	@media (max-width: 560px) {
+		.cmdbar__hint {
+			display: none;
+		}
+	}
+</style>
