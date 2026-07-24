@@ -322,6 +322,10 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			scrollToBottom();
 		};
 
+		// Cambio de página a mitad de tarea: abortar para no dejar temporizadores
+		// huérfanos (pagehide cubre también las view transitions de Astro).
+		window.addEventListener("pagehide", () => taskController?.abort());
+
 		const effects: ShellEffects = {
 			clear: () => logEl.replaceChildren(),
 			open: (url) => {
@@ -457,10 +461,12 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			const wasFocused = document.activeElement === input;
 			const result = await execute(raw, ctx);
 			if (result) renderResult(result);
-			// Si el usuario seguía en el input tras una tarea, devuélvele el foco (el
-			// input `disabled` lo pierde); si se fue a otro sitio, no se lo robamos.
-			if (wasFocused && !input.disabled && document.activeElement !== input) {
-				input.focus();
+			// Foco tras una tarea: al deshabilitar el input durante la animación el
+			// foco cae en <body>. Se lo devolvemos solo si sigue evaporado ahí (fue
+			// cosa nuestra); si el usuario se fue a otro elemento, no se lo robamos.
+			if (wasFocused && !input.disabled) {
+				const ae = document.activeElement;
+				if (!ae || ae === document.body) input.focus();
 			}
 			historyIndex = state.history.length; // ↑ arranca desde el más reciente
 			draft = "";
