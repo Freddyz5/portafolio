@@ -1,3 +1,22 @@
+# [1.12.0](https://github.com/Freddyz5/portafolio/compare/v1.11.0...v1.12.0) (2026-07-24)
+
+
+### Bug Fixes
+
+* **terminal:** apply tone colors inline and fold the input until focus ([2b09ea3](https://github.com/Freddyz5/portafolio/commit/2b09ea35871eb9315e94fcdb7790749353733f91))
+
+
+### Features
+
+* **terminal:** add filesystem and system commands ([90307b2](https://github.com/Freddyz5/portafolio/commit/90307b20b55f9b1e9e7614a344fca7892e1e7297))
+* **terminal:** add fullscreen mode ([59ac0ae](https://github.com/Freddyz5/portafolio/commit/59ac0aed891c1c5674cd236884433a92dbba5b73))
+* **terminal:** add history navigation and tab completion ([59c9155](https://github.com/Freddyz5/portafolio/commit/59c9155802dccc828bbcfcf7a5a93c0db103490e))
+* **terminal:** add program-boot animation on open ([449f05e](https://github.com/Freddyz5/portafolio/commit/449f05ed3a221498b0297f4fab0d765af827cedb))
+* **terminal:** add segmented multiline prompt ([5f67f52](https://github.com/Freddyz5/portafolio/commit/5f67f52ff4250d2eed6c2fa524551fe00232bc6a))
+* **terminal:** add shell core (output, state, parser, registry) ([23adba9](https://github.com/Freddyz5/portafolio/commit/23adba9cdc83cf35c4af219cf6f55def626a8ed8))
+* **terminal:** derive virtual filesystem from resume.json ([ac11dfe](https://github.com/Freddyz5/portafolio/commit/ac11dfead4d7b41c2502d04b3073ec5ae70671b5))
+* **terminal:** reveal docked input on focus, unify history font, recolor prompt ([98c684e](https://github.com/Freddyz5/portafolio/commit/98c684e9ab1ced59086bf5de18a8b1b37c968208))
+
 # [1.11.0](https://github.com/Freddyz5/portafolio/compare/v1.10.0...v1.11.0) (2026-07-23)
 
 
