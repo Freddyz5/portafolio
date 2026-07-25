@@ -294,4 +294,28 @@ const SOCIAL_ICONS: Record<string, AstroComponentFactory> = {
     display: flex;
     gap: 1rem;
   }
+
+  /* ===== Tablet (≤900): el panel ocupa casi todo el ancho ===== */
+  @media (max-width: 900px) {
+    header,
+    article { width: 90%; }
+  }
+
+  /* ===== Móvil (≤600): panel a todo el ancho, tarjetas de contacto y campos
+     apilados, y se libera la altura fija de la sección para no recortar ===== */
+  @media (max-width: 600px) {
+    header,
+    article { width: 100%; }
+    article { padding: 1.5rem; }
+    #contact { height: auto !important; }
+    .contact-info { flex-direction: column; }
+    .contact-info a {
+      width: 100%;
+      height: auto;
+      padding: 1.25rem;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+    .two-inputs { flex-direction: column; gap: 0; }
+  }
 </style>
