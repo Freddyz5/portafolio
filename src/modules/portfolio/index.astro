@@ -20,7 +20,7 @@ const { basics, works, projects, techBays } = data;
   <Home lang={lang} name={basics.name} label={basics.label} />
   <About lang={lang} summary={basics.summary} name={basics.name} image={basics.image} />
   <Experience lang={lang} works={works} />
-  <Projects lang={lang} projects={projects} />
+  <Projects lang={lang} projects={projects.filter((p: any) => p.featured)} />
   <Technologies lang={lang} techBays={techBays} />
   <Contact lang={lang} basics={basics} />
 </main>

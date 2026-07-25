@@ -40,6 +40,19 @@ const { lang, name, label } = Astro.props;
 </section>
 
 <script>
+	import { onTerminalActiveChange } from "../../../shared/utils/terminalActivity";
+
+	// Cursor decorativo del hero vs. cursor real de la terminal: cuando la
+	// terminal está activa (foco o pantalla completa) se apaga con opacity para
+	// no competir con el caret de la terminal, sin desmontarlo del DOM (evita
+	// reflow). Store compartido: este componente no conoce nada de Terminal.astro.
+	const heroCursor = document.querySelector<HTMLElement>(".hero-cursor");
+	if (heroCursor) {
+		onTerminalActiveChange((active) => {
+			heroCursor.classList.toggle("cursor-suppressed", active);
+		});
+	}
+
 	// Scroll a secciones (se conservan los IDs previos)
 	const contactButton = document.getElementById("contact-button");
 	contactButton?.addEventListener("click", () => {
@@ -142,6 +155,13 @@ const { lang, name, label } = Astro.props;
 		background-color: var(--amber-glow);
 		box-shadow: var(--text-glow-amber);
 		animation: hero-cursor-blink 1.1s step-end infinite;
+	}
+	/* Terminal activa (foco o pantalla completa): se apaga sin desmontarse ni
+	   usar display:none, para no generar reflow en el layout del hero. La
+	   especificidad de dos clases ya gana sobre .hero-cursor sin !important. */
+	.hero-cursor.cursor-suppressed {
+		animation: none;
+		opacity: 0;
 	}
 
 	/* ===== CTAs ===== */

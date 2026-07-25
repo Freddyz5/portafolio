@@ -5,18 +5,25 @@ import ProjectsCard from "./ProjectsCard.astro";
 interface Props {
   lang: "es" | "en";
   projects: any[];
+  showStatus?: boolean;
+  title?: string;
+  subTittle?: string;
 }
 
-const { lang, projects } = Astro.props;
+const {
+  lang,
+  projects,
+  showStatus = false,
+  title = lang === "es" ? "Proyectos destacados" : "Featured Projects",
+  subTittle = lang === "es"
+    ? "PRESENTACIÓN_DE_PORTAFOLIO • SISTEMAS_DE_MISIÓN_CRÍTICA"
+    : "PORTFOLIO_SHOWCASE • MISSION_CRITICAL_SYSTEMS",
+} = Astro.props;
 ---
 
-<Section
-  id="projects"
-  title={lang === "es" ? "Proyectos destacados" : "Featured Projects"}
-  subTittle={lang === "es" ? "PRESENTACIÓN_DE_PORTAFOLIO • SISTEMAS_DE_MISIÓN_CRÍTICA" : "PORTFOLIO_SHOWCASE • MISSION_CRITICAL_SYSTEMS"}
->
+<Section id="projects" title={title} subTittle={subTittle}>
   <div class="cards-wrapper">
-    {projects && projects.map(({ id, name, image, summary, description, technologies, url, repo }) =>
+    {projects && projects.map(({ id, name, image, summary, description, technologies, url, repo, projectStatus }) =>
       <ProjectsCard
         id={id}
         lang={lang}
@@ -27,6 +34,8 @@ const { lang, projects } = Astro.props;
         technologies={technologies}
         url={url}
         repo={repo}
+        projectStatus={projectStatus}
+        showStatus={showStatus}
       />
     )}
   </div>

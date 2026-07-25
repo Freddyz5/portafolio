@@ -83,6 +83,11 @@ primera persona para los highlights. Nada de relleno tipo "lorem ipsum".
 - `status`: si está en curso → `{ "es": "En desarrollo", "en": "In Development" }`;
   si está terminado → `{ "es": "Completado", "en": "Completed" }`. Pregunta al usuario
   si no es evidente.
+- `featured`: `true` si debe aparecer también en el home (destacado); `false` si solo
+  debe listarse en `/projects`. Pregunta al usuario si no es evidente.
+- `projectStatus`: uno de `"active" | "finished" | "cancelled" | "personal"` — alimenta
+  el badge visual de `/projects` (Activo/Finalizado/Cancelado/Personal). Es distinto de
+  `status` (la línea descriptiva bilingüe de arriba, usada en CV/ATS/terminal).
 
 ## Paso 5 — Construir el objeto en el esquema EXACTO
 
@@ -91,6 +96,8 @@ Usa esta forma (respeta las claves y el anidamiento `{es,en}`):
 ```json
 {
   "id": "proj-<slug-corto-en-kebab-case>",
+  "featured": true,
+  "projectStatus": "active",
   "name": { "es": "<Nombre>", "en": "<Name>" },
   "startDate": "<AÑO>",
   "endDate": null,

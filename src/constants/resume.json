@@ -791,6 +791,8 @@
   "projects": [
     {
       "id": "proj-expense-control",
+      "featured": true,
+      "projectStatus": "active",
       "name": {
         "es": "Plataforma de Control de Gastos",
         "en": "Expense Control Platform"
@@ -955,6 +957,8 @@
     },
     {
       "id": "proj-vision-craft",
+      "featured": true,
+      "projectStatus": "active",
       "name": {
         "es": "Vision Craft",
         "en": "Vision Craft"

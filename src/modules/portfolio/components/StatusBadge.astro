@@ -1,0 +1,40 @@
+---
+interface Props {
+  lang: "es" | "en";
+  status: "active" | "finished" | "cancelled" | "personal";
+}
+
+const { lang, status } = Astro.props;
+
+const LABELS: Record<Props["status"], { es: string; en: string }> = {
+  active: { es: "Activo", en: "Active" },
+  finished: { es: "Finalizado", en: "Finished" },
+  cancelled: { es: "Cancelado", en: "Cancelled" },
+  personal: { es: "Personal", en: "Personal" },
+};
+
+const COLORS: Record<Props["status"], string> = {
+  active: "var(--cyan-glow)",
+  finished: "var(--red-muted)",
+  cancelled: "var(--red-glow)",
+  personal: "var(--amber-glow)",
+};
+
+const label = LABELS[status]?.[lang] ?? LABELS.active[lang];
+const color = COLORS[status] ?? COLORS.active;
+---
+
+<span class="status-badge" style={`--badge-color: ${color}`}>{label}</span>
+
+<style>
+  .status-badge {
+    font-family: var(--font-terminal);
+    font-size: 0.9em;
+    letter-spacing: 0.05em;
+    color: var(--badge-color);
+    border: 1px solid var(--badge-color);
+    border-radius: 3px;
+    padding: 0.1em 0.5em;
+    white-space: nowrap;
+  }
+</style>
