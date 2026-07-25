@@ -3,6 +3,7 @@ import SquareChevronRight from "src/shared/icons/SquareChevronRight.astro";
 import Chip from "../components/Chip.astro";
 import Github from "src/shared/icons/Github.astro";
 import Link from "src/shared/icons/Link.astro";
+import StatusBadge from "./StatusBadge.astro";
 
 interface Props {
   id?: string | null | undefined;
@@ -14,9 +15,23 @@ interface Props {
   technologies: string[];
   url: string;
   repo: string;
+  projectStatus?: "active" | "finished" | "cancelled" | "personal";
+  showStatus?: boolean;
 }
 
-const { id, lang, name, image, summary, description, technologies, url, repo } = Astro.props;
+const {
+  id,
+  lang,
+  name,
+  image,
+  summary,
+  description,
+  technologies,
+  url,
+  repo,
+  projectStatus,
+  showStatus = false,
+} = Astro.props;
 
 // Chips visibles en la tarjeta (el stack completo se ve en el detalle).
 const STACK_LIMIT = 5;
@@ -41,6 +56,9 @@ const vtTitle = id
   <header>
     <SquareChevronRight />
     <h5 style={vtTitle}>{name.split(" ").join("_")}</h5>
+    {showStatus && projectStatus && (
+      <StatusBadge lang={lang} status={projectStatus} />
+    )}
   </header>
   <figure style={vtFigure}>
     <img
@@ -116,7 +134,7 @@ const vtTitle = id
     letter-spacing: 0.05em;
     transition: color 0.3s ease;
   }
-  header h5 { font-weight: 500; }
+  header h5 { font-weight: 500; flex: 1; }
   figure {
     width: 100%;
     height: 200px;

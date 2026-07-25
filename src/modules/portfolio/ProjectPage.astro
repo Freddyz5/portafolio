@@ -13,7 +13,13 @@ const { projects } = data;
 ---
 
 <main>
-  <ProjectsComponent lang={lang} projects={projects} />
+  <ProjectsComponent
+    lang={lang}
+    projects={projects}
+    showStatus={true}
+    title={lang === "es" ? "Todos los proyectos" : "All Projects"}
+    subTittle={lang === "es" ? "ARCHIVO_COMPLETO • REGISTRO_DE_MISIONES" : "FULL_ARCHIVE • MISSION_LOG"}
+  />
   <ProjectsDetail lang={lang} projects={projects} />
 </main>
 

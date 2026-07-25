@@ -125,6 +125,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	import { isHidden, resolveNode, resolvePath } from "../fs/resolve";
 	import type { CommandResult, Line, Tone } from "../core/output";
 	import type { DirNode } from "../fs/types";
+	import { setTerminalActive } from "../../../shared/utils/terminalActivity";
 
 	const bar = document.getElementById("fr3d-cmd");
 	const vfsTag = document.getElementById("fr3d-vfs");
@@ -258,6 +259,19 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		let isFullscreen = false;
 		let lastActiveBeforeFs: HTMLElement | null = null;
 
+		// "Terminal activa" = tiene foco el input, está en pantalla completa o hay
+		// una tarea en curso (el input se deshabilita/pierde foco mientras corre,
+		// pero la terminal sigue siendo la protagonista en pantalla). Único punto
+		// que escribe en el store compartido; el resto del sitio (ej. el cursor
+		// del hero) solo lee, nunca conoce estos detalles. `taskRunning` se
+		// declara más abajo pero ya está inicializada cuando esto se invoca
+		// (los listeners solo disparan tras correr el script completo).
+		const updateActiveState = () => {
+			setTerminalActive(
+				isFullscreen || taskRunning || document.activeElement === input,
+			);
+		};
+
 		const enterFullscreen = () => {
 			if (isFullscreen) return;
 			lastActiveBeforeFs = document.activeElement as HTMLElement | null;
@@ -267,6 +281,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			// No autoenfocar en móvil: dispararía el teclado virtual sin pedirlo.
 			if (!window.matchMedia("(pointer: coarse)").matches) input.focus();
 			scrollToBottom();
+			updateActiveState();
 		};
 
 		const exitFullscreen = () => {
@@ -275,6 +290,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			dialog.close();
 			isFullscreen = false;
 			(lastActiveBeforeFs ?? input).focus();
+			updateActiveState();
 		};
 
 		const toggleFullscreen = () =>
@@ -318,6 +334,9 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			} else {
 				input.placeholder = defaultPlaceholder;
 			}
+			// Deshabilitar el input le quita el foco (dispara blur): sin esto la
+			// terminal se marcaría "inactiva" a mitad de una tarea en curso.
+			updateActiveState();
 		};
 
 		// El sink que consume el runner: reutiliza appendLine/fillSegments. El
@@ -506,6 +525,9 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		form.addEventListener("click", (e) => {
 			if (!(e.target as HTMLElement).closest("a")) input.focus();
 		});
+
+		input.addEventListener("focus", updateActiveState);
+		input.addEventListener("blur", updateActiveState);
 
 		renderPrompt(); // prompt inicial
 
