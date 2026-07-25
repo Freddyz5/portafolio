@@ -1,3 +1,21 @@
+# [1.13.0](https://github.com/Freddyz5/portafolio/compare/v1.12.0...v1.13.0) (2026-07-25)
+
+
+### Bug Fixes
+
+* **layout:** comment out mouse tracking styles ([9853a78](https://github.com/Freddyz5/portafolio/commit/9853a781209c3eb148e52582a5554084b64d19c2))
+* **terminal:** a11y and motion handling for task animations ([9fe337b](https://github.com/Freddyz5/portafolio/commit/9fe337bf40c69fe30a8a6f13932a3f00e5803d05))
+
+
+### Features
+
+* add featured project filtering, status badges, and terminal tweaks ([44a34ea](https://github.com/Freddyz5/portafolio/commit/44a34ead7581204a089964c6cb229f2b08f19cca))
+* **terminal:** add async task runner with progressive output ([3593513](https://github.com/Freddyz5/portafolio/commit/3593513aa525a5f0ef257120bb0c4b984639fd34))
+* **terminal:** add breadcrumbs to discover hidden commands ([04d857d](https://github.com/Freddyz5/portafolio/commit/04d857da45633918844f82eedfc31c2ad77d0c32))
+* **terminal:** add rotating install errors and package responses ([e879001](https://github.com/Freddyz5/portafolio/commit/e879001e22d7437b53e06890b10f733583fe4a50))
+* **terminal:** add simulated install command ([130af0f](https://github.com/Freddyz5/portafolio/commit/130af0f768e66e9e3a22274f88934ffa2649a5ae))
+* **terminal:** add task sink, busy state and cancellation ([26e8b65](https://github.com/Freddyz5/portafolio/commit/26e8b653992e8ae74c8b1c70317ef99d991e2087))
+
 # [1.12.0](https://github.com/Freddyz5/portafolio/compare/v1.11.0...v1.12.0) (2026-07-24)
 
 
