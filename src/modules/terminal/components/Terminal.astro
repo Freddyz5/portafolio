@@ -10,6 +10,11 @@
     easter eggs) es exclusivo.
   - No captura el foco por defecto ni interfiere con el scroll. Se enfoca con `/`
     o `` ` `` (o click) y se sale con `Esc`. Sin focus trap.
+  - Jerarquía de `Esc` (3 niveles): tarea en curso → aborta la tarea; pantalla
+    completa → vuelve a acoplado; acoplado y enfocado → desenfoca el input.
+  - Tareas asíncronas (comandos con salida progresiva, p. ej. `install`): corren
+    contra un TerminalSink que reescribe líneas en vivo. Mientras una corre, el
+    input queda `disabled` (una tarea a la vez) y Ctrl+C / Esc la abortan.
   - EXCEPCIÓN — pantalla completa (Ctrl+` o comando `fullscreen`): la terminal
     cubre el viewport y SÍ se comporta como modal (<dialog> + showModal: role
     dialog, aria-modal, focus trap, foco devuelto al salir). Es la conducta
@@ -21,8 +26,17 @@
   maestro completo.
 */
 import resume from "../../../constants/resume.json";
+import pkg from "../../../../package.json";
 import { separateLanguages } from "../../../shared/utils/languageSeparator";
 import { buildTree } from "../fs/build";
+
+// Nombres de las dependencias REALES del proyecto, extraídos en build time para
+// que `install <dep>` responda "ya está instalado". Solo viajan los nombres al
+// cliente, nunca el package.json entero.
+const installPackages = [
+	...Object.keys((pkg as { dependencies?: Record<string, string> }).dependencies ?? {}),
+	...Object.keys((pkg as { devDependencies?: Record<string, string> }).devDependencies ?? {}),
+];
 
 interface Props {
 	lang: "es" | "en" | string;
@@ -48,6 +62,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	class="cmdbar"
 	data-lang={isEs ? "es" : "en"}
 	data-base={BASE_URL}
+	data-packages={JSON.stringify(installPackages)}
 	aria-label={isEs ? "Barra de comandos (opcional)" : "Command bar (optional)"}
 	hidden>
 	<div class="cmdbar__shell" id="fr3d-shell">
@@ -103,12 +118,14 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	import { createState } from "../core/state";
 	import { Registry } from "../core/registry";
 	import type { ShellContext, ShellEffects } from "../core/registry";
+	import type { TerminalSink, LineHandle } from "../core/sink";
 	import { execute } from "../core/execute";
 	import { COMMANDS } from "../commands";
 	import { buildPrompt } from "../constants/PROMPT";
 	import { isHidden, resolveNode, resolvePath } from "../fs/resolve";
 	import type { CommandResult, Line, Tone } from "../core/output";
 	import type { DirNode } from "../fs/types";
+	import { setTerminalActive } from "../../../shared/utils/terminalActivity";
 
 	const bar = document.getElementById("fr3d-cmd");
 	const vfsTag = document.getElementById("fr3d-vfs");
@@ -141,9 +158,41 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	) {
 		const lang = (bar.dataset.lang === "en" ? "en" : "es") as "es" | "en";
 		const base = bar.dataset.base || "";
+		// Nombres de dependencias reales (build time) para el comando `install`.
+		let packages: string[] = [];
+		try {
+			const parsed = JSON.parse(bar.dataset.packages || "[]");
+			if (Array.isArray(parsed)) packages = parsed.filter((p) => typeof p === "string");
+		} catch {}
 
 		// Mejora progresiva: la barra solo aparece con JS.
 		bar.hidden = false;
+
+		// Guiño para quien abre la consola del navegador (devs, reclutadores
+		// técnicos): FR-3D saluda y planta un hilo del que tirar, sin listar los
+		// comandos ocultos — el mérito del hallazgo sigue siendo del visitante.
+		// Guardado en window para no repetirlo si el script corriera dos veces.
+		const w = window as typeof window & { __fr3dMotd?: boolean };
+		if (!w.__fr3dMotd) {
+			w.__fr3dMotd = true;
+			const [headline, tip] =
+				lang === "es"
+					? [
+							"Núcleo de a bordo en línea.",
+							"No todo lo que sé cabe en `help`. Los curiosos prueban a instalar algo.",
+						]
+					: [
+							"Onboard core online.",
+							"Not everything I know fits in `help`. The curious try installing something.",
+						];
+			const mono =
+				"font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;";
+			console.log(
+				`%cFR-3D>%c ${headline}\n       ${tip}`,
+				`color:#FFB000;font-weight:700;${mono}`,
+				`color:#FFB000;line-height:1.7;${mono}`,
+			);
+		}
 
 		const fs = JSON.parse(vfsTag.textContent || "{}") as DirNode;
 		const state = createState(lang);
@@ -210,6 +259,19 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		let isFullscreen = false;
 		let lastActiveBeforeFs: HTMLElement | null = null;
 
+		// "Terminal activa" = tiene foco el input, está en pantalla completa o hay
+		// una tarea en curso (el input se deshabilita/pierde foco mientras corre,
+		// pero la terminal sigue siendo la protagonista en pantalla). Único punto
+		// que escribe en el store compartido; el resto del sitio (ej. el cursor
+		// del hero) solo lee, nunca conoce estos detalles. `taskRunning` se
+		// declara más abajo pero ya está inicializada cuando esto se invoca
+		// (los listeners solo disparan tras correr el script completo).
+		const updateActiveState = () => {
+			setTerminalActive(
+				isFullscreen || taskRunning || document.activeElement === input,
+			);
+		};
+
 		const enterFullscreen = () => {
 			if (isFullscreen) return;
 			lastActiveBeforeFs = document.activeElement as HTMLElement | null;
@@ -219,6 +281,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			// No autoenfocar en móvil: dispararía el teclado virtual sin pedirlo.
 			if (!window.matchMedia("(pointer: coarse)").matches) input.focus();
 			scrollToBottom();
+			updateActiveState();
 		};
 
 		const exitFullscreen = () => {
@@ -227,6 +290,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			dialog.close();
 			isFullscreen = false;
 			(lastActiveBeforeFs ?? input).focus();
+			updateActiveState();
 		};
 
 		const toggleFullscreen = () =>
@@ -236,8 +300,76 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		// en vez de cerrar del todo (mismo patrón que ExperienceDetail.astro).
 		dialog.addEventListener("cancel", (e) => {
 			e.preventDefault();
+			// Jerarquía de Esc: una tarea en curso se aborta antes que salir de
+			// pantalla completa.
+			if (taskRunning) {
+				abortTask();
+				return;
+			}
 			exitFullscreen();
 		});
+
+		/* ----- Motor de tareas: sink, estado ocupado y cancelación --------- */
+
+		// Placeholder original del input (localizado en el frontmatter), para
+		// restaurarlo al salir del estado ocupado.
+		const defaultPlaceholder = input.placeholder;
+
+		// Una tarea a la vez. La terminal es dueña del AbortController; se renueva
+		// por comando (ver submit) y lo abortan Ctrl+C / Esc. `taskRunning` refleja
+		// busy() y decide si Ctrl+C aborta una tarea o solo limpia el input.
+		let taskController: AbortController | null = null;
+		let taskRunning = false;
+
+		// Bloquea/libera el input mientras corre una tarea. Las teclas pulsadas
+		// durante la ejecución se descartan (input disabled), no se encolan.
+		const setBusy = (running: boolean) => {
+			taskRunning = running;
+			input.disabled = running;
+			shell.setAttribute("aria-busy", running ? "true" : "false");
+			form.dataset.busy = running ? "true" : "false";
+			if (running) {
+				input.value = "";
+				input.placeholder = lang === "es" ? "trabajando…" : "working…";
+			} else {
+				input.placeholder = defaultPlaceholder;
+			}
+			// Deshabilitar el input le quita el foco (dispara blur): sin esto la
+			// terminal se marcaría "inactiva" a mitad de una tarea en curso.
+			updateActiveState();
+		};
+
+		// El sink que consume el runner: reutiliza appendLine/fillSegments. El
+		// handle de una línea es el <div> que appendLine devuelve; sobrevive al
+		// movimiento del shell entre acoplado y <dialog> (es una referencia a nodo).
+		const taskSink: TerminalSink = {
+			write: (lineData, announce = false) => {
+				const el = appendLine(lineData, !announce);
+				scrollToBottom();
+				return el as LineHandle;
+			},
+			// Siempre vía fillSegments: reasignar textContent dejaría la línea sin
+			// tono (el color es inline) y saldría en --red-core sin avisar.
+			update: (handle, lineData) => fillSegments(handle as HTMLElement, lineData),
+			busy: (running) => setBusy(running),
+			reducedMotion: () =>
+				window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+		};
+
+		// Aborta la tarea en curso y deja rastro (^C), como la interrupción normal.
+		// El runner libera el input en su `finally` poco después.
+		const abortTask = () => {
+			if (!taskRunning || !taskController) return;
+			taskController.abort();
+			const [top, bot] = buildPrompt(state);
+			appendLine(top, true);
+			appendLine([...bot, { text: " ^C", tone: "dim" }], true);
+			scrollToBottom();
+		};
+
+		// Cambio de página a mitad de tarea: abortar para no dejar temporizadores
+		// huérfanos (pagehide cubre también las view transitions de Astro).
+		window.addEventListener("pagehide", () => taskController?.abort());
 
 		const effects: ShellEffects = {
 			clear: () => logEl.replaceChildren(),
@@ -255,9 +387,12 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 					: path.replace("/en/", "/es/");
 			},
 			toggleFullscreen: () => toggleFullscreen(),
+			task: taskSink,
+			// La señal se renueva por comando en el submit; lazy por seguridad.
+			taskSignal: () => (taskController ??= new AbortController()).signal,
 		};
 
-		const ctx: ShellContext = { state, fs, registry, lang, effects };
+		const ctx: ShellContext = { state, fs, registry, lang, effects, packages };
 
 		// Estado de ergonomía de shell (historial, autocompletado).
 		let historyIndex = state.history.length; // índice en state.history; length = borrador
@@ -321,7 +456,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		// a11y: el log es aria-live="polite". Para no leer 20 líneas de `tree`,
 		// el eco y todo salvo la primera línea útil del resultado van aria-hidden;
 		// así solo se anuncia esa primera línea (constraint #4: el log sigue polite).
-		const appendLine = (lineData: Line, ariaHidden = false) => {
+		const appendLine = (lineData: Line, ariaHidden = false): HTMLDivElement => {
 			const div = document.createElement("div");
 			div.className = "cmdbar__line";
 			div.style.whiteSpace = "pre-wrap";
@@ -329,6 +464,7 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			if (ariaHidden) div.setAttribute("aria-hidden", "true");
 			fillSegments(div, lineData);
 			logEl.appendChild(div);
+			return div;
 		};
 
 		// Prompt de la barra: se construye desde state y se re-renderiza tras cada
@@ -364,8 +500,19 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 			if (!raw.trim()) return;
 			const prompt = buildPrompt(state); // prompt activo (cwd previo al comando)
 			echoCommand(raw, prompt);
+			// Señal fresca por comando: si el comando lanza una tarea, Ctrl+C / Esc
+			// abortan ESTA ejecución. Los comandos síncronos la ignoran.
+			taskController = new AbortController();
+			const wasFocused = document.activeElement === input;
 			const result = await execute(raw, ctx);
 			if (result) renderResult(result);
+			// Foco tras una tarea: al deshabilitar el input durante la animación el
+			// foco cae en <body>. Se lo devolvemos solo si sigue evaporado ahí (fue
+			// cosa nuestra); si el usuario se fue a otro elemento, no se lo robamos.
+			if (wasFocused && !input.disabled) {
+				const ae = document.activeElement;
+				if (!ae || ae === document.body) input.focus();
+			}
 			historyIndex = state.history.length; // ↑ arranca desde el más reciente
 			draft = "";
 			tabStuck = false;
@@ -378,6 +525,9 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 		form.addEventListener("click", (e) => {
 			if (!(e.target as HTMLElement).closest("a")) input.focus();
 		});
+
+		input.addEventListener("focus", updateActiveState);
+		input.addEventListener("blur", updateActiveState);
 
 		renderPrompt(); // prompt inicial
 
@@ -543,6 +693,22 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 					active.tagName === "TEXTAREA" ||
 					active.isContentEditable);
 
+			// Tarea en curso: el input está disabled, así que su propio manejador de
+			// Ctrl+C no dispara; se atienden aquí. Esc en pantalla completa lo cubre
+			// el `cancel` del dialog. Ctrl+` (pantalla completa) sigue permitido.
+			if (taskRunning) {
+				if (e.ctrlKey && (e.key === "c" || e.key === "C")) {
+					e.preventDefault();
+					abortTask();
+					return;
+				}
+				if (e.key === "Escape" && !isFullscreen) {
+					e.preventDefault();
+					abortTask();
+					return;
+				}
+			}
+
 			if (e.ctrlKey && e.key === "`") {
 				e.preventDefault();
 				toggleFullscreen();
@@ -641,9 +807,19 @@ const hint = isEs ? "[ / ] enfocar · [ esc ] cerrar" : "[ / ] focus · [ esc ] 
 	}
 	/* En pantalla completa el input siempre visible (el foco queda atrapado en el
      dialog, y aunque se clique un enlace del log no debe plegarse). */
-	.cmdbar-dialog .cmdbar__prompt-line {
+	.cmdbar-dialog .cmdbar__prompt-line,
+	/* Mientras corre una tarea el input está disabled (no puede tener foco), pero
+     se despliega igual para mostrar el estado "trabajando…". */
+	.cmdbar__form[data-busy="true"] .cmdbar__prompt-line {
 		max-height: 3em;
 		opacity: 1;
+	}
+	.cmdbar__form[data-busy="true"] .cmdbar__prompt {
+		opacity: 0.6;
+	}
+	.cmdbar__input:disabled {
+		cursor: progress;
+		opacity: 0.7;
 	}
 	.cmdbar__prompt {
 		display: flex;

@@ -8,6 +8,7 @@ import type { ShellState } from './state';
 import type { I18nText, Lang } from './i18n';
 import type { CommandResult } from './output';
 import type { ParsedCommand } from './parser';
+import type { TerminalSink } from './sink';
 import type { DirNode } from '../fs/types';
 
 /** Efectos de UI que un comando puede pedir; los implementa Terminal.astro. */
@@ -20,6 +21,17 @@ export interface ShellEffects {
   toggleLang(): void;
   /** Alterna entre barra acoplada y pantalla completa (comando `fullscreen`). */
   toggleFullscreen(): void;
+  /**
+   * Sink de salida progresiva: un comando animado escribe por aquí (vía
+   * `runTask`) en vez de devolver líneas. La terminal lo implementa reutilizando
+   * `appendLine`/`fillSegments`.
+   */
+  task: TerminalSink;
+  /**
+   * Señal de la tarea en curso, para pasarla a `runTask`. La terminal es dueña
+   * del `AbortController`; Ctrl+C y Esc lo abortan. Se renueva por comando.
+   */
+  taskSignal(): AbortSignal;
 }
 
 export interface ShellContext {
@@ -28,6 +40,12 @@ export interface ShellContext {
   registry: Registry;
   lang: Lang;
   effects: ShellEffects;
+  /**
+   * Nombres de las dependencias reales del proyecto, extraídos de package.json
+   * en build time (ver Terminal.astro). Los consume `install` para responder
+   * "ya está instalado" a un paquete que de verdad está en el árbol.
+   */
+  packages: string[];
 }
 
 export interface Command {
