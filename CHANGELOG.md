@@ -1,3 +1,18 @@
+# [1.14.0](https://github.com/Freddyz5/portafolio/compare/v1.13.0...v1.14.0) (2026-07-26)
+
+
+### Bug Fixes
+
+* **resume:** update summary and project descriptions for clarity and consistency ([2f13802](https://github.com/Freddyz5/portafolio/commit/2f138020f29253098e72ffe2de58605f90f3d832))
+* **ui:** improve responsive, accessibility, and UI polish ([87f2d39](https://github.com/Freddyz5/portafolio/commit/87f2d393123332006e4480f5dc8d0dd49ed590b9))
+
+
+### Features
+
+* agregar imagen del proyecto Jardín Zen al currículum ([d9fdfe7](https://github.com/Freddyz5/portafolio/commit/d9fdfe77fed011cf2f9327a56bb428ea872575ae))
+* agregar proyecto Jardín Zen al portafolio ([c454427](https://github.com/Freddyz5/portafolio/commit/c454427e8b5f7b4aeef16b1b577d304a9329f719))
+* **responsive:** unify breakpoints and make portfolio responsive ([1976fa7](https://github.com/Freddyz5/portafolio/commit/1976fa7cfa64632a8c5ce264e6426f4d362c8b1c)), closes [#mouse](https://github.com/Freddyz5/portafolio/issues/mouse)
+
 # [1.13.0](https://github.com/Freddyz5/portafolio/compare/v1.12.0...v1.13.0) (2026-07-25)
 
 
