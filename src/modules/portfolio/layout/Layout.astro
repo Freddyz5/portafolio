@@ -9,7 +9,6 @@ import '@fontsource/vt323/400.css';
 import NavBar from './components/NavBar.astro';
 import Terminal from '../../terminal/components/Terminal.astro';
 import Footer from './components/Footer.astro';
-import MobileWarning from '../../../shared/components/MobileWarning.astro';
 import type { Link } from './constants/links';
 
 interface Props {
@@ -31,7 +30,7 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
     <meta charset="UTF-8" />
     <title>{title}</title>
     <meta name="description" content={summary} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}/favicon.svg`} />
     <link rel="preload" as="image" href={image} />
 
@@ -51,26 +50,12 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
 
 	<body id="body">
 		<NavBar lang={lang} links={links} activeId={activeId} />
-		<MobileWarning lang={lang} />
-		<div id="mouse" />
 		<slot />
 		<Footer lang={lang} />
 		<Terminal lang={lang} />
 	</body>
 </html>
 
-<script>
-	const body = document.getElementById("body");
-	const mouse = document.getElementById("mouse");
-
-	body?.addEventListener("mousemove", (event) => {
-		const followMouse = [event.clientX, event.clientY];
-
-		mouse!.style.left = (followMouse[0] - 25) + "px";
-		mouse!.style.top = (followMouse[1] - 25) + "px";
-	})
-</script>
-	
 <style is:global>
 	:root {
 		color-scheme: light dark;
@@ -127,6 +112,14 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
 		--fs-lead: 1.125rem;                     /* ~18 */
 		--fs-body: 0.9375rem;                    /* ~15 */
 		--fs-meta: 0.75rem;                      /* ~12 */
+
+		/* ===== BREAKPOINTS CANÓNICOS (convención del proyecto) =====
+		   OJO: las custom properties NO funcionan dentro de `@media`, así que estos
+		   valores se usan como LITERALES en cada componente. Mantener SOLO estos dos
+		   cortes en todo el sitio; no introducir 480/560/700/760/1000/1024 sueltos.
+		     · Móvil   : @media (max-width: 600px)
+		     · Tablet  : @media (max-width: 900px)
+		   Desktop es el rango por defecto (contenedores a max-width: 1140px). */
 	}
 
 	html {
@@ -147,17 +140,6 @@ const { title, image, summary, url, lang, links, activeId } = Astro.props;
 			12 12,
 			pointer !important;
 	}
-
-	/* #mouse {
-		background-color: var(--cyan-glow);
-		position: fixed;
-		width: 50px;
-		height: 50px;
-		border-radius: 50%;
-		filter: blur(50px);
-		z-index: 0;
-		pointer-events: none;
-	} */
 
 	body {
 		background-color: color-mix(in srgb, var(--bg-base) 100%, transparent);

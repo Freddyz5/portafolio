@@ -38,7 +38,7 @@ const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
         <ButtonGlitch
           id="resume-btn"
           text={lang === "es" ? "Currículum" : "Resume"}
-          width="50%"
+          width="100%"
           variant="secondary"
           href={cvHref}
         />
@@ -48,7 +48,7 @@ const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
           href="#contact"
           variant="quiet"
           tone="muted"
-          width="50%"
+          width="100%"
         />
       </div>
     </div>
@@ -189,6 +189,11 @@ const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
     );
   }
   @media (max-width: 900px) {
+    /* Al apilar en columna el contenido supera los 800px fijos de la sección:
+       se libera la altura para que no se recorte ni solape la sección vecina.
+       #about vive en el DOM de Section.astro, no en el de este componente: el
+       scoping de Astro aplicaría el hash equivocado sin :global(). */
+    :global(#about) { height: auto !important; }
     article {
       flex-direction: column;
       height: auto;
@@ -206,9 +211,9 @@ const deniedLabel = lang === "es" ? "> ACCESO_DENEGADO" : "> ACCESS_DENIED";
       width: min(90vw, 450px);
     }
   }
-  @media (max-width: 480px) {
+  @media (max-width: 600px) {
     .buttons-wrapper {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
   }
 </style>
