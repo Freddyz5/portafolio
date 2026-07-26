@@ -25,10 +25,9 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 	</section>
 
 	<section class="link-container">
-		<a id="menu" href="#menu-list" class="menu nav-link" aria-label="Menu">
+		<button id="menu" type="button" class="menu nav-link" aria-label="Menu" aria-controls="menu-list" aria-expanded="false">
 			<MenuIcon />
-			<h1>Freddy</h1>
-		</a>
+		</button>
 
 		<div id="menu-list" class="menu-list">
 			{
@@ -58,6 +57,34 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 		const navlinks = document.querySelectorAll<HTMLElement>("nav a");
 		const navbar = document.getElementById("navbar");
 		const pinnedId = navbar?.dataset.activeId || "";
+
+		const menuBtn = document.getElementById("menu");
+		const menuList = document.getElementById("menu-list");
+
+		const closeMenu = () => {
+			menuList?.classList.remove("open");
+			menuBtn?.setAttribute("aria-expanded", "false");
+		};
+
+		menuBtn?.addEventListener("click", () => {
+			const isOpen = menuList?.classList.toggle("open");
+			menuBtn.setAttribute("aria-expanded", String(!!isOpen));
+		});
+
+		menuList?.querySelectorAll("a").forEach((link) => {
+			link.addEventListener("click", closeMenu);
+		});
+
+		document.addEventListener("click", (event) => {
+			if (!menuList?.classList.contains("open")) return;
+			const target = event.target as Node;
+			if (menuList.contains(target) || menuBtn?.contains(target)) return;
+			closeMenu();
+		});
+
+		document.addEventListener("keydown", (event) => {
+			if (event.key === "Escape") closeMenu();
+		});
 
 		const sections = LINKS
 			.map((link) => ({ name: link.id, element: document.getElementById(link.id) }))
@@ -181,6 +208,10 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 	/* ===== Enlaces de navegación (texto discreto, no cajas) ===== */
 	.menu {
 		display: none;
+		appearance: none;
+		background: none;
+		font: inherit;
+		cursor: pointer;
 	}
 	.menu-list {
 		width: 100%;
@@ -267,7 +298,7 @@ const menuLinks = links ? links.filter((link) => !link.isIcon) : LINKS.filter((l
 			border: 1px solid color-mix(in srgb, var(--red-muted) 60%, transparent);
 			border-radius: 0.5em;
 		}
-		.menu-list:target {
+		.menu-list.open {
 			display: flex;
 		}
 	}
