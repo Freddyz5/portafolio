@@ -1086,6 +1086,114 @@
       "url": "https://vision-craft-delta.vercel.app/",
       "repo": "https://github.com/Freddyz5/vision-craft",
       "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/v1783915717/ttso0hmyndo4g11bck4e.png"
+    },
+    {
+      "id": "proj-jardin-zen",
+      "featured": false,
+      "projectStatus": "personal",
+      "name": {
+        "es": "Jardín Zen",
+        "en": "Jardín Zen"
+      },
+      "startDate": "2026-03",
+      "endDate": "2026-04",
+      "status": {
+        "es": "Completado",
+        "en": "Completed"
+      },
+      "tags": [
+        "mobile",
+        "frontend"
+      ],
+      "priority": 3,
+      "summary": {
+        "es": "Aplicación móvil de sonidos ambientales para relajación y sueño, construida con React Native y Expo — un regalo personal con reproductor, temporizador de sueño y temas claro/oscuro.",
+        "en": "Mobile app of ambient relaxation and sleep sounds, built with React Native and Expo — a personal gift with an audio player, sleep timer, and light/dark themes."
+      },
+      "description": {
+        "es": "Jardín Zen es una aplicación móvil personal (React Native + Expo Router) que ofrece cinco paisajes sonoros —fuente, lluvia, río, cascada y playa— pensada como un espacio tranquilo para desconectar. Cada sonido se reproduce en loop con fade-in/fade-out y una forma de onda interactiva para navegar la pista, y cuenta con un temporizador de sueño que atenúa el volumen y detiene la reproducción incluso con la app en segundo plano. La interfaz usa Tamagui con temas claro/oscuro y paletas de color propias por sonido, y el proyecto está preparado para generar builds nativos de Android/iOS mediante EAS y Gradle.",
+        "en": "Jardín Zen is a personal mobile app (React Native + Expo Router) offering five ambient soundscapes —fountain, rain, river, waterfall, and beach— designed as a calm space to unwind. Each sound loops with a fade-in/fade-out and an interactive waveform for scrubbing the track, plus a sleep timer that fades out the volume and stops playback even while the app runs in the background. The UI is built with Tamagui with light/dark themes and per-sound color palettes, and the project is set up to produce native Android/iOS builds via EAS and Gradle."
+      },
+      "highlights": [
+        {
+          "id": "hl-jz-architecture",
+          "priority": 1,
+          "tags": [
+            "mobile",
+            "architecture"
+          ],
+          "text": {
+            "es": "Diseñé la arquitectura por features (welcome, home, player) con Expo Router y grupos de rutas, separando código compartido en src/shared y configuraciones de librerías en src/lib.",
+            "en": "Designed the feature-based architecture (welcome, home, player) with Expo Router and route groups, separating shared code into src/shared and library configuration into src/lib."
+          }
+        },
+        {
+          "id": "hl-jz-player",
+          "priority": 2,
+          "tags": [
+            "mobile",
+            "frontend"
+          ],
+          "text": {
+            "es": "Implementé un reproductor de audio ambiental con reproducción en loop, fade-in/fade-out suaves y una forma de onda interactiva con seek táctil para navegar la pista.",
+            "en": "Implemented an ambient audio player with looped playback, smooth fade-in/fade-out, and an interactive waveform with touch-seek for scrubbing the track."
+          }
+        },
+        {
+          "id": "hl-jz-sleep-timer",
+          "priority": 3,
+          "tags": [
+            "mobile",
+            "product"
+          ],
+          "text": {
+            "es": "Construí un temporizador de sueño configurable con cuenta regresiva en segundo plano que atenúa el volumen gradualmente y detiene la reproducción al finalizar, persistiendo la selección por sonido.",
+            "en": "Built a configurable sleep timer with a background countdown that gradually fades out the volume and stops playback when it finishes, persisting the selection per sound."
+          }
+        },
+        {
+          "id": "hl-jz-theming",
+          "priority": 4,
+          "tags": [
+            "frontend",
+            "mobile"
+          ],
+          "text": {
+            "es": "Desarrollé un sistema de temas claro/oscuro con Zustand y Tamagui, con paletas de color dinámicas por sonido que adaptan toda la pantalla del reproductor.",
+            "en": "Developed a light/dark theming system with Zustand and Tamagui, with per-sound dynamic color palettes that adapt the entire player screen."
+          }
+        },
+        {
+          "id": "hl-jz-native-build",
+          "priority": 5,
+          "tags": [
+            "infra",
+            "mobile"
+          ],
+          "text": {
+            "es": "Configuré la compilación nativa para Android e iOS con Expo Application Services (EAS) y builds locales con Gradle, habilitando reproducción de audio en segundo plano en iOS.",
+            "en": "Set up native Android and iOS builds with Expo Application Services (EAS) and local Gradle builds, enabling background audio playback on iOS."
+          }
+        }
+      ],
+      "technologies": [
+        "TypeScript",
+        "React Native",
+        "Expo",
+        "Expo Router",
+        "Tamagui",
+        "Zustand",
+        "Expo AV",
+        "React Native Reanimated",
+        "React Native SVG",
+        "React Navigation",
+        "Expo Blur",
+        "Expo Linear Gradient",
+        "EAS"
+      ],
+      "url": "",
+      "repo": "https://github.com/Freddyz5/jardin-zen",
+      "image": "https://res.cloudinary.com/dgmgdb1hg/image/upload/c_crop,g_north_west,h_500,w_714,y_293/lngczdg3zgvmvzjdmgug.jpg"
     }
   ]
 }
