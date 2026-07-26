@@ -33,8 +33,8 @@
     "phone": "+593 99 578 1302",
     "url": "https://freddyz5.github.io/portafolio/es/",
     "summary": {
-      "es": "Desarrollador Full Stack con casi 3 años de experiencia en producto, formado de manera autodidacta y promovido a semi senior en 2025. Especializado en React, Next.js y TypeScript, con trabajo reciente en APIs GraphQL, arquitectura hexagonal y PostgreSQL. He construido funcionalidades de extremo a extremo —dominio, API, base de datos e interfaz— para plataformas en producción usadas por farmacias en España y para operaciones de logística internacional. Trabajo desde Quito (UTC-5), con solapamiento completo con la jornada laboral de Estados Unidos.",
-      "en": "Full Stack Developer with nearly 3 years of product experience, self-taught and promoted to semi-senior in 2025. Specialized in React, Next.js, and TypeScript, with recent work on GraphQL APIs, hexagonal architecture, and PostgreSQL. I have shipped features end to end —domain, API, database, and interface— for production platforms used by pharmacies in Spain and for international logistics operations. Based in Quito (UTC-5), with full overlap with United States business hours."
+      "es": "Desarrollador Full Stack con 3 años de experiencia en producto, formado de manera autodidacta y promovido a semi senior en 2025. Especializado en React, Next.js y TypeScript, con trabajo reciente en APIs GraphQL, arquitectura hexagonal y PostgreSQL. He construido funcionalidades de extremo a extremo —dominio, API, base de datos e interfaz— para plataformas en producción usadas por farmacias en España y para operaciones de logística internacional.",
+      "en": "Full Stack Developer with 3 years of product experience, self-taught and promoted to semi-senior in 2025. Specialized in React, Next.js, and TypeScript, with recent work on GraphQL APIs, hexagonal architecture, and PostgreSQL. I have shipped features end to end —domain, API, database, and interface— for production platforms used by pharmacies in Spain and for international logistics operations."
     },
     "location": {
       "city": "Quito",
@@ -95,20 +95,15 @@
             "Node.js",
             "PostgreSQL",
             "Prisma",
-            "Stripe",
             "Tailwind CSS",
             "Material UI",
-            "Redux Toolkit",
             "Zustand",
             "React Query",
-            "SWR",
-            "NextAuth",
-            "Firebase",
             "Bun"
           ],
           "summary": {
-            "es": "Ecosistema de tres productos para la gestión integral de decenas de farmacias en España: una intranet corporativa (tareas, comunicación interna, turnos y campañas), una plataforma de formación en video con evaluaciones, y una API GraphQL. Es el proyecto que acompaña toda mi trayectoria en la empresa: entré como frontend en 2023 y regresé en 2025 con responsabilidades full stack sobre dominio, API e infraestructura.",
-            "en": "An ecosystem of three products for the end-to-end management of dozens of pharmacies in Spain: a corporate intranet (tasks, internal communication, shifts, and campaigns), a video training platform with assessments, and a GraphQL API. It is the project that spans my entire tenure at the company: I joined as a frontend developer in 2023 and returned in 2025 with full stack responsibilities over domain, API, and infrastructure."
+            "es": "Ecosistema de tres productos para la gestión integral de decenas de farmacias en España: una intranet corporativa (tareas, comunicación interna, turnos y campañas), una plataforma de formación en video con evaluaciones, y una API GraphQL. Es el proyecto que acompaña gran parte mi trayectoria en la empresa: entré como frontend en 2023 y regresé en 2025 con responsabilidades full stack sobre dominio, API e infraestructura.",
+            "en": "An ecosystem of three products for the end-to-end management of dozens of pharmacies in Spain: a corporate intranet (tasks, internal communication, shifts, and campaigns), a video training platform with assessments, and a GraphQL API. It is the project that spans a large part tenure at the company: I joined as a frontend developer in 2023 and returned in 2025 with full stack responsibilities over domain, API, and infrastructure."
           },
           "highlights": [
             {
@@ -162,20 +157,8 @@
               }
             },
             {
-              "id": "hl-mv-stripe",
-              "priority": 5,
-              "tags": [
-                "backend",
-                "product"
-              ],
-              "text": {
-                "es": "Integré el cobro con Stripe incluyendo dirección de facturación, identificación fiscal e impuestos automáticos.",
-                "en": "Integrated Stripe checkout including billing address, tax ID collection, and automatic tax."
-              }
-            },
-            {
               "id": "hl-mv-responsive",
-              "priority": 6,
+              "priority": 5,
               "tags": [
                 "frontend"
               ],
@@ -201,12 +184,8 @@
             "React",
             "Next.js",
             "Material UI",
-            "Emotion",
-            "Redux",
-            "Redux Toolkit",
             "Apollo Client",
             "GraphQL",
-            "SWR",
             "Node.js",
             "Apollo Server",
             "PostgreSQL",
@@ -323,7 +302,6 @@
             "Zustand",
             "TanStack Query",
             "Formik",
-            "React Hook Form",
             "Yup",
             "Firebase",
             "GraphQL",
