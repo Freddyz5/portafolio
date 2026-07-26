@@ -66,4 +66,12 @@ const { id, title, subTittle, styles } = Astro.props;
     text-transform: uppercase;
     color: var(--red-muted);
   }
+  /* El padding de 6rem asfixia el contenido en pantallas chicas: se reduce por
+     tramos para dar aire real al contenido en tablet y móvil. */
+  @media (max-width: 900px) {
+    section { padding: 4rem 2rem; }
+  }
+  @media (max-width: 600px) {
+    section { padding: 3rem 1.25rem; }
+  }
 </style>

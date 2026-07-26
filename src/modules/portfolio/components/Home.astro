@@ -27,13 +27,13 @@ const { lang, name, label } = Astro.props;
 			<ButtonGlitch
 				id="projects-button"
 				text={lang === "es" ? "Ver proyectos >" : "View projects >"}
-				width="50%"
+				width="90%"
 				variant="secondary"
 			/>
 			<ButtonGlitch
 				id="contact-button"
 				text={lang === "es" ? "Iniciar el contacto" : "Start contact"}
-				width="50%"
+				width="90%"
 			/>
 		</div>
 	</article>
@@ -85,7 +85,7 @@ const { lang, name, label } = Astro.props;
 <style>
 	.home {
 		width: 100%;
-		height: 100vh;
+		height: 100dvh;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -108,7 +108,7 @@ const { lang, name, label } = Astro.props;
 	}
 	.ship-scan {
 		position: absolute;
-		width: 100vw;
+		width: 100%;
 		top: 0;
 		height: 2px;
 		background: linear-gradient(
@@ -168,6 +168,8 @@ const { lang, name, label } = Astro.props;
 	.button-container {
 		display: flex;
 		flex-direction: row;
+		justify-content: center;
+		align-items: center;
 		gap: 1em;
 		width: 100%;
 		padding-top: 1.5em;
@@ -183,16 +185,23 @@ const { lang, name, label } = Astro.props;
 		50%, 100% { opacity: 0; }
 	}
 
-	/* ===== Móvil: nave arriba, nombre más chico, CTAs apilados, callouts ocultos ===== */
-	@media (max-width: 700px) {
+	/* ===== Móvil (≤600): nombre más chico, CTAs apilados, callouts ocultos y el
+	   bloque de texto sube (menos padding) para que no desborde el 100dvh ===== */
+	@media (max-width: 600px) {
 		.callout { display: none; }
 		.button-container { flex-direction: column; width: 100%; }
 		.btn-quiet { width: 100%; }
 		h1 { font-size: 2rem; }
+		article { padding-top: 4rem; width: 88vw; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.ship-scan { animation: none; opacity: 0; }
 		.hero-cursor { animation: none; }
+	}
+	@media (max-height: 700px) {
+		.home {
+			height: 105dvh;
+		}
 	}
 </style>
