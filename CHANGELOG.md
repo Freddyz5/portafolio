@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/Freddyz5/portafolio/compare/v1.14.0...v1.15.0) (2026-08-22)
+
+
+### Features
+
+* add services landing page with structured components and localized content ([3d7bed5](https://github.com/Freddyz5/portafolio/commit/3d7bed50d4a175c4f4e34fd6e48a31bc7d43d55b))
+
 # [1.14.0](https://github.com/Freddyz5/portafolio/compare/v1.13.0...v1.14.0) (2026-07-26)
 
 
