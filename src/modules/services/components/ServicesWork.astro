@@ -1,0 +1,154 @@
+---
+/* Prueba, no portafolio: cada caso se lee como problema → solución → resultado. */
+interface WorkCase {
+  id: string;
+  tag: string;
+  title: string;
+  problem: string;
+  solution: string;
+  result: string;
+  /* Opcional: solo los casos con un despliegue vivo que enseñar. */
+  url?: string;
+}
+
+interface Props {
+  title: string;
+  labels: { problem: string; solution: string; result: string; link: string };
+  cases: WorkCase[];
+}
+
+const { title, labels, cases } = Astro.props;
+
+/* El dominio se lee mejor que la URL completa en una columna estrecha. */
+const domain = (url: string) => url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+---
+
+<section class="cl-work">
+  <h2 class="cl-section-title">{title}</h2>
+
+  {
+    cases.map((item) => (
+      <article class="cl-case">
+        <p class="cl-case__tag">{item.tag}</p>
+        <h3 class="cl-case__title">{item.title}</h3>
+        <dl class="cl-case__facts">
+          <div class="cl-fact">
+            <dt class="cl-fact__label cl-fact__label--lead">{labels.problem}</dt>
+            <dd class="cl-fact__value">{item.problem}</dd>
+          </div>
+          <div class="cl-fact">
+            <dt class="cl-fact__label">{labels.solution}</dt>
+            <dd class="cl-fact__value">{item.solution}</dd>
+          </div>
+          <div class="cl-fact">
+            <dt class="cl-fact__label">{labels.result}</dt>
+            <dd class="cl-fact__value">{item.result}</dd>
+          </div>
+          {
+            item.url && (
+              <div class="cl-fact">
+                <dt class="cl-fact__label">{labels.link}</dt>
+                <dd class="cl-fact__value">
+                  <a
+                    class="cl-fact__link"
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {domain(item.url)}
+                    <span aria-hidden="true"> &#8599;</span>
+                  </a>
+                </dd>
+              </div>
+            )
+          }
+        </dl>
+      </article>
+    ))
+  }
+</section>
+
+<style>
+  .cl-work {
+    border-top: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  .cl-case {
+    padding: 24px var(--cl-pad);
+    border-bottom: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  .cl-case:last-child {
+    border-bottom: 0;
+  }
+
+  .cl-case__tag {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cl-muted);
+  }
+
+  .cl-case__title {
+    margin: 0 0 20px;
+    font-family: var(--cl-font-display);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  .cl-case__facts {
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  .cl-fact {
+    display: grid;
+    grid-template-columns: 84px 1fr;
+    gap: 14px;
+  }
+
+  .cl-fact__label {
+    padding-top: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cl-muted);
+  }
+
+  .cl-fact__label--lead {
+    color: var(--cl-accent-text);
+  }
+
+  .cl-fact__value {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .cl-fact__link {
+    color: var(--cl-accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    overflow-wrap: anywhere;
+  }
+
+  .cl-fact__link:hover {
+    color: var(--cl-ink);
+  }
+
+  /* Bajo ~360px las etiquetas de 84px estrangulan la columna de texto. */
+  @media (max-width: 360px) {
+    .cl-fact {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+  }
+</style>

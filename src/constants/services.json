@@ -1,0 +1,254 @@
+{
+  "meta": {
+    "title": {
+      "es": "Software para tu negocio en Quito · Freddy Tacuri",
+      "en": "Software for your business in Quito · Freddy Tacuri"
+    },
+    "description": {
+      "es": "Creo páginas web, sistemas y aplicaciones para negocios. Hablemos directamente para encontrar una solución a lo que necesitas.",
+      "en": "I create websites, systems and applications for businesses. Let's talk directly and find a solution for what you need."
+    }
+  },
+  "contact": {
+    "whatsapp": "0995781302",
+    "message": {
+      "es": "Hola Freddy, vi tu página y quisiera conversar sobre un proyecto.",
+      "en": "Hi Freddy, I saw your website and would like to talk about a project."
+    }
+  },
+  "hero": {
+    "eyebrow": {
+      "es": "Quito, Ecuador",
+      "en": "Quito, Ecuador"
+    },
+    "titleLead": {
+      "es": "Soluciones digitales",
+      "en": "Digital solutions"
+    },
+    "titleAccent": {
+      "es": "para tu negocio",
+      "en": "for your business"
+    },
+    "intro": {
+      "es": "Soy Freddy Tacuri. Creo páginas web, aplicaciones y sistemas para ayudar a los negocios a trabajar de forma más sencilla y organizada.",
+      "en": "I'm Freddy Tacuri. I create websites, applications and systems to help businesses work in a simpler and more organized way."
+    },
+    "note": {
+      "es": "Hablas directamente conmigo. Sin intermediarios y sin soluciones genéricas.",
+      "en": "You talk directly with me. No middlemen and no generic solutions."
+    },
+    "ctaPrimary": {
+      "es": "Escribirme por WhatsApp",
+      "en": "Message me on WhatsApp"
+    },
+    "ctaSecondary": {
+      "es": "Ver cómo puedo ayudarte",
+      "en": "See how I can help"
+    }
+  },
+  "services": {
+    "title": {
+      "es": "¿En qué puedo ayudarte?",
+      "en": "How can I help you?"
+    },
+    "items": [
+      {
+        "id": "web-apps",
+        "number": "01",
+        "name": {
+          "es": "Páginas y aplicaciones web",
+          "en": "Websites and applications"
+        },
+        "description": {
+          "es": "Creo páginas y aplicaciones para que tus clientes puedan conocerte, comprar, reservar o realizar diferentes tareas desde internet.",
+          "en": "I create websites and applications so your customers can learn about your business, buy, make bookings or complete different tasks online."
+        }
+      },
+      {
+        "id": "internal-systems",
+        "number": "02",
+        "name": {
+          "es": "Sistemas para tu negocio",
+          "en": "Business systems"
+        },
+        "description": {
+          "es": "Si actualmente manejas inventario, gastos, clientes u órdenes en varias hojas de cálculo, puedo ayudarte a tener todo organizado en un solo lugar.",
+          "en": "If you currently manage inventory, expenses, customers or orders across several spreadsheets, I can help you organize everything in one place."
+        }
+      },
+      {
+        "id": "landings",
+        "number": "03",
+        "name": {
+          "es": "Páginas para promocionar tu negocio",
+          "en": "Business and promotional websites"
+        },
+        "description": {
+          "es": "Creo páginas rápidas y atractivas para presentar tu negocio, promocionar un servicio o dar a conocer un nuevo producto.",
+          "en": "I create fast and attractive websites to present your business, promote a service or introduce a new product."
+        }
+      },
+      {
+        "id": "integrations",
+        "number": "04",
+        "name": {
+          "es": "Conectar tus herramientas",
+          "en": "Connect your tools"
+        },
+        "description": {
+          "es": "Puedo conectar las herramientas que ya utilizas, como facturación, pagos o inventario, para evitar ingresar la misma información varias veces.",
+          "en": "I can connect the tools you already use, such as invoicing, payments or inventory, so you don't have to enter the same information multiple times."
+        }
+      },
+      {
+        "id": "maintenance",
+        "number": "05",
+        "name": {
+          "es": "Mantenimiento y soporte",
+          "en": "Maintenance and support"
+        },
+        "description": {
+          "es": "Si ya tienes una página o sistema que necesita mejoras, correcciones o alguien que lo mantenga funcionando, puedo ayudarte.",
+          "en": "If you already have a website or system that needs improvements, fixes or someone to keep it running, I can help."
+        }
+      }
+    ]
+  },
+  "work": {
+    "title": {
+      "es": "Algunos proyectos",
+      "en": "Some projects"
+    },
+    "labels": {
+      "problem": {
+        "es": "El problema",
+        "en": "The problem"
+      },
+      "solution": {
+        "es": "Lo que hice",
+        "en": "What I did"
+      },
+      "result": {
+        "es": "El resultado",
+        "en": "The result"
+      },
+      "link": {
+        "es": "Ver proyecto",
+        "en": "View project"
+      }
+    },
+    "cases": [
+      {
+        "id": "palsabi",
+        "tag": {
+          "es": "Palsabi · Librería cristiana",
+          "en": "Palsabi · Christian bookstore"
+        },
+        "title": {
+          "es": "Una librería que puede actualizar su catálogo fácilmente",
+          "en": "A bookstore that can easily update its catalogue"
+        },
+        "problem": {
+          "es": "El catálogo estaba repartido entre fotos de WhatsApp y diferentes listas. Actualizar precios o informar qué libros estaban disponibles tomaba tiempo y trabajo manual.",
+          "en": "The catalogue was spread across WhatsApp photos and different lists. Updating prices or showing which books were available took time and manual work."
+        },
+        "solution": {
+          "es": "Creé una tienda en internet donde los clientes pueden ver los libros por categorías, conocer su disponibilidad y preparar un pedido para enviarlo directamente por WhatsApp.",
+          "en": "I created an online store where customers can browse books by category, check availability and prepare an order to send directly through WhatsApp."
+        },
+        "result": {
+          "es": "Ahora el catálogo se puede actualizar rápidamente desde un solo lugar y los clientes pueden compartirlo y realizar sus pedidos de forma sencilla.",
+          "en": "The catalogue can now be updated quickly from one place, while customers can easily share it and place their orders."
+        },
+        "url": "https://palsabi.vercel.app/"
+      },
+      {
+        "id": "expense-control",
+        "tag": {
+          "es": "Plataforma de control de gastos",
+          "en": "Expense management platform"
+        },
+        "title": {
+          "es": "Saber fácilmente quién gastó y cuánto debe",
+          "en": "Easily see who spent what and who owes what"
+        },
+        "problem": {
+          "es": "Los gastos se registraban en chats y diferentes hojas de cálculo. Era difícil saber cuánto había gastado cada persona y cuánto debía pagar.",
+          "en": "Expenses were recorded in chats and different spreadsheets. It was difficult to know how much each person had spent and how much they owed."
+        },
+        "solution": {
+          "es": "Creé una aplicación donde varias personas pueden registrar y consultar sus gastos desde una computadora o celular.",
+          "en": "I created an application where multiple people can record and check their expenses from a computer or phone."
+        },
+        "result": {
+          "es": "Todos pueden consultar la misma información y saber automáticamente cuánto corresponde pagar a cada persona.",
+          "en": "Everyone can see the same information and automatically know how much each person needs to pay."
+        }
+      },
+      {
+        "id": "vision-craft",
+        "tag": {
+          "es": "Vision Craft",
+          "en": "Vision Craft"
+        },
+        "title": {
+          "es": "Crear diseños visuales y prepararlos para imprimir",
+          "en": "Create visual designs and prepare them for printing"
+        },
+        "problem": {
+          "es": "Crear un tablero visual requería utilizar diferentes páginas y programas, y el resultado impreso no siempre tenía el tamaño esperado.",
+          "en": "Creating a visual board required using different websites and programs, and the printed result did not always have the expected size."
+        },
+        "solution": {
+          "es": "Creé una herramienta donde puedes buscar imágenes, colocarlas en un tablero, moverlas, cambiar su tamaño y agregar texto desde el navegador.",
+          "en": "I created a tool where you can search for images, place them on a board, move them, resize them and add text directly from your browser."
+        },
+        "result": {
+          "es": "Todo el trabajo se puede realizar desde una sola página y preparar el diseño para imprimir.",
+          "en": "The entire process can be done from one website, with the design ready for printing."
+        },
+        "url": "https://vision-craft-delta.vercel.app/"
+      }
+    ]
+  },
+  "cta": {
+    "title": {
+      "es": "Cuéntame qué necesitas",
+      "en": "Tell me what you need"
+    },
+    "body": {
+      "es": "Escríbeme por WhatsApp y cuéntame qué quieres mejorar, qué problema tienes o qué te gustaría crear. Te responderé con una propuesta clara sobre qué podemos hacer, cuánto podría tomar y cómo empezar.",
+      "en": "Message me on WhatsApp and tell me what you want to improve, what problem you have or what you would like to create. I'll reply with a clear proposal about what we can do, how long it could take and how to get started."
+    },
+    "button": {
+      "es": "Hablar por WhatsApp",
+      "en": "Talk on WhatsApp"
+    }
+  },
+  "ui": {
+    "brand": {
+      "es": "Freddy Tacuri",
+      "en": "Freddy Tacuri"
+    },
+    "themeAria": {
+      "es": "Cambiar tema",
+      "en": "Switch theme"
+    },
+    "themeDark": {
+      "es": "Oscuro",
+      "en": "Dark"
+    },
+    "themeLight": {
+      "es": "Claro",
+      "en": "Light"
+    },
+    "backToTop": {
+      "es": "Volver arriba",
+      "en": "Back to top"
+    },
+    "location": {
+      "es": "Quito, Ecuador",
+      "en": "Quito, Ecuador"
+    }
+  }
+}
