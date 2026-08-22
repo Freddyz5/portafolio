@@ -1,0 +1,133 @@
+---
+/* Cabecera fija: marca a la izquierda, interruptor de tema a la derecha. */
+interface Props {
+  brand: string;
+  themeAria: string;
+  themeDark: string;
+  themeLight: string;
+}
+
+const { brand, themeAria, themeDark, themeLight } = Astro.props;
+---
+
+<header class="cl-header">
+  <a class="cl-brand" href="#top">
+    <span class="cl-brand__mark" aria-hidden="true">&#9672;</span>
+    <span class="cl-brand__name">{brand}</span>
+  </a>
+
+  <button
+    type="button"
+    class="cl-theme"
+    id="cl-theme-toggle"
+    aria-label={themeAria}
+    data-label-dark={themeDark}
+    data-label-light={themeLight}
+  >
+    <span class="cl-theme__glyph" aria-hidden="true"></span>
+    <span class="cl-theme__label"></span>
+  </button>
+</header>
+
+<style>
+  .cl-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    background: var(--cl-bg);
+    border-bottom: var(--cl-rule) solid var(--cl-divider);
+    transition: background-color 0.3s ease;
+  }
+
+  .cl-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px var(--cl-pad);
+    text-decoration: none;
+    color: var(--cl-ink);
+  }
+
+  .cl-brand:hover {
+    color: var(--cl-ink);
+  }
+
+  .cl-brand__mark {
+    font-family: var(--cl-font-display);
+    font-size: 14px;
+    line-height: 1;
+    color: var(--cl-accent);
+  }
+
+  .cl-brand__name {
+    font-family: var(--cl-font-display);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .cl-theme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px var(--cl-pad);
+    min-height: 48px;
+    background: transparent;
+    border: 0;
+    border-left: var(--cl-rule) solid var(--cl-divider);
+    border-radius: 0;
+    color: var(--cl-muted);
+    font-family: var(--cl-font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .cl-theme:hover {
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+
+  .cl-theme__glyph {
+    font-size: 13px;
+    line-height: 1;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('cl-theme-toggle');
+
+  if (toggle) {
+    const glyph = toggle.querySelector('.cl-theme__glyph');
+    const label = toggle.querySelector('.cl-theme__label');
+
+    const paint = (theme: string) => {
+      document.documentElement.dataset.clTheme = theme;
+      if (glyph) glyph.textContent = theme === 'dark' ? '◑' : '◐';
+      if (label) {
+        label.textContent =
+          theme === 'dark'
+            ? toggle.dataset.labelDark ?? 'Dark'
+            : toggle.dataset.labelLight ?? 'Light';
+      }
+    };
+
+    // El script inline del <head> ya dejó el tema resuelto; aquí solo se etiqueta.
+    paint(document.documentElement.dataset.clTheme === 'light' ? 'light' : 'dark');
+
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.dataset.clTheme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('cl-theme', next);
+      } catch (e) {}
+      paint(next);
+    });
+  }
+</script>

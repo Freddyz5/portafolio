@@ -1,0 +1,67 @@
+---
+/* Composición de la landing: el orden es el argumento (quién → qué → prueba → contacto). */
+import ServicesHeader from './components/ServicesHeader.astro';
+import ServicesHero from './components/ServicesHero.astro';
+import ServicesList from './components/ServicesList.astro';
+import ServicesWork from './components/ServicesWork.astro';
+import ServicesContact from './components/ServicesContact.astro';
+import ServicesFooter from './components/ServicesFooter.astro';
+import { whatsappHref, toLocalLabel } from './utils/whatsapp';
+
+interface Props {
+  data: any;
+  year: number;
+}
+
+const { data, year } = Astro.props;
+const { contact, hero, services, work, cta, ui } = data;
+
+const waHref = whatsappHref(contact.whatsapp, contact.message);
+const phoneLabel = toLocalLabel(contact.whatsapp);
+---
+
+<div id="top">
+  <ServicesHeader
+    brand={ui.brand}
+    themeAria={ui.themeAria}
+    themeDark={ui.themeDark}
+    themeLight={ui.themeLight}
+  />
+
+  <main class="cl-main">
+    <ServicesHero
+      eyebrow={hero.eyebrow}
+      titleLead={hero.titleLead}
+      titleAccent={hero.titleAccent}
+      intro={hero.intro}
+      note={hero.note}
+      ctaPrimary={hero.ctaPrimary}
+      ctaSecondary={hero.ctaSecondary}
+      waHref={waHref}
+    />
+
+    <ServicesList title={services.title} items={services.items} />
+
+    <ServicesWork title={work.title} labels={work.labels} cases={work.cases} />
+
+    <ServicesContact
+      title={cta.title}
+      body={cta.body}
+      button={cta.button}
+      waHref={waHref}
+      phoneLabel={phoneLabel}
+      location={ui.location}
+    />
+
+    <ServicesFooter brand={ui.brand} year={year} backToTop={ui.backToTop} />
+  </main>
+</div>
+
+<style>
+  .cl-main {
+    max-width: var(--cl-measure);
+    margin: 0 auto;
+    border-left: var(--cl-rule) solid var(--cl-divider);
+    border-right: var(--cl-rule) solid var(--cl-divider);
+  }
+</style>

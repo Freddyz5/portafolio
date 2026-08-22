@@ -1,0 +1,64 @@
+---
+/* Cierre a sangre en el acento: la única acción que importa al final del scroll. */
+interface Props {
+  title: string;
+  body: string;
+  button: string;
+  waHref: string;
+  phoneLabel: string;
+  location: string;
+}
+
+const { title, body, button, waHref, phoneLabel, location } = Astro.props;
+---
+
+<section class="cl-contact">
+  <h2 class="cl-contact__title">{title}</h2>
+  <p class="cl-contact__body">{body}</p>
+
+  <a class="cl-btn cl-btn--invert" href={waHref} target="_blank" rel="noopener noreferrer">
+    <span>{button}</span>
+    <span aria-hidden="true">&#8594;</span>
+  </a>
+
+  <p class="cl-contact__meta">{phoneLabel} &middot; {location}</p>
+</section>
+
+<style>
+  .cl-contact {
+    padding: 32px var(--cl-pad) 36px;
+    background: var(--cl-accent);
+    color: var(--cl-on-accent);
+    border-top: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  .cl-contact__title {
+    margin: 0 0 14px;
+    font-family: var(--cl-font-display);
+    font-size: clamp(24px, 7vw, 36px);
+    line-height: 1.12;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .cl-contact__body {
+    margin: 0 0 26px;
+    max-width: 46ch;
+    font-size: 15px;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .cl-contact__meta {
+    margin: 14px 0 0;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+  }
+
+  /* El foco por defecto es del color del acento y aquí el fondo ES el acento. */
+  .cl-contact :focus-visible {
+    outline-color: var(--cl-on-accent);
+  }
+</style>
