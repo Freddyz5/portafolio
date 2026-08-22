@@ -1,0 +1,104 @@
+---
+/* Primera pantalla: quién soy, qué resuelvo y las dos salidas posibles. */
+interface Props {
+  eyebrow: string;
+  titleLead: string;
+  titleAccent: string;
+  intro: string;
+  note: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+  waHref: string;
+}
+
+const { eyebrow, titleLead, titleAccent, intro, note, ctaPrimary, ctaSecondary, waHref } =
+  Astro.props;
+---
+
+<section class="cl-hero">
+  <p class="cl-hero__eyebrow">
+    <span class="cl-hero__rule" aria-hidden="true"></span>
+    {eyebrow}
+  </p>
+
+  <h1 class="cl-hero__title">
+    {titleLead}<br />
+    <span class="cl-hero__title-accent">{titleAccent}</span>
+  </h1>
+
+  <p class="cl-hero__intro">{intro}</p>
+  <p class="cl-hero__note">{note}</p>
+
+  <div class="cl-hero__actions">
+    <a class="cl-btn cl-btn--accent" href={waHref} target="_blank" rel="noopener noreferrer">
+      <span>{ctaPrimary}</span>
+      <span aria-hidden="true">&#8594;</span>
+    </a>
+    <a class="cl-btn cl-btn--ghost" href="#services">
+      <span>{ctaSecondary}</span>
+      <span aria-hidden="true">&#8595;</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .cl-hero {
+    padding: 36px var(--cl-pad) 40px;
+    animation: cl-rise 0.45s ease both;
+  }
+
+  .cl-hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 26px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cl-muted);
+  }
+
+  .cl-hero__rule {
+    display: inline-block;
+    flex: none;
+    width: 28px;
+    height: 2px;
+    background: var(--cl-accent);
+  }
+
+  .cl-hero__title {
+    margin: 0 0 24px;
+    font-family: var(--cl-font-display);
+    font-size: clamp(32px, 9vw, 54px);
+    line-height: 1.08;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .cl-hero__title-accent {
+    color: var(--cl-accent);
+  }
+
+  .cl-hero__intro {
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .cl-hero__note {
+    margin: 0 0 32px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--cl-muted);
+    text-wrap: pretty;
+  }
+
+  .cl-hero__actions {
+    display: grid;
+    gap: 12px;
+  }
+</style>

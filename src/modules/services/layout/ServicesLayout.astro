@@ -1,0 +1,252 @@
+---
+/*
+  Documento propio de la landing comercial /[lang]/services.
+  NO reutiliza el Layout.astro del portafolio a propósito: ese monta el overlay
+  CRT, la terminal y el cursor de fósforo, ruido que aquí solo estorba a un
+  prospecto que llega desde el celular. Todo lo que necesita esta ruta vive en
+  este archivo: reset, tokens --cl-* y el arranque del tema.
+*/
+import '@fontsource-variable/orbitron';
+import '@fontsource/ibm-plex-mono/400.css';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: 'es' | 'en';
+  url: string;
+}
+
+const { title, description, lang, url } = Astro.props;
+const BASE_URL = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#201e1d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f3f2f2" media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/svg+xml" href={`${BASE_URL}/favicon.svg`} />
+
+    <meta property="og:url" content={url} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {/* Se resuelve antes de pintar para que el tema guardado no llegue tarde. */}
+    <script is:inline>
+      (() => {
+        let saved = null;
+        try { saved = localStorage.getItem('cl-theme'); } catch (e) {}
+        if (saved !== 'light' && saved !== 'dark') {
+          saved = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.dataset.clTheme = saved;
+      })();
+    </script>
+  </head>
+
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* ===== TOKENS --cl-* =====
+     Solo se emiten en esta ruta: ningún otro documento importa este layout. */
+  :root {
+    --cl-bg: #201e1d;
+    --cl-surface: #2d2b2b;
+    --cl-ink: #f3f2f2;
+    --cl-muted: #bab6b6;
+    --cl-divider: color-mix(in srgb, #f3f2f2 40%, transparent);
+    --cl-accent: #ff563c;
+    --cl-accent-press: #ff9783;
+    --cl-accent-deep: #ff9783;
+    --cl-accent-text: #ff563c;
+    --cl-on-accent: #201e1d;
+
+    --cl-font-display: 'Orbitron Variable', sans-serif;
+    --cl-font-body: 'IBM Plex Mono', ui-monospace, 'Courier New', monospace;
+
+    --cl-rule: 2px;
+    --cl-pad: 20px;
+    --cl-measure: 760px;
+
+    color-scheme: dark;
+  }
+
+  :root[data-cl-theme='light'] {
+    --cl-bg: #f3f2f2;
+    --cl-surface: #eae9e9;
+    --cl-ink: #201e1d;
+    --cl-muted: #605d5d;
+    --cl-divider: color-mix(in srgb, #201e1d 40%, transparent);
+    --cl-accent: #ec3013;
+    --cl-accent-press: #dd2b0f;
+    --cl-accent-deep: #ae1800;
+    /* El acento claro (#ec3013) da 3.76 sobre el fondo: alcanza para el
+       titular del hero (texto grande) pero no para etiquetas de 11-13px.
+       Esas usan el tono profundo, que llega a 6.41. */
+    --cl-accent-text: #ae1800;
+    --cl-on-accent: #fff2ef;
+
+    color-scheme: light;
+  }
+
+  /* Antes de que corra el script: respeta la preferencia del sistema. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-cl-theme='dark']) {
+      --cl-bg: #f3f2f2;
+      --cl-surface: #eae9e9;
+      --cl-ink: #201e1d;
+      --cl-muted: #605d5d;
+      --cl-divider: color-mix(in srgb, #201e1d 40%, transparent);
+      --cl-accent: #ec3013;
+      --cl-accent-press: #dd2b0f;
+      --cl-accent-deep: #ae1800;
+      --cl-accent-text: #ae1800;
+      --cl-on-accent: #fff2ef;
+
+      color-scheme: light;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--cl-bg);
+    color: var(--cl-ink);
+    font-family: var(--cl-font-body);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  a {
+    color: var(--cl-accent-deep);
+  }
+
+  a:hover {
+    color: var(--cl-ink);
+  }
+
+  ::selection {
+    background: var(--cl-accent);
+    color: var(--cl-on-accent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cl-accent);
+    outline-offset: 2px;
+  }
+
+  /* ===== PIEZAS COMPARTIDAS =====
+     Botón de acción y banda de título: aparecen en más de una sección, así que
+     viven aquí y no duplicados en cada componente. */
+  .cl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 16px var(--cl-pad);
+    font-family: var(--cl-font-display);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-wrap: balance;
+  }
+
+  .cl-btn--accent {
+    background: var(--cl-accent);
+    color: var(--cl-on-accent);
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+  }
+
+  .cl-btn--accent:hover {
+    background: var(--cl-accent-press);
+    color: var(--cl-on-accent);
+  }
+
+  .cl-btn--ghost {
+    background: transparent;
+    border: var(--cl-rule) solid var(--cl-divider);
+    color: var(--cl-ink);
+    font-weight: 500;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .cl-btn--ghost:hover {
+    border-color: var(--cl-accent);
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+
+  .cl-btn--invert {
+    background: var(--cl-on-accent);
+    color: var(--cl-accent);
+    font-weight: 700;
+    transition: opacity 0.2s ease;
+  }
+
+  .cl-btn--invert:hover {
+    opacity: 0.88;
+    color: var(--cl-accent);
+  }
+
+  .cl-section-title {
+    margin: 0;
+    padding: var(--cl-pad);
+    font-family: var(--cl-font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-bottom: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  @keyframes cl-rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+interface Props {
+  brand: string;
+  year: number;
+  backToTop: string;
+}
+
+const { brand, year, backToTop } = Astro.props;
+---
+
+<footer class="cl-footer">
+  <span>&copy; {year} {brand}</span>
+  <a class="cl-footer__link" href="#top">{backToTop} &#8593;</a>
+</footer>
+
+<style>
+  .cl-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px var(--cl-pad);
+    border-top: var(--cl-rule) solid var(--cl-divider);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cl-muted);
+  }
+
+  .cl-footer__link {
+    color: var(--cl-muted);
+    text-decoration: none;
+  }
+
+  .cl-footer__link:hover {
+    color: var(--cl-ink);
+  }
+</style>

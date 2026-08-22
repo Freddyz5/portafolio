@@ -1,0 +1,82 @@
+---
+/* Catálogo como registro numerado, no como tarjetas: una fila por servicio. */
+interface Service {
+  id: string;
+  number: string;
+  name: string;
+  description: string;
+}
+
+interface Props {
+  title: string;
+  items: Service[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<section id="services" class="cl-services">
+  <h2 class="cl-section-title">{title}</h2>
+
+  <div class="cl-services__list">
+    {
+      items.map((item) => (
+        <article class="cl-service">
+          <span class="cl-service__number" aria-hidden="true">
+            {item.number}
+          </span>
+          <div>
+            <h3 class="cl-service__name">{item.name}</h3>
+            <p class="cl-service__text">{item.description}</p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .cl-services {
+    border-top: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  .cl-services__list {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .cl-service {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 16px;
+    padding: var(--cl-pad);
+    border-bottom: var(--cl-rule) solid var(--cl-divider);
+  }
+
+  .cl-service:last-child {
+    border-bottom: 0;
+  }
+
+  .cl-service__number {
+    font-family: var(--cl-font-display);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cl-accent-text);
+  }
+
+  .cl-service__name {
+    margin: 0 0 6px;
+    font-family: var(--cl-font-display);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .cl-service__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--cl-muted);
+    text-wrap: pretty;
+  }
+</style>

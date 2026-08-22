@@ -1,0 +1,32 @@
+---
+/*
+  Landing comercial para prospectos (no reclutadores), pensada para escanearse
+  por QR desde el celular. Un solo archivo genera /es/services y /en/services,
+  como projects.astro y cv.astro. Documento aislado: no monta el CRT, la
+  terminal ni el cursor de fósforo del portafolio.
+*/
+import ServicesLayout from '../../modules/services/layout/ServicesLayout.astro';
+import ServicesPage from '../../modules/services/ServicesPage.astro';
+import { separateLanguages } from '../../shared/utils/languageSeparator';
+import services from '../../constants/services.json';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const { lang } = Astro.params as { lang: 'es' | 'en' };
+const language = lang === 'en' ? 'en' : 'es';
+
+const data = separateLanguages(services, language) as any;
+const url = new URL(`${import.meta.env.BASE_URL}/${language}/services`, Astro.site ?? 'https://freddyz5.github.io').href;
+const year = new Date().getFullYear();
+---
+
+<ServicesLayout
+  title={data.meta.title}
+  description={data.meta.description}
+  lang={language}
+  url={url}
+>
+  <ServicesPage data={data} year={year} />
+</ServicesLayout>
