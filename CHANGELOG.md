@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/Freddyz5/portafolio/compare/v1.15.0...v1.16.0) (2026-08-22)
+
+
+### Features
+
+* agregar componente ServicesBridge y actualizar la página de servicios ([4767700](https://github.com/Freddyz5/portafolio/commit/4767700ffd76a79b0f327e217532f548bf456229))
+
 # [1.15.0](https://github.com/Freddyz5/portafolio/compare/v1.14.0...v1.15.0) (2026-08-22)
 
 
