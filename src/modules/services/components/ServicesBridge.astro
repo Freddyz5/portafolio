@@ -1,0 +1,89 @@
+---
+/*
+  Puente al portafolio. La landing esconde a propósito el CRT, la terminal y todo
+  el registro técnico porque a un prospecto no le dicen nada; esta fila es la
+  puerta para quien SÍ los busca (reclutador, socio técnico), y se cruza sola.
+  Fila entera pulsable, en el idioma en el que ya está leyendo.
+*/
+interface Props {
+  lead: string;
+  label: string;
+  hint: string;
+  href: string;
+}
+
+const { lead, label, hint, href } = Astro.props;
+---
+
+<a class="cl-bridge" href={href}>
+  <span class="cl-bridge__text">
+    <span class="cl-bridge__lead">{lead}</span>
+    <span class="cl-bridge__label">{label}</span>
+    <span class="cl-bridge__hint">{hint}</span>
+  </span>
+  <span class="cl-bridge__arrow" aria-hidden="true">&#8594;</span>
+</a>
+
+<style>
+  .cl-bridge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px var(--cl-pad);
+    border-top: var(--cl-rule) solid var(--cl-divider);
+    color: var(--cl-ink);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .cl-bridge:hover {
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+
+  .cl-bridge__text {
+    display: grid;
+    gap: 6px;
+  }
+
+  .cl-bridge__lead {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--cl-muted);
+    text-wrap: pretty;
+  }
+
+  .cl-bridge__label {
+    font-family: var(--cl-font-display);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+
+  .cl-bridge__hint {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--cl-muted);
+    text-wrap: pretty;
+  }
+
+  .cl-bridge__arrow {
+    flex: none;
+    font-size: 18px;
+    color: var(--cl-accent-text);
+    transition: transform 0.2s ease;
+  }
+
+  .cl-bridge:hover .cl-bridge__arrow {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cl-bridge:hover .cl-bridge__arrow {
+      transform: none;
+    }
+  }
+</style>

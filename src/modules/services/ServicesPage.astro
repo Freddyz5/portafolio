@@ -5,16 +5,21 @@ import ServicesHero from './components/ServicesHero.astro';
 import ServicesList from './components/ServicesList.astro';
 import ServicesWork from './components/ServicesWork.astro';
 import ServicesContact from './components/ServicesContact.astro';
+import ServicesBridge from './components/ServicesBridge.astro';
 import ServicesFooter from './components/ServicesFooter.astro';
 import { whatsappHref, toLocalLabel } from './utils/whatsapp';
 
 interface Props {
   data: any;
   year: number;
+  lang: 'es' | 'en';
 }
 
-const { data, year } = Astro.props;
-const { contact, hero, services, work, cta, ui } = data;
+const { data, year, lang } = Astro.props;
+const { contact, hero, services, work, cta, bridge, ui } = data;
+
+/* Mismo idioma al cruzar: quien lee en inglés no debe caer en la home en español. */
+const portfolioHref = `${import.meta.env.BASE_URL}/${lang}/`;
 
 const waHref = whatsappHref(contact.whatsapp, contact.message);
 const phoneLabel = toLocalLabel(contact.whatsapp);
@@ -51,6 +56,13 @@ const phoneLabel = toLocalLabel(contact.whatsapp);
       waHref={waHref}
       phoneLabel={phoneLabel}
       location={ui.location}
+    />
+
+    <ServicesBridge
+      lead={bridge.lead}
+      label={bridge.label}
+      hint={bridge.hint}
+      href={portfolioHref}
     />
 
     <ServicesFooter brand={ui.brand} year={year} backToTop={ui.backToTop} />

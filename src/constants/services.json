@@ -225,6 +225,20 @@
       "en": "Talk on WhatsApp"
     }
   },
+  "bridge": {
+    "lead": {
+      "es": "¿Quieres ver el perfil técnico?",
+      "en": "Want to see the technical profile?"
+    },
+    "label": {
+      "es": "Entrar al portafolio",
+      "en": "Enter the portfolio"
+    },
+    "hint": {
+      "es": "Stack, experiencia y proyectos con su código.",
+      "en": "Stack, experience and projects with their code."
+    }
+  },
   "ui": {
     "brand": {
       "es": "Freddy Tacuri",
