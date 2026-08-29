@@ -5,7 +5,7 @@
   como projects.astro y cv.astro. Documento aislado: no monta el CRT, la
   terminal ni el cursor de fósforo del portafolio.
 */
-import ServicesLayout from '../../modules/services/layout/ServicesLayout.astro';
+import CommercialLayout from '../../shared/layout/CommercialLayout.astro';
 import ServicesPage from '../../modules/services/ServicesPage.astro';
 import { separateLanguages } from '../../shared/utils/languageSeparator';
 import services from '../../constants/services.json';
@@ -22,11 +22,11 @@ const url = new URL(`${import.meta.env.BASE_URL}/${language}/services`, Astro.si
 const year = new Date().getFullYear();
 ---
 
-<ServicesLayout
+<CommercialLayout
   title={data.meta.title}
   description={data.meta.description}
   lang={language}
   url={url}
 >
   <ServicesPage data={data} year={year} lang={language} />
-</ServicesLayout>
+</CommercialLayout>

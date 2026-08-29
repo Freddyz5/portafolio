@@ -1,0 +1,58 @@
+---
+/*
+  Pieza que entra o no entra. Es un <button aria-pressed>, no un div con
+  listener: así el teclado y el lector de pantalla saben qué es y en qué estado
+  está. El precio de línea lo rellena el controlador.
+*/
+import type { ToggleItem } from '../core/types';
+
+interface Props {
+  item: ToggleItem;
+  requiresLabel: string;
+  requiresName: string;
+}
+
+const { item, requiresLabel, requiresName } = Astro.props;
+---
+
+<button
+  type="button"
+  class="cl-piece"
+  data-piece="toggle"
+  data-id={item.id}
+  aria-pressed="false"
+>
+  <span class="cl-piece__box" aria-hidden="true">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="square">
+      <path d="M3.5 8.5l3 3 6-7"></path>
+    </svg>
+  </span>
+
+  <span class="cl-piece__body">
+    <span class="cl-piece__head">
+      <span class="cl-piece__name">{item.name}</span>
+      <span class="cl-piece__price" data-line-price></span>
+    </span>
+
+    <span class="cl-piece__text">
+      {item.description}
+      {
+        item.variants &&
+          Object.entries(item.variants).map(([optionId, text]) => (
+            <span class="cl-piece__variant" data-variant={optionId} hidden>
+              {' '}
+              {text}
+            </span>
+          ))
+      }
+    </span>
+
+    {
+      item.requires && (
+        <span class="cl-piece__lock" data-lock hidden>
+          {requiresLabel}: {requiresName}
+        </span>
+      )
+    }
+  </span>
+</button>

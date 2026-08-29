@@ -1,0 +1,50 @@
+---
+/*
+  Cotizador por piezas. NO está enlazado desde ninguna parte a propósito: es la
+  herramienta que se abre en la reunión, no una página del sitio público — la
+  landing /services sostiene la decisión de no publicar tarifas.
+
+  `?readonly=1` congela la interacción y deja el presupuesto como quedó en el
+  enlace, que es la puerta prevista para abrirlo al público sin rehacerlo.
+
+  Contenido y tarifas viven en src/constants/quote.json; aquí no hay cifras.
+*/
+import CommercialLayout from '../../shared/layout/CommercialLayout.astro';
+import QuotePage from '../../modules/quote/QuotePage.astro';
+import { separateLanguages } from '../../shared/utils/languageSeparator';
+import quote from '../../constants/quote.json';
+import type { QuoteData } from '../../modules/quote/core/types';
+
+export async function getStaticPaths() {
+  return [{ params: { lang: 'es' } }, { params: { lang: 'en' } }];
+}
+
+const { lang } = Astro.params as { lang: 'es' | 'en' };
+const language = lang === 'en' ? 'en' : 'es';
+
+const data = separateLanguages(quote, language) as unknown as QuoteData;
+const BASE_URL = import.meta.env.BASE_URL;
+const url = new URL(
+  `${BASE_URL}/${language}/quote`,
+  Astro.site ?? 'https://freddyz5.github.io',
+).href;
+
+const themeLabels =
+  language === 'es'
+    ? { aria: 'Cambiar tema', dark: 'Oscuro', light: 'Claro' }
+    : { aria: 'Switch theme', dark: 'Dark', light: 'Light' };
+---
+
+<CommercialLayout
+  title={data.meta.title}
+  description={data.meta.description}
+  lang={language}
+  url={url}
+>
+  <QuotePage
+    data={data}
+    lang={language}
+    backHref={`${BASE_URL}/${language}/services`}
+    themeLabels={themeLabels}
+  />
+</CommercialLayout>

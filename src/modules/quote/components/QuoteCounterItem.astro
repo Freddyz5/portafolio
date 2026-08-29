@@ -1,0 +1,52 @@
+---
+/*
+  Pieza de cantidad variable. El valor va en un <output aria-live="polite">
+  para que el lector de pantalla cante el cambio sin que haya que mover el foco.
+*/
+import type { CounterItem } from '../core/types';
+
+interface Props {
+  item: CounterItem;
+  requiresLabel: string;
+  requiresName: string;
+  addLabel: string;
+  removeLabel: string;
+}
+
+const { item, requiresLabel, requiresName, addLabel, removeLabel } = Astro.props;
+---
+
+<div class="cl-piece cl-piece--static" data-piece="counter" data-id={item.id}>
+  <span class="cl-piece__body">
+    <span class="cl-piece__head">
+      <span class="cl-piece__name">{item.name}</span>
+      <span class="cl-piece__price" data-line-price></span>
+    </span>
+
+    <span class="cl-piece__text">{item.description}</span>
+
+    {
+      item.requires && (
+        <span class="cl-piece__lock" data-lock hidden>
+          {requiresLabel}: {requiresName}
+        </span>
+      )
+    }
+
+    <span class="cl-counter">
+      <button
+        type="button"
+        class="cl-counter__step"
+        data-step="-1"
+        aria-label={`${removeLabel} ${item.unit.singular}`}
+      >&#8722;</button>
+      <output class="cl-counter__value" data-counter-value aria-live="polite">{item.initial}</output>
+      <button
+        type="button"
+        class="cl-counter__step"
+        data-step="1"
+        aria-label={`${addLabel} ${item.unit.singular}`}
+      >+</button>
+    </span>
+  </span>
+</div>

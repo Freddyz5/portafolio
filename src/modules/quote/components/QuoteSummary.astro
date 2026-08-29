@@ -1,0 +1,33 @@
+---
+/*
+  El total, pegado abajo. No usa el campo acento a sangre como el cierre de la
+  landing a propósito: allí el texto pequeño sobre el acento claro se queda en
+  3,84:1, y aquí hay cifras que hay que poder leer. La regla de acento arriba
+  hace el mismo trabajo visual sin pagar ese precio.
+*/
+interface Props {
+  totalLabel: string;
+  print: string;
+  save: string;
+  scheduleNote: string;
+}
+
+const { totalLabel, print, save, scheduleNote } = Astro.props;
+---
+
+<div class="cl-total" data-screen-only>
+  <div>
+    <p class="cl-total__label">{totalLabel}</p>
+    <p class="cl-total__amount" data-total-amount aria-live="polite"></p>
+  </div>
+  <p class="cl-total__count" data-total-count></p>
+</div>
+
+<div class="cl-actions" data-screen-only>
+  <button type="button" class="cl-action" data-print>{print}</button>
+  <button type="button" class="cl-action cl-action--accent" data-save>
+    <span data-save-label>{save}</span>
+  </button>
+</div>
+
+<p class="cl-schedule" data-screen-only>{scheduleNote}</p>

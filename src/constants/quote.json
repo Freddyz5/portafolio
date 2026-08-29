@@ -1,0 +1,451 @@
+{
+  "meta": {
+    "title": {
+      "es": "Cotización · Landing + Catálogo digital",
+      "en": "Quote · Landing + Digital catalogue"
+    },
+    "description": {
+      "es": "Presupuesto por piezas: se marca lo que entra y el total se recalcula solo.",
+      "en": "A quote built from parts: tick what is in and the total recalculates itself."
+    }
+  },
+  "settings": {
+    "ratePerDay": 40,
+    "validityDays": 15,
+    "quotePrefix": "FT",
+    "preparedBy": "Freddy Tacuri",
+    "client": {
+      "es": "Palsabi · Librería Cristiana",
+      "en": "Palsabi · Christian Bookstore"
+    },
+    "subject": {
+      "es": "Landing + Catálogo digital",
+      "en": "Landing + Digital catalogue"
+    }
+  },
+  "phases": [
+    {
+      "id": "landing",
+      "name": {
+        "es": "Fase 1 · Landing",
+        "en": "Phase 1 · Landing"
+      },
+      "note": {
+        "es": "El cliente entrega los textos y las imágenes. Se realizan dos rondas de revisión por sección.",
+        "en": "The client provides the copy and the images. Two rounds of revision per section are included."
+      },
+      "items": [
+        {
+          "kind": "toggle",
+          "id": "landing-base",
+          "name": {
+            "es": "Landing de presentación",
+            "en": "Presentation landing page"
+          },
+          "days": 2,
+          "initial": true,
+          "description": {
+            "es": "Incluye 5 secciones: portada, quiénes somos, selección destacada, catálogo y sección de cierre con redirección a WhatsApp — más cabecera y pie. El texto final se define con el cliente, con ajustes finales y publicación en la web.",
+            "en": "Includes 5 sections: cover, about us, featured selection, catalogue and a closing section linking to WhatsApp — plus header and footer. The final copy is agreed with the client, along with final adjustments and publication."
+          }
+        },
+        {
+          "kind": "counter",
+          "id": "paginas-extra",
+          "name": {
+            "es": "Subpágina",
+            "en": "Sub-page"
+          },
+          "daysPerUnit": 1.5,
+          "initial": 0,
+          "min": 0,
+          "max": 4,
+          "requires": "landing-base",
+          "unit": {
+            "singular": {
+              "es": "página",
+              "en": "page"
+            },
+            "plural": {
+              "es": "páginas",
+              "en": "pages"
+            }
+          },
+          "description": {
+            "es": "Una página adicional accesible desde el menú. Incluye hasta 3 secciones. Si se requieren más secciones, se agregan en el ítem siguiente.",
+            "en": "An extra page reachable from the menu. Includes up to 3 sections. If more sections are needed, they are added in the next item."
+          }
+        },
+        {
+          "kind": "counter",
+          "id": "secciones-extra",
+          "name": {
+            "es": "Sección informativa adicional",
+            "en": "Additional information section"
+          },
+          "daysPerUnit": 0.75,
+          "initial": 0,
+          "min": 0,
+          "max": 6,
+          "requires": "landing-base",
+          "unit": {
+            "singular": {
+              "es": "sección",
+              "en": "section"
+            },
+            "plural": {
+              "es": "secciones",
+              "en": "sections"
+            }
+          },
+          "description": {
+            "es": "Una sección con texto, imágenes y diseño propio.",
+            "en": "A section with its own copy, images and layout."
+          }
+        }
+      ]
+    },
+    {
+      "id": "catalogo",
+      "name": {
+        "es": "Fase 2 · Catálogo digital",
+        "en": "Phase 2 · Digital catalogue"
+      },
+      "items": [
+        {
+          "kind": "toggle",
+          "id": "catalogo-base",
+          "name": {
+            "es": "Catálogo público",
+            "en": "Public catalogue"
+          },
+          "days": 8,
+          "initial": true,
+          "description": {
+            "es": "Buscador, filtros por categoría, ficha de cada libro, estados de stock y pedido por WhatsApp — con datos reales en base de datos, no de muestra.",
+            "en": "Search, category filters, a page per book, stock states and WhatsApp ordering — with real data in a database, not samples."
+          },
+          "variants": {
+            "carga-panel": {
+              "es": "Los libros los cargan y actualizan ustedes desde el panel.",
+              "en": "You load and update the books yourselves from the panel."
+            },
+            "carga-planilla": {
+              "es": "Los libros salen de una planilla que ustedes editan.",
+              "en": "The books come from a spreadsheet you edit."
+            },
+            "carga-inicial": {
+              "es": "Los libros los dejo cargados yo una vez; después el catálogo queda fijo.",
+              "en": "I load the books once; after that the catalogue stays fixed."
+            }
+          }
+        },
+        {
+          "kind": "choice",
+          "id": "carga",
+          "question": {
+            "es": "¿Cómo entran y se actualizan los libros?",
+            "en": "How do books get in and stay up to date?"
+          },
+          "initial": "carga-panel",
+          "requires": "catalogo-base",
+          "options": [
+            {
+              "id": "carga-panel",
+              "name": {
+                "es": "Panel de administración",
+                "en": "Admin panel"
+              },
+              "days": 7,
+              "recommended": true,
+              "description": {
+                "es": "Cuentas para 2 administradores, formulario de ingreso de libros (foto, título, autor, categoría, precio, stock) y vista de inventario. Autonomía total: ingreso, edición y eliminación sin depender del desarrollador.",
+                "en": "Accounts for 2 administrators, a book entry form (photo, title, author, category, price, stock) and an inventory view. Full autonomy: adding, editing and deleting without depending on the developer."
+              }
+            },
+            {
+              "id": "carga-planilla",
+              "name": {
+                "es": "Planilla de Google Sheets",
+                "en": "Google Sheets spreadsheet"
+              },
+              "days": 3,
+              "description": {
+                "es": "Documento compartido en Google Sheets en el cual los administradores pueden editar los datos. La planilla se sincroniza con el catálogo automáticamente, sin intervención del desarrollador. No incluye subida de fotos: las imágenes se cargan a la nube aparte y se pegan los enlaces en la planilla.",
+                "en": "A shared Google Sheets document where the administrators edit the data. The sheet syncs with the catalogue automatically, with no developer involvement. Photo upload is not included: images are hosted separately and their links pasted into the sheet."
+              }
+            },
+            {
+              "id": "carga-inicial",
+              "name": {
+                "es": "Catálogo fijo",
+                "en": "Fixed catalogue"
+              },
+              "days": 1,
+              "description": {
+                "es": "Carga realizada por el desarrollador (50 libros) una sola vez, con los libros que el cliente proporcione. Después el catálogo queda fijo: no hay panel ni planilla para actualizarlo.",
+                "en": "A one-off load by the developer (50 books) from what the client provides. After that the catalogue is fixed: there is no panel or spreadsheet to update it."
+              }
+            }
+          ]
+        },
+        {
+          "kind": "toggle",
+          "id": "pdf",
+          "name": {
+            "es": "Catálogo en PDF",
+            "en": "PDF catalogue"
+          },
+          "days": 2,
+          "initial": false,
+          "requires": "catalogo-base",
+          "description": {
+            "es": "Generación de un documento PDF descargable con los libros de una categoría o de una colección determinada. El documento se sincroniza automáticamente con el catálogo. El PDF se puede descargar desde el catálogo o enviarse por WhatsApp.",
+            "en": "A downloadable PDF with the books of a given category or collection. The document syncs automatically with the catalogue. The PDF can be downloaded from the catalogue or sent over WhatsApp."
+          }
+        },
+        {
+          "kind": "toggle",
+          "id": "enlaces",
+          "name": {
+            "es": "Enlaces compartibles",
+            "en": "Shareable links"
+          },
+          "days": 2,
+          "initial": false,
+          "requires": "catalogo-base",
+          "description": {
+            "es": "Enlaces individuales del catálogo clasificados por categoría o por colección.",
+            "en": "Individual catalogue links organised by category or by collection."
+          }
+        },
+        {
+          "kind": "toggle",
+          "id": "extras",
+          "name": {
+            "es": "Etiquetas y contador de pedidos",
+            "en": "Tags and order counter"
+          },
+          "days": 1,
+          "initial": false,
+          "requires": "catalogo-base",
+          "description": {
+            "es": "Etiquetas «Nuevo» y «Recomendado» para destacar títulos dentro del catálogo, y un registro del número de veces que cada libro fue solicitado por WhatsApp.",
+            "en": "“New” and “Recommended” tags to highlight titles within the catalogue, and a record of how many times each book was requested over WhatsApp."
+          }
+        }
+      ]
+    },
+    {
+      "id": "postventa",
+      "name": {
+        "es": "Post-venta",
+        "en": "After delivery"
+      },
+      "items": [
+        {
+          "kind": "counter",
+          "id": "bolsa-soporte",
+          "name": {
+            "es": "Servicio de soporte por hora",
+            "en": "Hourly support"
+          },
+          "daysPerUnit": 0.25,
+          "initial": 0,
+          "min": 0,
+          "max": 40,
+          "unit": {
+            "singular": {
+              "es": "hora",
+              "en": "hour"
+            },
+            "plural": {
+              "es": "horas",
+              "en": "hours"
+            }
+          },
+          "description": {
+            "es": "Cambios de texto y ajustes menores posteriores a la publicación. Se acuerda una reunión para programar el trabajo y se descuenta según las horas efectivamente utilizadas.",
+            "en": "Copy changes and minor adjustments after launch. The work is scheduled in a meeting and drawn down by the hours actually used."
+          }
+        }
+      ]
+    }
+  ],
+  "recurringCosts": [
+    {
+      "es": "Dominio: aproximadamente $25 al año, contratado a nombre del cliente.",
+      "en": "Domain: roughly $25 a year, registered in the client’s name."
+    },
+    {
+      "es": "Hosting y base de datos: el catálogo con panel de administración requiere un servidor activo. Se contrata a nombre del cliente y se factura mensualmente. El valor depende del mercado.",
+      "en": "Hosting and database: the catalogue with an admin panel needs a live server. It is contracted in the client’s name and billed monthly. The price depends on the market."
+    }
+  ],
+  "notIncluded": [
+    {
+      "es": "Redacción de textos y sesión fotográfica.",
+      "en": "Copywriting and photo shoots."
+    },
+    {
+      "es": "Carga de contenido, salvo que se contrate la carga inicial realizada por el desarrollador.",
+      "en": "Content loading, unless the developer’s initial load is contracted."
+    },
+    {
+      "es": "Pasarela de pagos y funcionalidades de tienda en línea.",
+      "en": "Payment gateway and online store features."
+    },
+    {
+      "es": "Posicionamiento en buscadores y campañas de publicidad.",
+      "en": "Search engine optimisation and advertising campaigns."
+    }
+  ],
+  "ui": {
+    "back": {
+      "es": "Volver",
+      "en": "Back"
+    },
+    "eyebrow": {
+      "es": "Presupuesto por piezas",
+      "en": "Quote by parts"
+    },
+    "intro": {
+      "es": "Cada pieza es independiente: suma lo que quieras y quita lo que no. El total de abajo se recalcula según lo marcado.",
+      "en": "Each part is independent: add what you want and drop what you don’t. The total below recalculates as you go."
+    },
+    "readonlyNotice": {
+      "es": "Vista de solo lectura: la selección viene fijada en el enlace.",
+      "en": "Read-only view: the selection is fixed by the link."
+    },
+    "requires": {
+      "es": "Necesita",
+      "en": "Requires"
+    },
+    "chooseOne": {
+      "es": "Elige una",
+      "en": "Choose one"
+    },
+    "recommended": {
+      "es": "Recomendada",
+      "en": "Recommended"
+    },
+    "each": {
+      "es": "c/u",
+      "en": "each"
+    },
+    "daySingular": {
+      "es": "día",
+      "en": "day"
+    },
+    "dayPlural": {
+      "es": "días",
+      "en": "days"
+    },
+    "partSingular": {
+      "es": "pieza elegida",
+      "en": "part chosen"
+    },
+    "partPlural": {
+      "es": "piezas elegidas",
+      "en": "parts chosen"
+    },
+    "addUnit": {
+      "es": "Agregar",
+      "en": "Add"
+    },
+    "removeUnit": {
+      "es": "Quitar",
+      "en": "Remove"
+    },
+    "totalLabel": {
+      "es": "Total estimado",
+      "en": "Estimated total"
+    },
+    "print": {
+      "es": "Impresión de propuesta",
+      "en": "Print proposal"
+    },
+    "save": {
+      "es": "Guardar selección",
+      "en": "Save selection"
+    },
+    "saveDone": {
+      "es": "Selección guardada en el enlace",
+      "en": "Selection saved in the link"
+    },
+    "saveFallback": {
+      "es": "Copia el enlace de la barra de direcciones",
+      "en": "Copy the link from the address bar"
+    },
+    "saveEmpty": {
+      "es": "No hay piezas seleccionadas",
+      "en": "No parts selected"
+    },
+    "recurringTitle": {
+      "es": "Costos adicionales externos",
+      "en": "External additional costs"
+    },
+    "notIncludedTitle": {
+      "es": "Lo que este presupuesto no incluye",
+      "en": "What this quote does not include"
+    },
+    "scheduleNote": {
+      "es": "La producción de esta propuesta se ejecuta dentro del horario de jornada laboral y en días hábiles. El cronograma final depende de los tiempos de revisión y aprobación del cliente.",
+      "en": "This proposal is produced within working hours on business days. The final schedule depends on the client’s review and approval times."
+    }
+  },
+  "document": {
+    "title": {
+      "es": "Cotización",
+      "en": "Quote"
+    },
+    "preparedFor": {
+      "es": "Preparado para",
+      "en": "Prepared for"
+    },
+    "preparedBy": {
+      "es": "Preparado por",
+      "en": "Prepared by"
+    },
+    "issuedOn": {
+      "es": "Fecha de emisión",
+      "en": "Issue date"
+    },
+    "validity": {
+      "es": "Validez",
+      "en": "Valid for"
+    },
+    "validityValue": {
+      "es": "días desde la emisión",
+      "en": "days from issue"
+    },
+    "colConcept": {
+      "es": "Concepto",
+      "en": "Item"
+    },
+    "colDays": {
+      "es": "Días",
+      "en": "Days"
+    },
+    "colAmount": {
+      "es": "Valor",
+      "en": "Amount"
+    },
+    "subtotal": {
+      "es": "Subtotal",
+      "en": "Subtotal"
+    },
+    "total": {
+      "es": "Total estimado",
+      "en": "Estimated total"
+    },
+    "signClient": {
+      "es": "Por el cliente",
+      "en": "For the client"
+    },
+    "signDeveloper": {
+      "es": "Por el desarrollador",
+      "en": "For the developer"
+    }
+  }
+}

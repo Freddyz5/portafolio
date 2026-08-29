@@ -1,0 +1,87 @@
+---
+/*
+  Interruptor claro/oscuro de las rutas comerciales. El tema ya viene resuelto
+  por el script inline de CommercialLayout; esto sólo lo etiqueta y lo cambia.
+*/
+interface Props {
+  ariaLabel: string;
+  darkLabel: string;
+  lightLabel: string;
+}
+
+const { ariaLabel, darkLabel, lightLabel } = Astro.props;
+---
+
+<button
+  type="button"
+  class="cl-theme"
+  id="cl-theme-toggle"
+  aria-label={ariaLabel}
+  data-label-dark={darkLabel}
+  data-label-light={lightLabel}
+>
+  <span class="cl-theme__glyph" aria-hidden="true"></span>
+  <span class="cl-theme__label"></span>
+</button>
+
+<style>
+  .cl-theme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px var(--cl-pad);
+    min-height: 48px;
+    background: transparent;
+    border: 0;
+    border-left: var(--cl-rule) solid var(--cl-divider);
+    border-radius: 0;
+    color: var(--cl-muted);
+    font-family: var(--cl-font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .cl-theme:hover {
+    background: var(--cl-surface);
+    color: var(--cl-ink);
+  }
+
+  .cl-theme__glyph {
+    font-size: 13px;
+    line-height: 1;
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('cl-theme-toggle');
+
+  if (toggle) {
+    const glyph = toggle.querySelector('.cl-theme__glyph');
+    const label = toggle.querySelector('.cl-theme__label');
+
+    const paint = (theme: string) => {
+      document.documentElement.dataset.clTheme = theme;
+      if (glyph) glyph.textContent = theme === 'dark' ? '◑' : '◐';
+      if (label) {
+        label.textContent =
+          theme === 'dark'
+            ? toggle.dataset.labelDark ?? 'Dark'
+            : toggle.dataset.labelLight ?? 'Light';
+      }
+    };
+
+    paint(document.documentElement.dataset.clTheme === 'light' ? 'light' : 'dark');
+
+    toggle.addEventListener('click', () => {
+      const next = document.documentElement.dataset.clTheme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('cl-theme', next);
+      } catch (e) {}
+      paint(next);
+    });
+  }
+</script>

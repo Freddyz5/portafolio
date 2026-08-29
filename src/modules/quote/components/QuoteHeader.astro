@@ -1,21 +1,22 @@
 ---
-/* Cabecera fija: marca a la izquierda, interruptor de tema a la derecha. */
+/* Cabecera del cotizador: salida a la landing y el mismo interruptor de tema. */
 import ThemeToggle from '../../../shared/components/ThemeToggle.astro';
 
 interface Props {
-  brand: string;
+  back: string;
+  backHref: string;
   themeAria: string;
   themeDark: string;
   themeLight: string;
 }
 
-const { brand, themeAria, themeDark, themeLight } = Astro.props;
+const { back, backHref, themeAria, themeDark, themeLight } = Astro.props;
 ---
 
 <header class="cl-header">
-  <a class="cl-brand" href="#top">
-    <span class="cl-brand__mark" aria-hidden="true">&#9672;</span>
-    <span class="cl-brand__name">{brand}</span>
+  <a class="cl-back" href={backHref}>
+    <span aria-hidden="true">&#8592;</span>
+    <span>{back}</span>
   </a>
 
   <ThemeToggle ariaLabel={themeAria} darkLabel={themeDark} lightLabel={themeLight} />
@@ -34,31 +35,21 @@ const { brand, themeAria, themeDark, themeLight } = Astro.props;
     transition: background-color 0.3s ease;
   }
 
-  .cl-brand {
+  .cl-back {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 14px var(--cl-pad);
-    text-decoration: none;
-    color: var(--cl-ink);
-  }
-
-  .cl-brand:hover {
-    color: var(--cl-ink);
-  }
-
-  .cl-brand__mark {
-    font-family: var(--cl-font-display);
-    font-size: 14px;
-    line-height: 1;
-    color: var(--cl-accent);
-  }
-
-  .cl-brand__name {
-    font-family: var(--cl-font-display);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    color: var(--cl-muted);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .cl-back:hover {
+    color: var(--cl-ink);
   }
 </style>

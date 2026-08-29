@@ -1,0 +1,23 @@
+---
+/* Bloque de condiciones. Los presupuestos se pelean por lo que no dicen. */
+interface Props {
+  title: string;
+  points: string[];
+}
+
+const { title, points } = Astro.props;
+---
+
+<section class="cl-conditions">
+  <h2 class="cl-section-title">{title}</h2>
+  <ul class="cl-conditions__list">
+    {
+      points.map((point) => (
+        <li class="cl-conditions__item">
+          <span class="cl-conditions__bullet" aria-hidden="true" />
+          <span>{point}</span>
+        </li>
+      ))
+    }
+  </ul>
+</section>

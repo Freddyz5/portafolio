@@ -1,0 +1,64 @@
+---
+/*
+  Grupo excluyente. Existe por un motivo concreto: si el catálogo va sin panel,
+  alguien tiene que cargar los libros igual. Obligar a elegir cómo se cierra ese
+  agujero en la reunión, en vez de descubrirlo después.
+
+  role="radiogroup" + role="radio" en lugar de botones sueltos: es lo que la
+  interacción realmente es, y el lector de pantalla anuncia «1 de 3».
+*/
+import type { ChoiceGroup } from '../core/types';
+
+interface Props {
+  item: ChoiceGroup;
+  requiresLabel: string;
+  requiresName: string;
+  chooseOne: string;
+  recommended: string;
+}
+
+const { item, requiresLabel, requiresName, chooseOne, recommended } = Astro.props;
+---
+
+<div class="cl-choice" data-piece="choice" data-id={item.id}>
+  <div class="cl-choice__head">
+    <p class="cl-choice__question" id={`choice-${item.id}`}>{item.question}</p>
+    <p class="cl-choice__hint">{chooseOne}</p>
+  </div>
+
+  {
+    item.requires && (
+      <p class="cl-piece__lock" data-lock hidden>
+        {requiresLabel}: {requiresName}
+      </p>
+    )
+  }
+
+  <div class="cl-choice__options" role="radiogroup" aria-labelledby={`choice-${item.id}`}>
+    {
+      item.options.map((option) => (
+        <button
+          type="button"
+          class="cl-option"
+          role="radio"
+          aria-checked="false"
+          data-option
+          data-group={item.id}
+          data-id={option.id}
+        >
+          <span class="cl-option__mark" aria-hidden="true" />
+          <span class="cl-piece__body">
+            <span class="cl-piece__head">
+              <span class="cl-piece__name">
+                {option.name}
+                {option.recommended && <span class="cl-option__badge">{recommended}</span>}
+              </span>
+              <span class="cl-piece__price" data-line-price />
+            </span>
+            <span class="cl-piece__text">{option.description}</span>
+          </span>
+        </button>
+      ))
+    }
+  </div>
+</div>

@@ -1,0 +1,130 @@
+---
+/*
+  Composición del cotizador. Todo el marcado sale del servidor —incluidas las
+  filas del documento impreso—, así que la página se lee entera sin JavaScript;
+  lo que el controlador añade son los estados, las cifras y el enlace.
+
+  Los datos ya vienen aplanados al idioma de la ruta, y viajan al cliente en un
+  <script type="application/json">: así el navegador no descarga los dos idiomas
+  ni hay que serializar un objeto grande con define:vars.
+*/
+import QuoteHeader from './components/QuoteHeader.astro';
+import QuoteToggleItem from './components/QuoteToggleItem.astro';
+import QuoteCounterItem from './components/QuoteCounterItem.astro';
+import QuoteChoiceItem from './components/QuoteChoiceItem.astro';
+import QuoteConditions from './components/QuoteConditions.astro';
+import QuoteSummary from './components/QuoteSummary.astro';
+import QuoteDocument from './components/QuoteDocument.astro';
+import { indexQuote } from './core/quote';
+import type { QuoteData } from './core/types';
+import './styles/quote.css';
+
+interface Props {
+  data: QuoteData;
+  lang: 'es' | 'en';
+  backHref: string;
+  themeLabels: { aria: string; dark: string; light: string };
+}
+
+const { data, lang, backHref, themeLabels } = Astro.props;
+const { ui, settings, phases } = data;
+
+/* El nombre legible de cada requisito, para el cartel «Necesita: …». */
+const { nameById } = indexQuote(data);
+const requiresName = (id?: string) => (id ? nameById.get(id) ?? id : '');
+---
+
+<QuoteHeader
+  back={ui.back}
+  backHref={backHref}
+  themeAria={themeLabels.aria}
+  themeDark={themeLabels.dark}
+  themeLight={themeLabels.light}
+/>
+
+<main class="cl-quote" id="quote" data-lang={lang}>
+  <section class="cl-quote__intro" data-screen-only>
+    <p class="cl-quote__eyebrow">{ui.eyebrow}</p>
+    <h1 class="cl-quote__title">{settings.subject}</h1>
+    <p class="cl-quote__lead">{ui.intro}</p>
+    <p class="cl-quote__readonly" data-readonly-notice hidden>{ui.readonlyNotice}</p>
+  </section>
+
+  <QuoteDocument data={data} />
+
+  <div data-screen-only>
+    {
+      phases.map((phase) => (
+        <section class="cl-phase">
+          <div class="cl-phase__head">
+            <h2 class="cl-phase__name">{phase.name}</h2>
+            {phase.note && <p class="cl-phase__note">{phase.note}</p>}
+          </div>
+
+          {phase.items.map((item) =>
+            item.kind === 'toggle' ? (
+              <QuoteToggleItem
+                item={item}
+                requiresLabel={ui.requires}
+                requiresName={requiresName(item.requires)}
+              />
+            ) : item.kind === 'counter' ? (
+              <QuoteCounterItem
+                item={item}
+                requiresLabel={ui.requires}
+                requiresName={requiresName(item.requires)}
+                addLabel={ui.addUnit}
+                removeLabel={ui.removeUnit}
+              />
+            ) : (
+              <QuoteChoiceItem
+                item={item}
+                requiresLabel={ui.requires}
+                requiresName={requiresName(item.requires)}
+                chooseOne={ui.chooseOne}
+                recommended={ui.recommended}
+              />
+            ),
+          )}
+        </section>
+      ))
+    }
+  </div>
+
+  <div data-screen-only>
+    <QuoteConditions title={ui.recurringTitle} points={data.recurringCosts} />
+    <QuoteConditions title={ui.notIncludedTitle} points={data.notIncluded} />
+  </div>
+
+  <QuoteSummary
+    totalLabel={ui.totalLabel}
+    print={ui.print}
+    save={ui.save}
+    scheduleNote={ui.scheduleNote}
+  />
+
+  <script type="application/json" data-quote-data set:html={JSON.stringify(data)} is:inline />
+</main>
+
+<script>
+  import { mountQuote } from './core/controller';
+  import { isReadonly } from './core/url';
+  import type { QuoteData } from './core/types';
+  import type { Lang } from './core/format';
+
+  const root = document.getElementById('quote');
+  const payload = root?.querySelector('[data-quote-data]');
+
+  if (root && payload?.textContent) {
+    const data = JSON.parse(payload.textContent) as QuoteData;
+    const lang = (root.dataset.lang === 'en' ? 'en' : 'es') as Lang;
+
+    /* El aviso sólo aparece cuando el enlace realmente trae el modo. */
+    if (isReadonly(new URLSearchParams(location.search))) {
+      const notice = root.querySelector<HTMLElement>('[data-readonly-notice]');
+      if (notice) notice.hidden = false;
+    }
+
+    mountQuote(root, data, lang);
+  }
+</script>

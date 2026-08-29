@@ -1,0 +1,114 @@
+---
+/*
+  El documento impreso. En pantalla no existe: la página es la herramienta de la
+  reunión y esto es lo que se lleva el cliente. Todas las filas están en el
+  marcado desde el build; el controlador sólo tapa las que no se contrataron y
+  completa días y valores.
+*/
+import type { QuoteData } from '../core/types';
+
+interface Props {
+  data: QuoteData;
+}
+
+const { data } = Astro.props;
+const { document: doc, settings, phases } = data;
+---
+
+<section class="cl-doc" data-print-only>
+  <header class="cl-doc__head">
+    <p class="cl-doc__kicker">{doc.title}</p>
+    <p class="cl-doc__number" data-doc-number></p>
+  </header>
+
+  <h1 class="cl-doc__subject">{settings.subject}</h1>
+
+  <dl class="cl-doc__facts">
+    <div>
+      <dt>{doc.preparedFor}</dt>
+      <dd>{settings.client}</dd>
+    </div>
+    <div>
+      <dt>{doc.preparedBy}</dt>
+      <dd>{settings.preparedBy}</dd>
+    </div>
+    <div>
+      <dt>{doc.issuedOn}</dt>
+      <dd data-doc-date></dd>
+    </div>
+    <div>
+      <dt>{doc.validity}</dt>
+      <dd>{settings.validityDays} {doc.validityValue}</dd>
+    </div>
+  </dl>
+
+  <table class="cl-doc__table">
+    <thead>
+      <tr>
+        <th scope="col">{doc.colConcept}</th>
+        <th scope="col" class="cl-doc__num">{doc.colDays}</th>
+        <th scope="col" class="cl-doc__num">{doc.colAmount}</th>
+      </tr>
+    </thead>
+
+    {
+      phases.map((phase) => (
+        <tbody data-doc-phase>
+          <tr>
+            <th colspan="3" scope="colgroup" class="cl-doc__phase">
+              {phase.name}
+            </th>
+          </tr>
+
+          {phase.items.flatMap((item) =>
+            item.kind === 'choice'
+              ? item.options.map((option) => (
+                  <tr data-doc-row data-id={option.id} hidden>
+                    <td>{option.name}</td>
+                    <td class="cl-doc__num" data-doc-days />
+                    <td class="cl-doc__num" data-doc-amount />
+                  </tr>
+                ))
+              : [
+                  <tr data-doc-row data-id={item.id} hidden>
+                    <td>
+                      {item.name}
+                      <span data-doc-quantity />
+                    </td>
+                    <td class="cl-doc__num" data-doc-days />
+                    <td class="cl-doc__num" data-doc-amount />
+                  </tr>,
+                ],
+          )}
+
+          <tr data-doc-subtotal class="cl-doc__subtotal">
+            <td>{doc.subtotal}</td>
+            <td class="cl-doc__num" data-doc-days />
+            <td class="cl-doc__num" data-doc-amount />
+          </tr>
+        </tbody>
+      ))
+    }
+
+    <tfoot>
+      <tr class="cl-doc__total">
+        <td>{doc.total}</td>
+        <td class="cl-doc__num" data-doc-total-days></td>
+        <td class="cl-doc__num" data-doc-total-amount></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <section class="cl-doc__signatures">
+    <div>
+      <div class="cl-doc__rule"></div>
+      <p class="cl-doc__kicker">{doc.signClient}</p>
+      <p>{settings.client}</p>
+    </div>
+    <div>
+      <div class="cl-doc__rule"></div>
+      <p class="cl-doc__kicker">{doc.signDeveloper}</p>
+      <p>{settings.preparedBy}</p>
+    </div>
+  </section>
+</section>
